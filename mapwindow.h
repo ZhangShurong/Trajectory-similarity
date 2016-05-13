@@ -61,6 +61,7 @@ public:
     void drawPoint(Point *p_a, QString pid, int color);
     void showPoints(bool sp_a);
     void showTimes(bool st_a);
+    void showLabel(QString label);
 
     void highLightPart(Sequence *se_a, int start, int end, int c, int lWeight = 5);
 };

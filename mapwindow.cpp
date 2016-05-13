@@ -308,6 +308,28 @@ void MapWindow::showTimes(bool st_a)
     showTime = st_a;
 }
 
+void MapWindow::showLabel(QString label)
+{
+    /*
+    var opts = {
+      position : point,    // 指定文本标注所在的地理位置
+      offset   : new BMap.Size(30, -30)    //设置文本偏移量
+    }
+    var label = new BMap.Label("欢迎使用百度地图，这是一个简单的文本标注哦~", opts);  // 创建文本标注对象
+        label.setStyle({
+             color : "red",
+             fontSize : "12px",
+             height : "20px",
+             lineHeight : "20px",
+             fontFamily:"微软雅黑"
+         });
+    map.addOverlay(label);
+    */
+    QTextStream out(jsFile);
+
+
+}
+
 void MapWindow::highLightPart(Sequence *se_a, int start, int end, int c, int lWeight)
 {
     QString ID = "t" + se_a->getID();
