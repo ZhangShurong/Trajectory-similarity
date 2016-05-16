@@ -629,19 +629,31 @@ void MainWindow::search(Sequence input)
     refreshTable();
     searchMode(true);
     string tb = tName;
-    //QStringList *allTc = db->getAllTracID(tb);
     Sequence sf;
-
     double dfDis;
+    double maxDis = 0;
+
     for (int i = 0;i < tracs->length();i++)
     {
+        QTableWidgetItem *tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
         dfDis = computeDiscreteFrechet(&input,&sf);
 
-        QTableWidgetItem *tItem = new QTableWidgetItem();
         tItem->setData(Qt::DisplayRole,dfDis);
         ui->mainTable->setItem(i,2,tItem);
+        if (dfDis >= maxDis)
+            maxDis = dfDis;
     }
+    for (int i = 0;i < tracs->length();i++)
+    {
+        QString temp = ui->mainTable->item(i,2)->text();
+        dfDis = temp.toDouble();
+
+        QTableWidgetItem *tItem = new QTableWidgetItem();
+        tItem->setData(Qt::DisplayRole,(maxDis - dfDis)/maxDis);
+        ui->mainTable->setItem(i,3,tItem);
+    }
+
     ui->mainTable->sortItems(2,Qt::AscendingOrder);
     //delete allTc;
 }
