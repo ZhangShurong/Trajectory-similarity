@@ -10,8 +10,7 @@ DataBase::DataBase()
 
 DataBase::DataBase(int i)
 {
-    int j = i;
-    j = i;
+
 }
 
 DataBase::DataBase(string databaseName)

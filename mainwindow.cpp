@@ -12,6 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->startAnimation();
 
     tName = "importtest";
+    tracs = new QStringList();
+    detWin = new detailWin();
+    cal = new CalWindow(ui);
+    searchWin = new SearchWin(ui, db);
     initMap();
     initAction();
     initTable();
@@ -19,10 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     initSig();
     initCan();
 
-    tracs = new QStringList();
-    detWin = new detailWin();
-    cal = new CalWindow(ui);
-    searchWin = new SearchWin(ui, db);
+
+
 //    searchWin->setDB(db);
     searchMode(false);
 }
@@ -123,7 +125,8 @@ void MainWindow::closeWindowAnimation()
     animation->setStartValue(1);
     animation->setEndValue(0);
     animation->start();
-    connect(animation,QPropertyAnimation::finished,this,close);
+    //connect(animation,SIGNAL(QPropertyAnimation::finished()),this, SLOT(close()));
+    connect(animation,SIGNAL(finished()),this, SLOT(close()));
 
 }
 

@@ -169,7 +169,7 @@ color:white;
      <string notr="true">font-family:'微软雅黑';</string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QWidget" name="layoutWidget">
@@ -716,7 +716,7 @@ color:white;
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -786,6 +786,15 @@ color:white;
         <width>71</width>
         <height>16</height>
        </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
       </property>
       <property name="text">
        <string>轨迹排名</string>
@@ -917,7 +926,7 @@ color:white;
             <x>10</x>
             <y>360</y>
             <width>241</width>
-            <height>27</height>
+            <height>32</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -1171,7 +1180,7 @@ color:white;
         <x>20</x>
         <y>0</y>
         <width>911</width>
-        <height>62</height>
+        <height>72</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -1275,7 +1284,7 @@ color:white;
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">

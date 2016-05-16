@@ -122,6 +122,7 @@ bool timeCompare(Point*p1,Point*p2){
     }else if(t1.year>t2.year){
          return false;
     }
+    return false;
 }
 
 void initMemSpace(Sequence *p, Sequence *q)
