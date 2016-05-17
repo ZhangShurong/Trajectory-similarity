@@ -655,12 +655,10 @@ void MainWindow::search(Sequence input)
     }
 
     ui->mainTable->sortItems(2,Qt::AscendingOrder);
-    //delete allTc;
 }
 
 void MainWindow::initMap()
 {
-   // ui->mapWin->editJs();
     ui->mapWin->initJS();
     ui->mapWin->setDefaultCentralPt();
     ui->mapWin->reload();
