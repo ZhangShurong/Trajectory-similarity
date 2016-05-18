@@ -5,17 +5,23 @@
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
         <style type="text/css">
                 body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
-                #allmap{height:500px;width:100%;}
+                #allmap{height:80%;width:100%;}
                 #r-result{width:100%;}
         </style>
         <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=3lclMhWlgsfb1HgVHcPaDZGwSoFs4g5E"></script>
         <title>添加/删除覆盖物</title>
 </head>
 <body>
-        <div id="allmap" style=" position:absolute; left:0px; top:0px; width:100%; height:100%;"></div>//一个占据整个页面的地图
+        <div id="allmap"></div>
+		<div id="r-result">
+		<input type="button" onclick="showOver()" value="显示点" />
+		<input type="button" onclick="hideOver()" value="隐藏点" />
+		<input type="button" onclick="showLabelOver()" value="显示时间标签" />
+		<input type="button" onclick="hideLabelOver()" value="隐藏时间标签" />
+		<p>请注意，隐藏点的同时也会隐藏时间标签，但是隐藏时间标签不会隐藏点</p>
+		</div>
 </body>
-<script src="main.js">
-
+<script src="main.js" >
 </script>
 <style type="text/css"> 
 .anchorBL{ 
