@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<<<<<<< HEAD
-<!-- Written by QtCreator 3.3.1, 2016-05-13T23:49:11. -->
-=======
-<!-- Written by QtCreator 3.3.1, 2016-05-17T07:20:09. -->
->>>>>>> 6707a187a6347cf423c4406ddb4f9dcff2dcd1b0
+<!-- Written by QtCreator 3.3.1, 2016-05-12T22:43:07. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
-  <value type="QByteArray">{752cf18c-ef92-4168-9e46-975732c59ce4}</value>
+  <value type="QByteArray">{86841153-ee80-42f5-a660-18c2bef12c02}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -69,11 +65,7 @@
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
-<<<<<<< HEAD
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">E:/build-importData-Desktop_Qt_5_4_1_MinGW_32bit-Debug</value>
-=======
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:/Users/vergil/Desktop/build-importData-Desktop_Qt_5_4_1_MinGW_32bit-Debug</value>
->>>>>>> 6707a187a6347cf423c4406ddb4f9dcff2dcd1b0
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:/Users/Leon/Desktop/cnsoft/build-importData-Desktop_Qt_5_4_1_MinGW_32bit-Debug</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -127,11 +119,7 @@
     <value type="bool" key="Qt4ProjectManager.Qt4BuildConfiguration.UseShadowBuild">true</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.1">
-<<<<<<< HEAD
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">E:/build-importData-Desktop_Qt_5_4_1_MinGW_32bit-Release</value>
-=======
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:/Users/vergil/Desktop/build-importData-Desktop_Qt_5_4_1_MinGW_32bit-Release</value>
->>>>>>> 6707a187a6347cf423c4406ddb4f9dcff2dcd1b0
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:/Users/Leon/Desktop/cnsoft/build-importData-Desktop_Qt_5_4_1_MinGW_32bit-Release</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -236,24 +224,14 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-<<<<<<< HEAD
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">importData</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:E:/CnSoft/importData.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">importData2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/Leon/Desktop/importData/importData.pro</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">importData.pro</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseTerminal">false</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
-=======
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments"></value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable"></value>
-    <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">自定义执行档</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
->>>>>>> 6707a187a6347cf423c4406ddb4f9dcff2dcd1b0
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
