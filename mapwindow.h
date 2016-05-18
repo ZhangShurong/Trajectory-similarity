@@ -62,6 +62,7 @@ public:
     void showPoints(bool sp_a);
     void showTimes(bool st_a);
 
+
     void highLightPart(Sequence *se_a, int start, int end, int c, int lWeight = 5);
 };
 #endif // MAPWINDOW_H

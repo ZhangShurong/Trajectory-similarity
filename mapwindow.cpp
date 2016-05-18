@@ -465,6 +465,8 @@ MapWindow::MapWindow(QString js, QString html, QWidget *parent):QWidget(parent)
 void MapWindow::draw()
 {
     view->load(QUrl::fromLocalFile(QFileInfo(htmlFilePath).absoluteFilePath()));
+    //view->load(QUrl::fromLocalFile(QFileInfo(":/webmap/webmap/demo.html").absoluteFilePath()));
+    //view->load(QUrl("qrc:/webmap/webmap/demo.html"));
 }
 
 MapWindow::~MapWindow()
