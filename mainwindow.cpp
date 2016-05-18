@@ -648,9 +648,10 @@ void MainWindow::search(Sequence input)
     {
         QString temp = ui->mainTable->item(i,2)->text();
         dfDis = temp.toDouble();
-
+        double percent = ((maxDis - dfDis)/maxDis)*100;
         QTableWidgetItem *tItem = new QTableWidgetItem();
-        tItem->setData(Qt::DisplayRole,(maxDis - dfDis)/maxDis);
+        tItem->setData(Qt::DisplayRole,
+                       QString::number(percent) + "%");
         ui->mainTable->setItem(i,3,tItem);
     }
 

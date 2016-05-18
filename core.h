@@ -10,6 +10,7 @@
 #include <string>
 #include "sequence.h"
 #include "csv.h"
+#include <stdio.h>
 
 struct SecCompare{
     int beginIndex1;//起点1
@@ -44,4 +45,6 @@ Point getCenterPoint(Sequence *se_a, int num);
 Point getCenterPoint(QVector<Sequence> seqV);
 Time loadToStruct(QString time);
 bool timeCompare(Point*p1,Point*p2);
+void out2DArray(double **arr, int x, int y);
+void getSec(int m, int n);
 #endif // CORE_H

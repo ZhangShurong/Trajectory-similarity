@@ -167,6 +167,8 @@ void CalWindow::startSlot()
                 cout<<"qst"<<begin1<<" "<<end1<<" "<<begin2<<" "<<end2<<endl;
             }
             ui->mapWidget->reload();
+
+            computeDiscreteFrechet(p,q);
         }
 }
 

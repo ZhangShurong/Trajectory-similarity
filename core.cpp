@@ -10,7 +10,9 @@ double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
     p = sa;
     q = sb;
     initMemSpace(sa, sb);
-    return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
+    double res = computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
+    out2DArray(mem, sa->getNum(), sb->getNum());
+    return res;
 }
 
 double euclideanDistance(Point a, Point b)
@@ -127,23 +129,35 @@ bool timeCompare(Point*p1,Point*p2){
 
 void initMemSpace(Sequence *p, Sequence *q)
 {
-    Sequence *m;
+    mem = new double *[p->getNum()];
+    for (int i = 0; i < p->getNum(); i++)
+    {
+        mem[i] = new double[q->getNum()];
+    }
+    for (int j = 0; j < p->getNum(); j ++)
+    {
+        for (int k = 0; k < q->getNum(); k ++)
+        {
+            mem[j][k] = -1.0;
+        }
+    }
+//    Sequence *m;
 
-    if(p->getNum()>=q->getNum()){
-          m = p;
-      }else{
-          m=q;
-      }
-       mem = new double*[m->getNum()];
-       for (int k = 0; k < m->getNum(); k++)
-       {
-           mem[k] = new double[m->getNum()];
-       }
-       for (int i = 0; i < m->getNum(); i++) {
-                   for (int j = 0; j < m->getNum(); j++) {
-                       mem[i][j] = -1.0;
-                   }
-               }
+//    if(p->getNum()>=q->getNum()){
+//          m = p;
+//      }else{
+//          m=q;
+//      }
+//       mem = new double*[m->getNum()];
+//       for (int k = 0; k < m->getNum(); k++)
+//       {
+//           mem[k] = new double[m->getNum()];
+//       }
+//       for (int i = 0; i < m->getNum(); i++) {
+//                   for (int j = 0; j < m->getNum(); j++) {
+//                       mem[i][j] = -1.0;
+//                   }
+//               }
 }
 
 //分别输入两个轨迹段的起点和终位置
@@ -170,8 +184,9 @@ double  getSecSim(int i1,int j1,int i2,int j2){
         // cout<<"asdf"<<endl;
          m2.pts[i-i2]=q->pts[i];
      }
+     double res = computeDFD(m1.pointsNum-1, m2.pointsNum-1,&m1,&m2);
 
-      return computeDFD(m1.pointsNum-1, m2.pointsNum-1,&m1,&m2);
+     return res;
 }
 
 
@@ -459,3 +474,35 @@ Point getCenterPoint(QVector<Sequence> seqV)
     return pt;
 }
 
+
+
+void out2DArray(double **arr, int x, int y)
+{
+    int i;
+    for (i = 0; i < x; i++)
+    {
+        for (int j = 0; j < y; j++)
+        {
+            printf("%4f\t", arr[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+
+void getSec(int m, int n)
+{
+    double **temp = new double*[m];
+    for (int x = 0; x < m ;x++)
+    {
+        temp[x] = new double[n];
+    }
+    for (int i = 0; i < p->getNum() - m + 1; i++)
+    {
+        for (int j =0; j < q->getNum() - n + 1; j ++)
+        {
+            //从mem中取出一个坐标为(i,j)到(i + m - 1; j + n - 1)的矩阵
+
+        }
+    }
+}
