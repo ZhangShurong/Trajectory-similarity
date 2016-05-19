@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     detailwin.cpp \
     mainwindow.cpp \
     calwindow.cpp \
-    searchwin.cpp
+    searchwin.cpp \
+    settingwin.cpp
 
 HEADERS += \
     csv.h \
@@ -35,7 +36,8 @@ HEADERS += \
     detailwin.h \
     mainwindow.h \
     calwindow.h \
-    searchwin.h
+    searchwin.h \
+    settingwin.h
 
 RESOURCES += \
     res.qrc \
