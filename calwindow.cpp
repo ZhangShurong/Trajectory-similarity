@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 
+
 CalWindow::CalWindow(Ui::MainWindow *ui)
 {
     this->ui = ui;
@@ -26,11 +27,10 @@ void CalWindow::openFile1()
 {
     if (p->getNum() != 0)
     {
-//        Sequence *t = new Sequence();
-//        t = p;
-//        delete t;
-//        p = NULL;
-        delete p;
+        Sequence *t = new Sequence();
+        t = p;
+        delete t;
+        p = NULL;
         p = new Sequence();
     }
     QString file_name = QFileDialog::getOpenFileName(NULL,
@@ -58,13 +58,11 @@ void CalWindow::openFile2()
 {
     if (q->getNum() != 0)
     {
-//        Sequence *t = new Sequence();
-//        t = q;
-//        delete t;
-//        q = NULL;
-        delete q;
+        Sequence *t = new Sequence();
+        t = q;
+        delete t;
+        q = NULL;
         q = new Sequence();
-
     }
     QString file_name = QFileDialog::getOpenFileName(NULL,
             tr("Open File"),
@@ -87,9 +85,12 @@ void CalWindow::openFile2()
     fin.close();
 }
 
+
+
 void CalWindow::startSlot()
 {
-    QTextStream cout(stdout,  QIODevice::WriteOnly);        
+
+    QTextStream cout(stdout,  QIODevice::WriteOnly);
         ui->mapWidget->initJS();
         ui->mapWin->setDefaultCentralPt();
         ui->mapWidget->showPoints(true);
@@ -103,53 +104,21 @@ void CalWindow::startSlot()
             double y = (p->getCentralPoint().latitude + q->getCentralPoint().latitude)/2;
             ui->mapWidget->setCentralPoint(x, y, 10);
 
-            QVector<SecCompare> temp = getBestSce(findSimilarSection(p, q,1),1);
-            int beginMin1=temp[0].beginIndex1;
-            int endMax1=temp[0].endIndex1;
-            int beginMin2=temp[0].beginIndex2;
-            int endMax2=temp[0].endIndex2;
-
-            for (int i = 0; i < temp.length(); i++)
-            {
-               if(temp[i].beginIndex1<=beginMin1)
-                   beginMin1=temp[i].beginIndex1;
-               if(temp[i].beginIndex2<=beginMin2)
-                   beginMin2=temp[i].beginIndex2;
-               if(temp[i].endIndex1>endMax1)
-                   endMax1=temp[i].endIndex1;
-               if(temp[i].endIndex2>endMax2)
-                   endMax2=temp[i].endIndex2;
-            }
-
-            Sequence m1;
-            Sequence m2;
-
-            m1.pointsNum=endMax1-beginMin1+1;
-            m2.pointsNum=endMax2-beginMin2+1;
-
-            cout<<m1.pointsNum<<" "<<m2.pointsNum<<endl;
-
-             m1.pts = new Point[m1.pointsNum];
-             m2.pts = new Point[m2.pointsNum];
-
-            for(int i=beginMin1;i<=endMax1;i++){
-                m1.pts[i-beginMin1]=p->pts[i];
-            }
-            for(int i=beginMin2;i<=endMax2;i++){
-                m2.pts[i-beginMin2]=q->pts[i];
-            }
-
-           QVector<SecCompare>qs= getBestSce(findSimilarSection(&m1,&m2,2),2);
            QVector<QString>qst;
            QVector<Sequence> t;
+         //  int beginMin1,beginMin2;
+            int beginMin1,beginMin2;
+           QVector<SecCompare> qs1=findBest(p,q,beginMin1,beginMin2);
+
            t.append(*p);
            t.append(*q);
+
            ui->mapWidget->drawSequences(t);
-            if (qs.length() != 0)
+            if (qs1.length() != 0)
             {
-                for (int i = 0; i < qs.length(); i++)
+                for (int i = 0; i < qs1.length(); i++)
                 {
-                    QString s = QString::number(qs[i].beginIndex1, 10)+" "+ QString::number(qs[i].endIndex1, 10)+" "+QString::number(qs[i].beginIndex2, 10)+" "+QString::number(qs[i].endIndex2, 10);
+                    QString s = QString::number(qs1[i].beginIndex1, 10)+" "+ QString::number(qs1[i].endIndex1, 10)+" "+QString::number(qs1[i].beginIndex2, 10)+" "+QString::number(qs1[i].endIndex2, 10);
                    if(!qst.contains(s))
                      qst.append(s);
                 }
@@ -167,8 +136,6 @@ void CalWindow::startSlot()
                 cout<<"qst"<<begin1<<" "<<end1<<" "<<begin2<<" "<<end2<<endl;
             }
             ui->mapWidget->reload();
-
-            computeDiscreteFrechet(p,q);
         }
 }
 

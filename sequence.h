@@ -6,6 +6,15 @@
 #include <cassert>
 #include <iostream>
 
+struct Time{
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+    int second;
+};
+
 class Point
 {
 public:
@@ -16,12 +25,11 @@ public:
     double latitude;
     QString time;
     QString id;
-
-//    void print() {
-//        std::cout << "Point " << id.toStdString() << ": "
-//             << "(" << longitude << ", " << latitude << ") @" << time.toStdString() << endl;
-//    }
+    Time t;
 };
+
+
+
 class Sequence
 {
 private:

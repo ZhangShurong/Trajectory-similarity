@@ -644,14 +644,24 @@ void MainWindow::search(Sequence input)
         if (dfDis >= maxDis)
             maxDis = dfDis;
     }
+    //填充百分数
     for (int i = 0;i < tracs->length();i++)
     {
         QString temp = ui->mainTable->item(i,2)->text();
         dfDis = temp.toDouble();
         double percent = ((maxDis - dfDis)/maxDis)*100;
+
         QTableWidgetItem *tItem = new QTableWidgetItem();
-        tItem->setData(Qt::DisplayRole,
-                       QString::number(percent) + "%");
+        if (percent < 0)
+        {
+            tItem->setData(Qt::DisplayRole,"0%");
+        }
+        else
+        {
+            tItem->setData(Qt::DisplayRole,
+                           QString::number(percent) + "%");
+        }
+
         ui->mainTable->setItem(i,3,tItem);
     }
 
@@ -679,18 +689,26 @@ void MainWindow::searchMode(bool inSearch)
 
 void MainWindow::getDetail(Sequence *se_a)
 {
-    ui->idPtLabel->setText(se_a->getID());
-    ui->startPtLabel->setText(QString::number(se_a->pts[0].longitude)
-                              + " "
-                              + QString::number(se_a->pts[0].latitude));
-    ui->endPtLabel->setText(QString::number(se_a->pts[se_a->getNum() - 1].longitude)
-                            + " "
-                            + QString::number(se_a->pts[se_a->getNum() - 1].latitude));
+    if (!search_mode)
+    {
+        ui->idPtLabel->setText(se_a->getID());
+        ui->startPtLabel->setText(QString::number(se_a->pts[0].longitude)
+                                  + " "
+                                  + QString::number(se_a->pts[0].latitude));
+        ui->endPtLabel->setText(QString::number(se_a->pts[se_a->getNum() - 1].longitude)
+                                + " "
+                                + QString::number(se_a->pts[se_a->getNum() - 1].latitude));
 
-    if (se_a->pts[0].time == "")
-        ui->timePtLabel->setText(tr("No"));
-    else {
-        ui->timePtLabel->setText(tr("Yes"));
+        if (se_a->pts[0].time == "")
+            ui->timePtLabel->setText(tr("No"));
+        else {
+            ui->timePtLabel->setText(tr("Yes"));
+        }
     }
+    else
+    {
+
+    }
+
 }
 

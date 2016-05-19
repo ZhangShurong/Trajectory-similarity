@@ -4,6 +4,7 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
 {
     this->ui = ui;
     this->db = db;
+    numOfSeqs = 3;
     tracs = new QStringList();
     db = new DataBase(1);
     ui->searchMap->initJS();
@@ -54,6 +55,7 @@ void SearchWin::search(Sequence input)
     seqs.clear();
     Sequence sf;
     double dfDis;
+    double maxDis = 0;
     string tb = "importtest";
     if (sf.pts->time == "")
         qDebug() << "No time";
@@ -80,27 +82,56 @@ void SearchWin::search(Sequence input)
             ui->searchTable_common->setItem(c,2,tItem);
             c++;
         }
-        qDebug() << dfDis;
+        if (dfDis >= maxDis)
+        {
+            maxDis = dfDis;
+        }
+        //qDebug() << dfDis;
     }
-    //ui->mainTable->sortItems(2,Qt::AscendingOrder);    
     if ( c != 0)
     {
         ui->searchTable_common->sortItems(2,Qt::AscendingOrder);
-        for (int i = 0; i < c && i < 3; i++)
+        for (int i = 0; i < c; i++)
         {
-            QString id = ui->searchTable_common->item(i, 0)->text();
-            db->getSequenceByID(tb,&sf,id.toStdString());
-            seqs.append(sf);
+            if (i < numOfSeqs) {
+                QString id = ui->searchTable_common->item(i, 0)->text();
+                db->getSequenceByID(tb,&sf,id.toStdString());
+                seqs.append(sf);
+            }
+
+            QTableWidgetItem *tItem = new QTableWidgetItem();
+            double dis = ui->searchTable_common->item(i, 2)->text().toDouble();
+            double percent = (maxDis - dis)/maxDis * 100;
+            if (percent < 0)
+            {
+                percent = 0;
+            }
+            tItem->setData(Qt::DisplayRole,
+                           QString::number(percent) + "%");
+            ui->searchTable_common->setItem(i,3,tItem);
         }
     }
     else if (t != 0)
     {
         ui->searchTable_time->sortItems(2,Qt::AscendingOrder);
-        for (int i = 0; i < t && i < 3; i++)
+        for (int i = 0; i < t; i++)
         {
-            QString id = ui->searchTable_time->item(i, 0)->text();
-            db->getSequenceByID(tb,&sf,id.toStdString());
-            seqs.append(sf);
+            if (i < numOfSeqs)
+            {
+                QString id = ui->searchTable_time->item(i, 0)->text();
+                db->getSequenceByID(tb,&sf,id.toStdString());
+                seqs.append(sf);
+            }
+            QTableWidgetItem *tItem = new QTableWidgetItem();
+            double dis = ui->searchTable_time->item(i, 2)->text().toDouble();
+            double percent = (maxDis - dis)/maxDis * 100;
+            if (percent < 0)
+            {
+                percent = 0;
+            }
+            tItem->setData(Qt::DisplayRole,
+                           QString::number(percent) + "%");
+            ui->searchTable_time->setItem(i,3,tItem);
         }
     }
     ui->searchMap->initJS();
@@ -157,6 +188,11 @@ void SearchWin::refreshTable()
 
         }
     }
+}
+
+void SearchWin::setNumOfSeqs(int num)
+{
+    numOfSeqs = num;
 }
 
 
