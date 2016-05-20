@@ -9,7 +9,14 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
     db = new DataBase(1);
     ui->searchMap->initJS();
     ui->searchMap->reload();
-    initTable();
+    initTable(ui->searchTable_common);
+    initTable(ui->searchTable_common_part);
+    initTable(ui->searchTable_common_point);
+    initTable(ui->searchTable_time);
+    initTable(ui->searchTable_time_part);
+    initTable(ui->searchTable_time_point);
+    ui->searchStackedWidget->setCurrentIndex(0);
+    ui->searchStackedWidget_time->setCurrentIndex(0);
     initSig();
     //refreshTable();
 }
@@ -30,24 +37,31 @@ SearchWin::~SearchWin()
 
 }
 
-void SearchWin::initTable()
+void SearchWin::initTable(QTableWidget *table)
 {
-    ui->searchTable_common->horizontalHeader()->setStretchLastSection(true);
-    ui->searchTable_common->verticalHeader()->hide();
-    ui->searchTable_common->setContextMenuPolicy(Qt::ActionsContextMenu);
-    ui->searchTable_common->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->searchTable_common->setColumnCount(4);
-    ui->searchTable_common->setRowCount(20);
-    ui->searchTable_common->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        table->horizontalHeader()->setStretchLastSection(true);
+        table->verticalHeader()->hide();
+        table->setContextMenuPolicy(Qt::ActionsContextMenu);
+        table->setSelectionBehavior(QAbstractItemView::SelectRows);
+        table->setColumnCount(4);
+        table->setRowCount(20);
+        table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+}
 
-    ui->searchTable_time->horizontalHeader()->setStretchLastSection(true);
-
-    ui->searchTable_time->verticalHeader()->hide();
-    ui->searchTable_time->setContextMenuPolicy(Qt::ActionsContextMenu);
-    ui->searchTable_time->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->searchTable_time->setColumnCount(4);
+void SearchWin::showPartofSeq()
+{
+    ui->searchTable_time_part->setColumnCount(4);
     ui->searchTable_time->setRowCount(20);
-    ui->searchTable_time->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->searchTable_common->clearContents();
+    ui->searchTable_time->clearContents();
+    QStringList header;
+    header << tr("ID")
+           << tr("PointNumber")
+           << tr("StartPoint")
+           << tr("EndPoint");
+    //ui->mainTable->setHorizontalHeaderLabels(header);
+    ui->searchTable_common->setHorizontalHeaderLabels(header);
+    ui->searchTable_time->setHorizontalHeaderLabels(header);
 }
 
 void SearchWin::search(Sequence input)
@@ -144,6 +158,7 @@ void SearchWin::search(Sequence input)
 void SearchWin::initSig()
 {
     connect(ui->searchStartBtn, SIGNAL(clicked()), this, SLOT(openFile()));
+    connect(ui->searchSequenceCBox, SIGNAL(clicked()), this, SLOT(rankPartOfSeq()));
 }
 
 
@@ -216,6 +231,12 @@ void SearchWin::openFile()
     Sequence inputSe;
     getSquFromFile(&csv,&inputSe);
     qDebug() << inputSe.getNum();
+    ui->searchPathEdit->setText(file_name);
     search(inputSe);
+}
+
+void SearchWin::rankPartOfSeq()
+{
+    showPartofSeq();
 }
 

@@ -89,43 +89,50 @@ void CalWindow::openFile2()
 
 void CalWindow::startSlot()
 {
-
-    QTextStream cout(stdout,  QIODevice::WriteOnly);
-        ui->mapWidget->initJS();
-        ui->mapWin->setDefaultCentralPt();
-        ui->mapWidget->showPoints(true);
+   // QTextStream cout(stdout,  QIODevice::WriteOnly);
+    ui->mapWidget->initJS();
+    ui->mapWin->setDefaultCentralPt();
+    ui->mapWidget->showPoints(true);
         if (p->getNum()*q->getNum() == 0)
         {
             return;
         }
         else
         {
+            //设定地图中心点
             double x = (p->getCentralPoint().longitude + q->getCentralPoint().longitude)/2;
             double y = (p->getCentralPoint().latitude + q->getCentralPoint().latitude)/2;
             ui->mapWidget->setCentralPoint(x, y, 10);
 
+            //开始计算
+
+
            QVector<QString>qst;
            QVector<Sequence> t;
-         //  int beginMin1,beginMin2;
-            int beginMin1,beginMin2;
+           int beginMin1,beginMin2;
+
+           double res = computeDiscreteFrechet(p,q);
+           ui->Result->setText(QString::number(res));
            QVector<SecCompare> qs1=findBest(p,q,beginMin1,beginMin2);
 
            t.append(*p);
            t.append(*q);
-
            ui->mapWidget->drawSequences(t);
-            if (qs1.length() != 0)
+
+           if (qs1.length() != 0)
             {
                 for (int i = 0; i < qs1.length(); i++)
                 {
-                    QString s = QString::number(qs1[i].beginIndex1, 10)+" "+ QString::number(qs1[i].endIndex1, 10)+" "+QString::number(qs1[i].beginIndex2, 10)+" "+QString::number(qs1[i].endIndex2, 10);
+                    QString s =   QString::number(qs1[i].beginIndex1)+" "
+                                + QString::number(qs1[i].endIndex1)+" "
+                                + QString::number(qs1[i].beginIndex2)+" "
+                                + QString::number(qs1[i].endIndex2);
                    if(!qst.contains(s))
                      qst.append(s);
                 }
             }
 
             for(int i=0;i<qst.length();i++){
-               // int begin1=qst[i].spl
                 QStringList ql=qst[i].split(" ");
                 int begin1=ql[0].toInt();
                 int end1=ql[1].toInt();
@@ -133,9 +140,10 @@ void CalWindow::startSlot()
                 int end2=ql[3].toInt();
                 ui->mapWidget->highLightPart(p, begin1+beginMin1, end1+beginMin1, 7, 10);
                 ui->mapWidget->highLightPart(q, begin2+beginMin2, end2+beginMin2, 7, 10);
-                cout<<"qst"<<begin1<<" "<<end1<<" "<<begin2<<" "<<end2<<endl;
+                //cout<<"qst"<<begin1<<" "<<end1<<" "<<begin2<<" "<<end2<<endl;
             }
+
+
             ui->mapWidget->reload();
         }
 }
-

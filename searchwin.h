@@ -23,13 +23,15 @@ private:
     DataBase *db;
     QVector<Sequence> seqs;
     int numOfSeqs;
-    void initTable();
+    void initTable(QTableWidget *table);
+    void showPartofSeq();
     void search(Sequence input);
     void initSig();    
     QStringList *tracs;
 
 public slots:
     void openFile();
+    void rankPartOfSeq();
 };
 
 #endif // SEARCHWIN_H

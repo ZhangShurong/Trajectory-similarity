@@ -19,7 +19,6 @@ double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
     initMemSpace(sa, sb);
     return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
 }
-//int i=0;
 double euclideanDistance(Point a, Point b)
 {
     double dis = 0;

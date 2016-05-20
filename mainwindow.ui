@@ -169,7 +169,7 @@ color:white;
      <string notr="true">font-family:'微软雅黑';</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QWidget" name="layoutWidget">
@@ -710,13 +710,13 @@ color:white;
       <property name="geometry">
        <rect>
         <x>530</x>
-        <y>80</y>
-        <width>421</width>
-        <height>391</height>
+        <y>70</y>
+        <width>431</width>
+        <height>401</height>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -724,7 +724,32 @@ color:white;
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
-         <widget class="QTableWidget" name="searchTable_common"/>
+         <widget class="QStackedWidget" name="searchStackedWidget">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="page_13">
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QTableWidget" name="searchTable_common"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_17">
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QTableWidget" name="searchTable_common_point"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_14">
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QTableWidget" name="searchTable_common_part"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -734,7 +759,32 @@ color:white;
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
-         <widget class="QTableWidget" name="searchTable_time"/>
+         <widget class="QStackedWidget" name="searchStackedWidget_time">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="page_15">
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QTableWidget" name="searchTable_time"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_18">
+           <layout class="QHBoxLayout" name="horizontalLayout_17">
+            <item>
+             <widget class="QTableWidget" name="searchTable_time_point"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_16">
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <item>
+             <widget class="QTableWidget" name="searchTable_time_part"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
         </item>
        </layout>
       </widget>
