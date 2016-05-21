@@ -23,7 +23,9 @@ private:
     DataBase *db;
     QVector<Sequence> seqs;
     int numOfSeqs;
+    bool time;
     void initTable(QTableWidget *table);
+    void initSeqPartTable(QTableWidget *table);
     void showPartofSeq();
     void search(Sequence input);
     void initSig();    

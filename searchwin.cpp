@@ -4,6 +4,7 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
 {
     this->ui = ui;
     this->db = db;
+    time = false;
     numOfSeqs = 3;
     tracs = new QStringList();
     db = new DataBase(1);
@@ -15,6 +16,8 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
     initTable(ui->searchTable_time);
     initTable(ui->searchTable_time_part);
     initTable(ui->searchTable_time_point);
+    initSeqPartTable(ui->searchTable_common_part);
+    initSeqPartTable(ui->searchTable_time_part);
     ui->searchStackedWidget->setCurrentIndex(0);
     ui->searchStackedWidget_time->setCurrentIndex(0);
     initSig();
@@ -48,20 +51,22 @@ void SearchWin::initTable(QTableWidget *table)
         table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
-void SearchWin::showPartofSeq()
+void SearchWin::initSeqPartTable(QTableWidget *table)
 {
-    ui->searchTable_time_part->setColumnCount(4);
-    ui->searchTable_time->setRowCount(20);
-    ui->searchTable_common->clearContents();
-    ui->searchTable_time->clearContents();
+    table->setColumnCount(4);
+    table->setRowCount(20);
+    table->clearContents();
     QStringList header;
     header << tr("ID")
            << tr("PointNumber")
            << tr("StartPoint")
            << tr("EndPoint");
-    //ui->mainTable->setHorizontalHeaderLabels(header);
-    ui->searchTable_common->setHorizontalHeaderLabels(header);
-    ui->searchTable_time->setHorizontalHeaderLabels(header);
+    table->setHorizontalHeaderLabels(header);
+}
+
+void SearchWin::showPartofSeq()
+{
+    cout << "shoe Part Of Sequence\n";
 }
 
 void SearchWin::search(Sequence input)
@@ -72,8 +77,13 @@ void SearchWin::search(Sequence input)
     double maxDis = 0;
     string tb = "importtest";
     if (sf.pts->time == "")
+    {
         qDebug() << "No time";
+        time = false;
+    }
+
     else {
+        time = true;
         qDebug() << "Has time";
     }
     refreshTable();
@@ -158,7 +168,7 @@ void SearchWin::search(Sequence input)
 void SearchWin::initSig()
 {
     connect(ui->searchStartBtn, SIGNAL(clicked()), this, SLOT(openFile()));
-    connect(ui->searchSequenceCBox, SIGNAL(clicked()), this, SLOT(rankPartOfSeq()));
+    connect(ui->searchPartCBox, SIGNAL(clicked()), this, SLOT(rankPartOfSeq()));
 }
 
 
@@ -237,6 +247,19 @@ void SearchWin::openFile()
 
 void SearchWin::rankPartOfSeq()
 {
-    showPartofSeq();
+    if (ui->searchPartCBox->checkState() == Qt::Checked)
+    {
+        ui->searchPointCBox->setDisabled(true);
+        ui->searchStackedWidget_time->setCurrentIndex(2);
+        showPartofSeq();
+    }
+
+    else
+    {
+        ui->searchPointCBox->setDisabled(false);
+        ui->searchStackedWidget->setCurrentIndex(0);
+        ui->searchStackedWidget_time->setCurrentIndex(0);
+    }
+
 }
 
