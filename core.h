@@ -11,6 +11,18 @@
 #include "sequence.h"
 #include "csv.h"
 
+struct PointCompare{
+  int index1;
+  int index2;
+  double distance;
+};
+
+//struct PointCollection{
+//    QVector<int>p1;
+//    QVector<int>p2;
+//};
+
+
 struct SecCompare{
     int beginIndex1;//起点1
     int endIndex1;//终点1
@@ -38,6 +50,8 @@ bool timeCompare(Point*p1,Point*p2);
 double calTimeDistance(Point &a,Point &b);
 double calCoef();
 QVector<SecCompare> findBest(Sequence*p,Sequence*q,int &beginMin1,int &beginMin2);
+QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b);
+bool compareDis(PointCompare p1,PointCompare p2);
 void out2DArray(double **arr, int x, int y);
 void getSec(int m, int n);
 #endif // CORE_H

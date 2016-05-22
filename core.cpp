@@ -543,6 +543,39 @@ Point getCenterPoint(QVector<Sequence> seqV)
     return pt;
 }
 
+QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b){
+    QVector<PointCompare>q1;
+   // PointCollection pc;
+    QVector<PointCompare>q2;
+
+    for(int i=0;i<se_a->getNum();i++){
+        for(int j=0;j<se_b->getNum();j++){
+            PointCompare p;
+            p.distance=euclideanDistance(se_a->pts[i],se_b->pts[j]);
+            p.index1=i;
+            p.index2=j;
+            q1.append(p);
+        }
+    }
+    sort(q1.begin(),q1.end(),compareDis);
+    double sim=q1[0].distance;
+    for(int i=0;i<q1.size();i++){
+        if(q1[i].distance<=sim){
+            //  pc.p1.append(q1[i].index1);
+              //pc.p2.append(q1[i].index2);
+            q2.append(q1[i]);
+
+        }else {
+            break;
+        }
+    }
+     // return pc;
+    return q2;
+}
+
+bool compareDis(PointCompare p1,PointCompare p2){
+   return p1.distance<p2.distance;
+}
 
 
 void out2DArray(double **arr, int x, int y)
