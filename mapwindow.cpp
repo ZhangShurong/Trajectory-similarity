@@ -198,11 +198,15 @@ void MapWindow::initColor()
           <<"pink"
           <<"green"
          << "#4EFEB3";
-    pointColor << "black.png"
-               << "pink.png"
+    pointColor << "6C3365.png"
+               << "red.png"
                << "skyblue.png"
+               << "black.png"
+               << "yellow.png"
+               << "pink.png"
                << "green.png"
-               << "red.png";
+               << "red.png"
+               << "4EFEB3.png";
 }
 
 void MapWindow::initWidget()

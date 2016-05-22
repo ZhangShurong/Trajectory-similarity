@@ -34,6 +34,8 @@ private:
 public slots:
     void openFile();
     void rankPartOfSeq();
+    void rankSeqChecked();
+    void rankSeqPointChecked();
 };
 
 #endif // SEARCHWIN_H

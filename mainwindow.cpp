@@ -352,6 +352,26 @@ void MainWindow::clickTBSlot(const QModelIndex index)
             p[0] = *temp;
             p[1] = input;
             ui->canvasWidget->setSequences(p,2);
+
+            /*
+             * 效率不够
+            QVector<QString>qst;
+            int beginMin1,beginMin2;
+            QVector<SecCompare> qs1=findBest(temp,&input,beginMin1,beginMin2);
+
+            if (qs1.length() != 0)
+             {
+                 for (int i = 0; i < qs1.length(); i++)
+                 {
+                     QString s =   QString::number(qs1[i].beginIndex1)+" "
+                                 + QString::number(qs1[i].endIndex1)+" "
+                                 + QString::number(qs1[i].beginIndex2)+" "
+                                 + QString::number(qs1[i].endIndex2);
+                    if(!qst.contains(s))
+                      qst.append(s);
+                 }
+             }
+             */
         }
         else
         {
@@ -680,17 +700,15 @@ void MainWindow::searchMode(bool inSearch)
     search_mode = inSearch;
     if (inSearch)
     {
-        ui->stackedWidget_2->setCurrentIndex(1);
+        //ui->stackedWidget_2->setCurrentIndex(1);
     }
     else {
-                ui->stackedWidget_2->setCurrentIndex(0);
+        ui->stackedWidget_2->setCurrentIndex(0);
     }
 }
 
 void MainWindow::getDetail(Sequence *se_a)
 {
-    if (!search_mode)
-    {
         ui->idPtLabel->setText(se_a->getID());
         ui->startPtLabel->setText(QString::number(se_a->pts[0].longitude)
                                   + " "
@@ -704,11 +722,5 @@ void MainWindow::getDetail(Sequence *se_a)
         else {
             ui->timePtLabel->setText(tr("Yes"));
         }
-    }
-    else
-    {
-
-    }
-
 }
 

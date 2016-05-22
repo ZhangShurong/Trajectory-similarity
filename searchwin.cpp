@@ -66,7 +66,7 @@ void SearchWin::initSeqPartTable(QTableWidget *table)
 
 void SearchWin::showPartofSeq()
 {
-    cout << "shoe Part Of Sequence\n";
+    qDebug() << "shoe Part Of Sequence\n";
 }
 
 void SearchWin::search(Sequence input)
@@ -169,6 +169,8 @@ void SearchWin::initSig()
 {
     connect(ui->searchStartBtn, SIGNAL(clicked()), this, SLOT(openFile()));
     connect(ui->searchPartCBox, SIGNAL(clicked()), this, SLOT(rankPartOfSeq()));
+    connect(ui->searchSequenceCBox, SIGNAL(clicked()), this, SLOT(rankSeqChecked()));
+    connect(ui->searchPointCBox, SIGNAL(clicked()), this, SLOT(rankSeqPointChecked()));
 }
 
 
@@ -247,19 +249,56 @@ void SearchWin::openFile()
 
 void SearchWin::rankPartOfSeq()
 {
-    if (ui->searchPartCBox->checkState() == Qt::Checked)
+    bool flag = (ui->searchPartCBox->checkState() == Qt::Checked);
+    ui->searchPointCBox->setDisabled(flag);
+    ui->searchSequenceCBox->setDisabled(flag);
+    if (flag)
     {
-        ui->searchPointCBox->setDisabled(true);
+        ui->searchStackedWidget->setCurrentIndex(2);
         ui->searchStackedWidget_time->setCurrentIndex(2);
         showPartofSeq();
     }
-
     else
     {
-        ui->searchPointCBox->setDisabled(false);
         ui->searchStackedWidget->setCurrentIndex(0);
         ui->searchStackedWidget_time->setCurrentIndex(0);
     }
+}
 
+void SearchWin::rankSeqChecked()
+{
+    bool flag = (ui->searchSequenceCBox->checkState() == Qt::Checked);
+    ui->searchPointCBox->setDisabled(flag);
+    ui->searchPartCBox->setDisabled(flag);
+    if (flag)
+    {
+        ui->searchStackedWidget->setCurrentIndex(0);
+        ui->searchStackedWidget_time->setCurrentIndex(0);
+        showPartofSeq();
+    }
+    else
+    {
+        ui->searchStackedWidget->setCurrentIndex(0);
+        ui->searchStackedWidget_time->setCurrentIndex(0);
+    }
+}
+
+void SearchWin::rankSeqPointChecked()
+{
+    bool flag = (ui->searchPointCBox->checkState() == Qt::Checked);
+    ui->searchSequenceCBox->setDisabled(flag);
+    ui->searchPartCBox->setDisabled(flag);
+    if (flag)
+    {
+
+        ui->searchStackedWidget->setCurrentIndex(1);
+        ui->searchStackedWidget_time->setCurrentIndex(1);
+        showPartofSeq();
+    }
+    else
+    {
+        ui->searchStackedWidget->setCurrentIndex(0);
+        ui->searchStackedWidget_time->setCurrentIndex(0);
+    }
 }
 

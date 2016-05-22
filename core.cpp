@@ -308,7 +308,7 @@ QVector<SecCompare> findBest(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2
     m1.pointsNum=endMax1-beginMin1+1;
     m2.pointsNum=endMax2-beginMin2+1;
 
-    cout<<m1.pointsNum<<" "<<m2.pointsNum<<endl;
+    //cout<<m1.pointsNum<<" "<<m2.pointsNum<<endl;
 
      m1.pts = new Point[m1.pointsNum];
      m2.pts = new Point[m2.pointsNum];
