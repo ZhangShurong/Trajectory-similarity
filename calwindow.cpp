@@ -143,7 +143,7 @@ void CalWindow::startSlot()
                 //cout<<"qst"<<begin1<<" "<<end1<<" "<<begin2<<" "<<end2<<endl;
             }
 
-
+            //ui->mapWidget->drawPoint(&(p->pts[0]), (QString)p->pts[0].id,6,6,true);
             ui->mapWidget->reload();
         }
 }

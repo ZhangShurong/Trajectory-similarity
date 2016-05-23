@@ -252,8 +252,12 @@ void MapWindow::reload()
     view->reload();
 }
 
-void MapWindow::drawPoint(Point *p_a, QString pid, int color)
+void MapWindow::drawPoint(Point *p_a, QString pid, int color, bool big)
 {
+    if (pid == "")
+    {
+        pid = "inputS";
+    }
     QTextStream out(jsFile);
     if(color < 0)
     {
@@ -273,12 +277,21 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color)
     else
     {
         color = color % pointColor.length();
+        QString path = "";
+        QString size = "new BMap.Size(10,10));";
+        if (big)
+        {
+            path = "15pix/";
+            size = "new BMap.Size(15,15));";
+        }
         //qDebug() << color;
         out << "var "
             << "icon"+pid
-            << "= new BMap.Icon(\"./"
+            << "= new BMap.Icon(\"./" + path
             << pointColor[color]
-            <<"\", new BMap.Size(10,10));\n";
+            <<"\", "
+            << size
+            << "\n";
 
         out <<"var "
             << pid
@@ -299,7 +312,71 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color)
             <<");\n";
     }
     out.flush();
+}
 
+void MapWindow::drawPoint(Point *p_a, QString pid, int color, int num, bool big)
+{
+    if (pid == "")
+    {
+        pid = "inputS";
+    }
+    QTextStream out(jsFile);
+    if(color < 0)
+    {
+        out <<"var "
+            << pid
+            << " = new BMap.Marker(new BMap.Point("
+            << p_a->longitude
+            << ","
+            << p_a->latitude
+            <<"));\n"
+            <<"map.addOverlay("
+            << pid
+            <<");\n";
+        out.flush();
+        return;
+    }
+    else
+    {
+        color = color % pointColor.length();
+        QString path = "pointWithNum_10pix/";
+        QString size = "new BMap.Size(10,10));";
+        QString filename = pointColor[color];
+        filename.resize(pointColor[color].length() - 4);
+        filename = filename + "num" + QString::number(num) + ".png";
+        if (big)
+        {
+            path = "pointWithNum_15pix/";
+            size = "new BMap.Size(15,15));";
+        }
+        //qDebug() << color;
+        out << "var "
+            << "icon"+pid
+            << "= new BMap.Icon(\"./" + path
+            << filename
+            <<"\", "
+            << size
+            << "\n";
+
+        out <<"var "
+            << pid
+            << " = new BMap.Point("
+            << p_a->longitude
+            << ","
+            << p_a->latitude
+            <<");\n"
+            <<"var "
+            <<"marker"+pid
+            <<" = new BMap.Marker("
+            << pid
+            << ",{icon:"
+            <<"icon"+pid
+             << "});"
+            <<"map.addOverlay("
+            << "marker"+pid
+            <<");\n";
+    }
+    out.flush();
 }
 
 void MapWindow::showPoints(bool sp_a)
