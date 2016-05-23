@@ -26,6 +26,7 @@ private:
     bool time;
     void initTable(QTableWidget *table);
     void initSeqPartTable(QTableWidget *table);
+    void initPointTable(QTableWidget *table);
     void showPartofSeq();
     void search(Sequence input);
     void initSig();    

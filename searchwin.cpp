@@ -18,6 +18,9 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
     initTable(ui->searchTable_time_point);
     initSeqPartTable(ui->searchTable_common_part);
     initSeqPartTable(ui->searchTable_time_part);
+    initPointTable(ui->searchTable_common_point);
+    initPointTable(ui->searchTable_time_point);
+
     ui->searchStackedWidget->setCurrentIndex(0);
     ui->searchStackedWidget_time->setCurrentIndex(0);
     initSig();
@@ -64,6 +67,19 @@ void SearchWin::initSeqPartTable(QTableWidget *table)
     table->setHorizontalHeaderLabels(header);
 }
 
+void SearchWin::initPointTable(QTableWidget *table)
+{
+    table->setColumnCount(4);
+    table->setRowCount(20);
+    table->clearContents();
+    QStringList header;
+    header << tr("SeqID")
+           << tr("Index1")
+           << tr("Index2")
+           << tr("Distance");
+    table->setHorizontalHeaderLabels(header);
+}
+
 void SearchWin::showPartofSeq()
 {
     qDebug() << "shoe Part Of Sequence\n";
@@ -71,6 +87,7 @@ void SearchWin::showPartofSeq()
 
 void SearchWin::search(Sequence input)
 {
+    QVector<PointCompare> pVec;
     seqs.clear();
     Sequence sf;
     double dfDis;
@@ -81,7 +98,6 @@ void SearchWin::search(Sequence input)
         qDebug() << "No time";
         time = false;
     }
-
     else {
         time = true;
         qDebug() << "Has time";
@@ -98,12 +114,37 @@ void SearchWin::search(Sequence input)
             dfDis = computeDiscreteFrechet(&input,&sf);
             tItem->setData(Qt::DisplayRole,dfDis);
             ui->searchTable_time->setItem(t,2,tItem);
+
+            pVec = getNearestPoint(&input, &sf);
+            for (int x = 0; x < pVec.length(); x++)
+            {
+                ui->searchTable_time_point->setItem(x,0, new QTableWidgetItem(sf.getID()));
+                ui->searchTable_time_point->setItem(x,1, new QTableWidgetItem(
+                                                        QString::number(pVec[x].index1)));
+                ui->searchTable_time_point->setItem(x,2, new QTableWidgetItem(
+                                                        QString::number(pVec[x].index2)));
+                ui->searchTable_time_point->setItem(x,3, new QTableWidgetItem(
+                                                        QString::number(pVec[x].distance)));
+            }
             t++;
         }
         else if (!sf.hasTime() && !input.hasTime()) {
             dfDis = computeDiscreteFrechet(&input,&sf);
             tItem->setData(Qt::DisplayRole,dfDis);
             ui->searchTable_common->setItem(c,2,tItem);
+
+            pVec = getNearestPoint(&input, &sf);
+            for (int x = 0; x < pVec.length(); x++)
+            {
+                ui->searchTable_common_point->setItem(x,0, new QTableWidgetItem(sf.getID()));
+                ui->searchTable_common_point->setItem(x,1, new QTableWidgetItem(
+                                                        QString::number(pVec[x].index1)));
+                ui->searchTable_common_point->setItem(x,2, new QTableWidgetItem(
+                                                        QString::number(pVec[x].index2)));
+                ui->searchTable_common_point->setItem(x,3, new QTableWidgetItem(
+                                                        QString::number(pVec[x].distance)));
+            }
+
             c++;
         }
         if (dfDis >= maxDis)
