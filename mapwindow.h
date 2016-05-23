@@ -11,6 +11,8 @@ class MapWindow : public QWidget
 private:
     bool showPoint;
     bool showTime;
+    bool showEndpoints;
+
     QString test;
     QString jsFilePath;
     QString htmlFilePath;
@@ -62,6 +64,7 @@ public:
     void drawPoint(Point *p_a, QString pid, int color, int num, bool big = false);
     void showPoints(bool sp_a);
     void showTimes(bool st_a);
+    void showEndPoints(bool se_a);
 
 
     void highLightPart(Sequence *se_a, int start, int end, int c, int lWeight = 5);

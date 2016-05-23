@@ -84,52 +84,9 @@ void MapWindow::drawSequences(QVector<Sequence> se_draw_a)
 
 void MapWindow::drawSequence(Sequence se_a, int c, int lWeight)
 {
-    if (se_a.getNum() == 0)
-    {
-        setCentralPoint(116.3,39.9,5);
-        return;
-    }
     markList.clear();
     labelList.clear();
-
-    QString ID = "t" + se_a.getID();//如t1_40
-
-    QString str = "var "+ ID + " = new BMap.Polyline([";
-    for (int i = 0;i<se_a.getNum();i++)
-    {
-        str = str + "new BMap.Point("
-                  + QString::number(se_a.pts[i].longitude)
-                  + ", "
-                  + QString::number(se_a.pts[i].latitude)
-                  + "),";
-    }
-    c = c%color.length();//防止颜色超界
-
-    str = str + "], {strokeColor:\""
-              + color[c]
-              + "\","
-              +" strokeWeight:"
-              + QString::number(lWeight)
-              + ", strokeOpacity:0.5});\n";
-    str = str + "map.addOverlay("
-              + ID
-              + ");";
-    QTextStream out(jsFile);
-    out << str;
-    out.flush();
-    //至此，折线已经画完
-    if (showPoint)
-    {
-        c = c % pointColor.length();
-        //qDebug() << color;
-        out << "var "
-            << "icon"+se_a.getID()    //icon1_40
-            << "= new BMap.Icon(\"./"
-            << pointColor[c]
-            <<"\", new BMap.Size(10,10));\n";
-        out.flush();
-        drawPoints(se_a.pts, se_a.getNum(), se_a.getID());
-    }
+    drawSqu(&se_a, c, lWeight);
     createFunc();
 }
 
@@ -162,7 +119,7 @@ void MapWindow::drawPoints(Point *ps_a, int num, QString sqeID)
             << pid
             << ",{icon:"
             <<"icon"+sqeID
-             << "});"
+            << "});"
             <<"map.addOverlay("
             << "marker"+pid
             <<");\n";
@@ -188,6 +145,7 @@ void MapWindow::drawPoints(Point *ps_a, int num, QString sqeID)
         }
     }
 }
+
 
 void MapWindow::initColor()
 {
@@ -390,6 +348,11 @@ void MapWindow::showTimes(bool st_a)
     showTime = st_a;
 }
 
+void MapWindow::showEndPoints(bool se_a)
+{
+    showEndpoints = se_a;
+}
+
 void MapWindow::highLightPart(Sequence *se_a, int start, int end, int c, int lWeight)
 {
     QString ID = "t" + se_a->getID();
@@ -424,8 +387,8 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
         setCentralPoint(116.3,39.9,5);
         return;
     }
-    QString ID = "t" + se_a->getID();//如t1_40
 
+    QString ID = "t" + se_a->getID();//如t1_40
     QString str = "var "+ ID + " = new BMap.Polyline([";
     for (int i = 0;i<se_a->getNum();i++)
     {
@@ -460,6 +423,21 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
             << pointColor[c]
             <<"\", new BMap.Size(10,10));\n";
         out.flush();
+        if (showEndpoints)
+        {
+            out << "var "
+                << "icon"+se_a->getID() + "start"    //icon1_40start
+                << "= new BMap.Icon(\"./"
+                << pointColor[c]
+                <<"\", new BMap.Size(10,10));\n";
+            out.flush();
+            out << "var "
+                << "icon"+se_a->getID() + "end"    //icon1_40end
+                << "= new BMap.Icon(\"./"
+                << pointColor[c]
+                <<"\", new BMap.Size(10,10));\n";
+            out.flush();
+        }
         drawPoints(se_a->pts, se_a->getNum(), se_a->getID());
     }
 }
@@ -527,6 +505,7 @@ MapWindow::MapWindow(QWidget *parent):QWidget(parent)
     se_draw = new Sequence();
     showPoint = false;
     showTime = false;
+    showEndpoints = false;
     draw();
     editJs();
 }

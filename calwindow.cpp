@@ -137,8 +137,8 @@ void CalWindow::startSlot()
                 int end1=ql[1].toInt();
                 int begin2=ql[2].toInt();
                 int end2=ql[3].toInt();
-                ui->mapWidget->highLightPart(p, begin1+beginMin1, end1+beginMin1, 7, 10);
-                ui->mapWidget->highLightPart(q, begin2+beginMin2, end2+beginMin2, 7, 10);
+                ui->mapWidget->highLightPart(p, begin1+beginMin1, end1+beginMin1, 3, 10);
+                ui->mapWidget->highLightPart(q, begin2+beginMin2, end2+beginMin2, 3, 10);
                 //cout<<"qst"<<begin1<<" "<<end1<<" "<<begin2<<" "<<end2<<endl;
             }
 
