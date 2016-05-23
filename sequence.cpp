@@ -27,6 +27,17 @@ Sequence::Sequence()
     pts = new Point[initSize];
 }
 
+void Sequence::clear()
+{
+    if (pointsNum != 0)
+    {
+        delete[] pts;
+        Point *temp = new Point[initSize];
+        pts = temp;
+        pointsNum = 0;
+    }
+}
+
 void Sequence::appendPt(Point *pt)
 {
     pts[seek] = *pt;

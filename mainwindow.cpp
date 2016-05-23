@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     detWin = new detailWin();
     cal = new CalWindow(ui);
     searchWin = new SearchWin(ui, db);
+    settingWin = new SettingWin(ui);
     initMap();
     initAction();
     initTable();
@@ -597,7 +598,6 @@ void MainWindow::refreshTable()
 
 void MainWindow::initSig()
 {
-    connect(ui->aboutBtn, SIGNAL(clicked()), this, SLOT(about()));
     connect(ui->aboutBtn, SIGNAL(clicked()), this, SLOT(aboutButton_clicked()));
     connect(ui->mainTable, SIGNAL(clicked(QModelIndex)), this, SLOT(clickTBSlot(QModelIndex)));
     connect(ui->importDataBtn, SIGNAL(clicked()), this, SLOT(openFilesSlot()));
@@ -631,6 +631,12 @@ void MainWindow::initSearchWin()
     this->ui->searchMap->setDefaultCentralPt();
     this->ui->searchMap->reload();
     searchWin->refreshTable();
+    this->ui->searchPathEdit->clear();
+    this->ui->searchTable_common_part->clear();
+    this->ui->searchTable_time_part->clear();
+    this->ui->searchTable_common_point->clear();
+    this->ui->searchTable_time_point->clear();
+    searchWin->init();
 //得到几条的曲线
 //    QVector<Sequence> seqs;
 //    Sequence temp;

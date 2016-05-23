@@ -68,9 +68,14 @@ void SearchWin::initSeqPartTable(QTableWidget *table)
 }
 
 void SearchWin::initPointTable(QTableWidget *table)
-{
-    table->setColumnCount(4);
-    table->setRowCount(ROW_NUM);
+{    
+//    table->horizontalHeader()->setStretchLastSection(true);
+//    table->verticalHeader()->hide();
+//    table->setContextMenuPolicy(Qt::ActionsContextMenu);
+//    table->setSelectionBehavior(QAbstractItemView::SelectRows);
+//    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+//    table->setColumnCount(5);
+//    table->setRowCount(ROW_NUM);
     table->clearContents();
     QStringList header;
     header << tr("SeqID")
@@ -82,10 +87,10 @@ void SearchWin::initPointTable(QTableWidget *table)
 
 void SearchWin::showPartofSeq()
 {
-    qDebug() << "shoe Part Of Sequence\n";
+    qDebug() << "show Part Of Sequence\n";
 }
 
-void SearchWin::search(Sequence input)
+void SearchWin::search()
 {
     seqs.clear();
     refreshTable();
@@ -113,6 +118,7 @@ void SearchWin::initSig()
     connect(ui->searchPartCBox, SIGNAL(clicked()), this, SLOT(rankPartOfSeq()));
     connect(ui->searchSequenceCBox, SIGNAL(clicked()), this, SLOT(rankSeqChecked()));
     connect(ui->searchPointCBox, SIGNAL(clicked()), this, SLOT(rankSeqPointChecked()));
+    connect(ui->searchWinBtn, SIGNAL(clicked()), this, SLOT(startSearch()));
 }
 
 void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se)
@@ -231,7 +237,6 @@ void SearchWin::fillTable(Sequence inSeq)
 
 void SearchWin::refreshTable()
 {
-    //ui->mainTable->clearContents();
     ui->searchTable_common->clearContents();
     ui->searchTable_time->clearContents();
     QStringList header;
@@ -239,7 +244,6 @@ void SearchWin::refreshTable()
            << tr("PointNumber")
            << tr("Frechet Distance")
            << tr("Similarity");
-    //ui->mainTable->setHorizontalHeaderLabels(header);
     ui->searchTable_common->setHorizontalHeaderLabels(header);
     ui->searchTable_time->setHorizontalHeaderLabels(header);
     if (tracs->length() == 0)
@@ -250,6 +254,16 @@ void SearchWin::refreshTable()
     else {
         int pos_c = 0;
         int pos_t = 0;
+        if (tracs->length() > ROW_NUM)
+        {
+            ui->searchTable_common->setRowCount(tracs->length() + 10);
+            ui->searchTable_time->setRowCount(tracs->length() + 10);
+        }
+        else
+        {
+            ui->searchTable_common->setRowCount(ROW_NUM);
+            ui->searchTable_time->setRowCount(ROW_NUM);
+        }
         for(int i = 0; i < tracs->length();i++)
         {
             QString temp = (*tracs)[i];
@@ -267,7 +281,6 @@ void SearchWin::refreshTable()
                                    new QTableWidgetItem(QString::number(db->getPointNumByID(temp.toStdString()))));
                 pos_c ++;
             }
-
         }
     }
 }
@@ -275,6 +288,11 @@ void SearchWin::refreshTable()
 void SearchWin::setNumOfSeqs(int num)
 {
     numOfSeqs = num;
+}
+
+void SearchWin::init()
+{
+    input.clear();
 }
 
 
@@ -295,18 +313,16 @@ void SearchWin::openFile()
     string fileName = file_name.toLocal8Bit().data();
     ifstream fin(fileName.c_str());
     Csv csv(fin);
-    Sequence inputSe;
-    getSquFromFile(&csv,&inputSe);
-    qDebug() << inputSe.getNum();
+//    Sequence inputSe;
+    getSquFromFile(&csv,&input);
+    //qDebug() << inputSe.getNum();
     ui->searchPathEdit->setText(file_name);
-    search(inputSe);
+    //search(inputSe);
 }
 
 void SearchWin::rankPartOfSeq()
 {
-    bool flag = (ui->searchPartCBox->checkState() == Qt::Checked);
-    ui->searchPointCBox->setDisabled(flag);
-    ui->searchSequenceCBox->setDisabled(flag);
+    bool flag = (ui->searchPartCBox->isChecked());
     if (flag)
     {
         ui->searchStackedWidget->setCurrentIndex(2);
@@ -322,9 +338,7 @@ void SearchWin::rankPartOfSeq()
 
 void SearchWin::rankSeqChecked()
 {
-    bool flag = (ui->searchSequenceCBox->checkState() == Qt::Checked);
-    ui->searchPointCBox->setDisabled(flag);
-    ui->searchPartCBox->setDisabled(flag);
+    bool flag = (ui->searchSequenceCBox->isChecked());
     if (flag)
     {
         ui->searchStackedWidget->setCurrentIndex(0);
@@ -340,9 +354,7 @@ void SearchWin::rankSeqChecked()
 
 void SearchWin::rankSeqPointChecked()
 {
-    bool flag = (ui->searchPointCBox->checkState() == Qt::Checked);
-    ui->searchSequenceCBox->setDisabled(flag);
-    ui->searchPartCBox->setDisabled(flag);
+    bool flag = (ui->searchPointCBox->isChecked());
     if (flag)
     {
 
@@ -355,5 +367,14 @@ void SearchWin::rankSeqPointChecked()
         ui->searchStackedWidget->setCurrentIndex(0);
         ui->searchStackedWidget_time->setCurrentIndex(0);
     }
+}
+
+void SearchWin::startSearch()
+{
+    if (input.getNum() == 0)
+    {
+        return;
+    }
+    search();
 }
 

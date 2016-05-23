@@ -10,6 +10,7 @@
 #include "detailwin.h"
 #include "calwindow.h"
 #include "searchwin.h"
+#include "settingwin.h"
 
 #define ROW_NUM 100
 
@@ -84,6 +85,7 @@ private:
     Ui::MainWindow *ui;
     friend class CalWindow;
     friend class SearchWin;
+    SettingWin *settingWin;
     /*
      * 记录窗口位置
      */

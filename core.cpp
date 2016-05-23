@@ -71,6 +71,12 @@ double calCoef(){
 void
 getSquFromFile(Csv *csv, Sequence *se)
 {
+    if (se->getNum() != 0)
+    {
+        delete se;
+        Sequence *t = new Sequence();
+        se = t;
+    }
     string line;
     bool ok;
     QString xStr;

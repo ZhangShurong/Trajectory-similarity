@@ -43,6 +43,7 @@ public:
     Point *pts;
     Sequence(QString ID);
     Sequence();
+    void clear();//Some problem
     void appendPt(Point *pt);
     void setPtNum(int num);
     void setPoints(Point *points);

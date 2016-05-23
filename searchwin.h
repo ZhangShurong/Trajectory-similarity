@@ -20,9 +20,11 @@ public:
     void setDB(DataBase *db);
     void refreshTable();
     void setNumOfSeqs(int num);
+    void init();
     ~SearchWin();
 private:
     Ui::MainWindow *ui;
+    Sequence input;
     DataBase *db;
     QVector<Sequence> seqs;
     int numOfSeqs;
@@ -31,7 +33,8 @@ private:
     void initSeqPartTable(QTableWidget *table);
     void initPointTable(QTableWidget *table);
     void showPartofSeq();
-    void search(Sequence input);
+    //void search(Sequence input);
+    void search();
     void sortPointTable(QTableWidget *table);
     void initSig();
     void fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se);
@@ -43,6 +46,7 @@ public slots:
     void rankPartOfSeq();
     void rankSeqChecked();
     void rankSeqPointChecked();
+    void startSearch();
 };
 
 #endif // SEARCHWIN_H
