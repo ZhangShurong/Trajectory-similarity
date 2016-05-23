@@ -78,10 +78,10 @@ void SearchWin::initPointTable(QTableWidget *table)
 //    table->setRowCount(ROW_NUM);
     table->clearContents();
     QStringList header;
-    header << tr("SeqID")
-           << tr("Index1")
-           << tr("Index2")
-           << tr("Distance");
+    header << "轨迹ID"
+           << "轨迹点序号"
+           << "地图中编号"
+           << "";
     table->setHorizontalHeaderLabels(header);
 }
 
