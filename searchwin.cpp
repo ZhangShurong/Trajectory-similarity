@@ -69,19 +69,13 @@ void SearchWin::initSeqPartTable(QTableWidget *table)
 
 void SearchWin::initPointTable(QTableWidget *table)
 {    
-//    table->horizontalHeader()->setStretchLastSection(true);
-//    table->verticalHeader()->hide();
-//    table->setContextMenuPolicy(Qt::ActionsContextMenu);
-//    table->setSelectionBehavior(QAbstractItemView::SelectRows);
-//    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-//    table->setColumnCount(5);
-//    table->setRowCount(ROW_NUM);
     table->clearContents();
     QStringList header;
     header << "轨迹ID"
            << "轨迹点序号"
            << "地图中编号"
            << "";
+
     table->setHorizontalHeaderLabels(header);
 }
 
@@ -237,6 +231,10 @@ void SearchWin::fillTable(Sequence inSeq)
 
 void SearchWin::refreshTable()
 {
+    initSeqPartTable(ui->searchTable_common_part);
+    initSeqPartTable(ui->searchTable_time_part);
+    initPointTable(ui->searchTable_common_point);
+    initPointTable(ui->searchTable_time_point);
     ui->searchTable_common->clearContents();
     ui->searchTable_time->clearContents();
     QStringList header;
@@ -283,6 +281,7 @@ void SearchWin::refreshTable()
             }
         }
     }
+
 }
 
 void SearchWin::setNumOfSeqs(int num)
@@ -357,7 +356,6 @@ void SearchWin::rankSeqPointChecked()
     bool flag = (ui->searchPointCBox->isChecked());
     if (flag)
     {
-
         ui->searchStackedWidget->setCurrentIndex(1);
         ui->searchStackedWidget_time->setCurrentIndex(1);
         showPartofSeq();

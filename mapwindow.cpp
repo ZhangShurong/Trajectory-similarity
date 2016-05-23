@@ -74,9 +74,10 @@ void MapWindow::drawSequences(QVector<Sequence> se_draw_a)
 {
     markList.clear();
     labelList.clear();
+
     for (int i = 0; i< se_draw_a.length(); i++)
     {
-        drawSqu(&(se_draw_a[i]), i);
+            drawSqu(&(se_draw_a[i]), i);
     }
     createFunc();
 }
@@ -190,17 +191,17 @@ void MapWindow::drawPoints(Point *ps_a, int num, QString sqeID)
 
 void MapWindow::initColor()
 {
-    color << "#6C3365"
-          <<"red"
+    color <<"red"
           <<"blue"
+          << "#6C3365"
           <<"black"
           <<"yellow"
           <<"pink"
           <<"green"
          << "#4EFEB3";
-    pointColor << "6C3365.png"
-               << "red.png"
+    pointColor << "red.png"
                << "skyblue.png"
+               << "6C3365.png"
                << "black.png"
                << "yellow.png"
                << "pink.png"

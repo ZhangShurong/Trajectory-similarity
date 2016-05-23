@@ -15,7 +15,6 @@ CalWindow::CalWindow(Ui::MainWindow *ui)
    // ui->mapWidget->editJs();
     ui->mapWidget->initJS();
     ui->mapWidget->reload();
-
 }
 
 CalWindow::~CalWindow()

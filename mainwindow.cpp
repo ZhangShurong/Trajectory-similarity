@@ -632,29 +632,7 @@ void MainWindow::initSearchWin()
     this->ui->searchMap->reload();
     searchWin->refreshTable();
     this->ui->searchPathEdit->clear();
-    this->ui->searchTable_common_part->clear();
-    this->ui->searchTable_time_part->clear();
-    this->ui->searchTable_common_point->clear();
-    this->ui->searchTable_time_point->clear();
     searchWin->init();
-//得到几条的曲线
-//    QVector<Sequence> seqs;
-//    Sequence temp;
-//    int l = tracs->length();
-//    if(l > 4)
-//        l = 4;
-//    for (int i = 0;i < l;i++)
-//    {
-//        db->getSequenceByID(tName,&temp,QString((*tracs)[i]).toStdString());
-//        seqs.append(temp);
-//    }
-//    ui->searchMap->initJS();
-//    Point c = getCenterPoint(seqs);
-//    ui->searchMap->setCentralPoint(c,5);
-//    ui->searchMap->drawSequences(seqs);
-//    this->ui->searchMap->reload();
-//    qDebug() << l;
-//调用searchWin的初始化函数
 }
 
 void MainWindow::search(Sequence input)

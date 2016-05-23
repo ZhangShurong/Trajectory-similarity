@@ -48,6 +48,7 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
-    safe.rc
+    safe.rc \
+    Readme.txt
 
 RC_FILE = safe.rc
