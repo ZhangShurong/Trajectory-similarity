@@ -50,14 +50,14 @@ void SearchWin::initTable(QTableWidget *table)
         table->setContextMenuPolicy(Qt::ActionsContextMenu);
         table->setSelectionBehavior(QAbstractItemView::SelectRows);
         table->setColumnCount(4);
-        table->setRowCount(20);
+        table->setRowCount(ROW_NUM);
         table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void SearchWin::initSeqPartTable(QTableWidget *table)
 {
     table->setColumnCount(4);
-    table->setRowCount(20);
+    table->setRowCount(ROW_NUM);
     table->clearContents();
     QStringList header;
     header << tr("ID")
@@ -70,7 +70,7 @@ void SearchWin::initSeqPartTable(QTableWidget *table)
 void SearchWin::initPointTable(QTableWidget *table)
 {
     table->setColumnCount(4);
-    table->setRowCount(20);
+    table->setRowCount(ROW_NUM);
     table->clearContents();
     QStringList header;
     header << tr("SeqID")
@@ -87,12 +87,63 @@ void SearchWin::showPartofSeq()
 
 void SearchWin::search(Sequence input)
 {
-    QVector<PointCompare> pVec;
     seqs.clear();
+    refreshTable();
+
+    fillTable(input);
+
+    sortPointTable(ui->searchTable_common_point);
+    sortPointTable(ui->searchTable_time_point);
+
+    ui->searchMap->initJS();
+    ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
+    ui->searchMap->drawSequences(seqs);
+    ui->searchMap->reload();
+    qDebug() << "Search Over";
+}
+
+void SearchWin::sortPointTable(QTableWidget *table)
+{
+    table->sortItems(3, Qt::AscendingOrder);
+}
+
+void SearchWin::initSig()
+{
+    connect(ui->searchStartBtn, SIGNAL(clicked()), this, SLOT(openFile()));
+    connect(ui->searchPartCBox, SIGNAL(clicked()), this, SLOT(rankPartOfSeq()));
+    connect(ui->searchSequenceCBox, SIGNAL(clicked()), this, SLOT(rankSeqChecked()));
+    connect(ui->searchPointCBox, SIGNAL(clicked()), this, SLOT(rankSeqPointChecked()));
+}
+
+void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se)
+{
+    if (pointsV.length() > ROW_NUM)
+    {
+        table->setRowCount(pointsV.length() + 10);
+    }
+    else
+    {
+        table->setRowCount(ROW_NUM);
+    }
+    for (int x = 0; x < pointsV.length(); x++)
+    {
+        table->setItem(x,0, new QTableWidgetItem(se->getID()));
+        table->setItem(x,1, new QTableWidgetItem(
+                                                QString::number(pointsV[x].index1)));
+        table->setItem(x,2, new QTableWidgetItem(
+                                                QString::number(pointsV[x].index2)));
+        table->setItem(x,3, new QTableWidgetItem(
+                                                QString::number(pointsV[x].distance)));
+    }
+}
+
+void SearchWin::fillTable(Sequence inSeq)
+{
+    string tb = "importtest";
+    QVector<PointCompare> pVec;
     Sequence sf;
     double dfDis;
     double maxDis = 0;
-    string tb = "importtest";
     if (sf.pts->time == "")
     {
         qDebug() << "No time";
@@ -102,56 +153,33 @@ void SearchWin::search(Sequence input)
         time = true;
         qDebug() << "Has time";
     }
-    refreshTable();
+
     int c = 0;
     int t = 0;
     for (int i = 0;i < tracs->length();i++)
     {
         QTableWidgetItem *tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
-        if (sf.hasTime() && input.hasTime())
-        {
-            dfDis = computeDiscreteFrechet(&input,&sf);
-            tItem->setData(Qt::DisplayRole,dfDis);
-            ui->searchTable_time->setItem(t,2,tItem);
 
-            pVec = getNearestPoint(&input, &sf);
-            for (int x = 0; x < pVec.length(); x++)
-            {
-                ui->searchTable_time_point->setItem(x,0, new QTableWidgetItem(sf.getID()));
-                ui->searchTable_time_point->setItem(x,1, new QTableWidgetItem(
-                                                        QString::number(pVec[x].index1)));
-                ui->searchTable_time_point->setItem(x,2, new QTableWidgetItem(
-                                                        QString::number(pVec[x].index2)));
-                ui->searchTable_time_point->setItem(x,3, new QTableWidgetItem(
-                                                        QString::number(pVec[x].distance)));
-            }
+        dfDis = computeDiscreteFrechet(&inSeq,&sf);
+        tItem->setData(Qt::DisplayRole,dfDis);
+        pVec = getNearestPoint(&inSeq, &sf);
+
+        if (sf.hasTime() && inSeq.hasTime())
+        {
+            ui->searchTable_time->setItem(t,2,tItem);
+            fillPointTable(ui->searchTable_time_point, pVec, &sf);
             t++;
         }
-        else if (!sf.hasTime() && !input.hasTime()) {
-            dfDis = computeDiscreteFrechet(&input,&sf);
-            tItem->setData(Qt::DisplayRole,dfDis);
+        else if (!sf.hasTime() && !inSeq.hasTime()) {
             ui->searchTable_common->setItem(c,2,tItem);
-
-            pVec = getNearestPoint(&input, &sf);
-            for (int x = 0; x < pVec.length(); x++)
-            {
-                ui->searchTable_common_point->setItem(x,0, new QTableWidgetItem(sf.getID()));
-                ui->searchTable_common_point->setItem(x,1, new QTableWidgetItem(
-                                                        QString::number(pVec[x].index1)));
-                ui->searchTable_common_point->setItem(x,2, new QTableWidgetItem(
-                                                        QString::number(pVec[x].index2)));
-                ui->searchTable_common_point->setItem(x,3, new QTableWidgetItem(
-                                                        QString::number(pVec[x].distance)));
-            }
-
+            fillPointTable(ui->searchTable_common_point, pVec, &sf);
             c++;
         }
         if (dfDis >= maxDis)
         {
             maxDis = dfDis;
         }
-        //qDebug() << dfDis;
     }
     if ( c != 0)
     {
@@ -199,21 +227,7 @@ void SearchWin::search(Sequence input)
             ui->searchTable_time->setItem(i,3,tItem);
         }
     }
-    ui->searchMap->initJS();
-    ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
-    ui->searchMap->drawSequences(seqs);
-    ui->searchMap->reload();
-    qDebug() << "Search Over";
 }
-
-void SearchWin::initSig()
-{
-    connect(ui->searchStartBtn, SIGNAL(clicked()), this, SLOT(openFile()));
-    connect(ui->searchPartCBox, SIGNAL(clicked()), this, SLOT(rankPartOfSeq()));
-    connect(ui->searchSequenceCBox, SIGNAL(clicked()), this, SLOT(rankSeqChecked()));
-    connect(ui->searchPointCBox, SIGNAL(clicked()), this, SLOT(rankSeqPointChecked()));
-}
-
 
 void SearchWin::refreshTable()
 {

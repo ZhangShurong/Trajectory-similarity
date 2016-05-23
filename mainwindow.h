@@ -10,6 +10,9 @@
 #include "detailwin.h"
 #include "calwindow.h"
 #include "searchwin.h"
+
+#define ROW_NUM 100
+
 class MapWindow;
 class CalWindow;
 class SearchWin;

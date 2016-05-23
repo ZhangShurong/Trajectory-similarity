@@ -3,6 +3,9 @@
 #include <QObject>
 #include "sequence.h"
 #include "mainwindow.h"
+
+#define ROW_NUM 100
+
 namespace Ui {
 class MainWindow;
 }
@@ -29,7 +32,10 @@ private:
     void initPointTable(QTableWidget *table);
     void showPartofSeq();
     void search(Sequence input);
-    void initSig();    
+    void sortPointTable(QTableWidget *table);
+    void initSig();
+    void fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se);
+    void fillTable(Sequence inSeq);
     QStringList *tracs;
 
 public slots:

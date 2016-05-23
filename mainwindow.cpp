@@ -556,7 +556,7 @@ void MainWindow::initTable()
 
     ui->mainTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->mainTable->setColumnCount(4);
-    ui->mainTable->setRowCount(1000);
+    ui->mainTable->setRowCount(ROW_NUM);
     ui->mainTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     refreshTable();
 }
@@ -575,6 +575,14 @@ void MainWindow::refreshTable()
     if (tracs->length() == 0)
         ui->mainTable->clear();
     else {
+        if (tracs->length() > ROW_NUM)
+        {
+            ui->mainTable->setRowCount(tracs->length() + 10);
+        }
+        else
+        {
+            ui->mainTable->setRowCount(ROW_NUM + 10);
+        }
         for(int i = 0; i < tracs->length();i++)
         {
             QString temp = (*tracs)[i];
