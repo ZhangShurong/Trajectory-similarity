@@ -101,7 +101,6 @@ void SearchWin::search()
         sortPointTable(ui->searchTable_time_point);
     }
 
-
     ui->searchMap->initJS();
     ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
     ui->searchMap->drawSequences(seqs);
@@ -113,8 +112,8 @@ void SearchWin::sortPointTable(QTableWidget *table)
 {
     table->sortItems(3, Qt::AscendingOrder);
     int length = rowcount;
-    qDebug()<< "----------------------------------------";
-    qDebug() << length;
+    //qDebug()<< "----------------------------------------";
+    //qDebug() << length;
     for (int i =0; i < length; i++)
     {
         table->setItem(i,2, new QTableWidgetItem(QString::number(i)));
@@ -133,8 +132,8 @@ void SearchWin::initSig()
 
 void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se)
 {
-    qDebug() << "rowcount = "
-             << QString::number(rowcount);
+   // qDebug() << "rowcount = "
+     //        << QString::number(rowcount);
     int start = rowcount;
     int end = start + pointsV.length();
     if (end > rowcount)
@@ -202,6 +201,7 @@ void SearchWin::fillTable(Sequence inSeq)
             maxDis = dfDis;
         }
     }
+    seqs.append(inSeq);
     if ( c != 0)
     {
         ui->searchTable_common->sortItems(2,Qt::AscendingOrder);
@@ -390,10 +390,14 @@ void SearchWin::rankSeqPointChecked()
 
 void SearchWin::startSearch()
 {
+    seqs.clear();
+    rowcount = 0;
+    delete tracs;
     if (input.getNum() == 0)
     {
         return;
     }
+
     search();
 }
 

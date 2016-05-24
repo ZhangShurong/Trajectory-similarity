@@ -30,7 +30,7 @@ private:
     int numOfSeqs;
     bool time;
     int rowcount;
-
+    QStringList *tracs;
     void initTable(QTableWidget *table);
     void initSeqPartTable(QTableWidget *table);
     void initPointTable(QTableWidget *table);
@@ -41,7 +41,7 @@ private:
     void initSig();
     void fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se);
     void fillTable(Sequence inSeq);
-    QStringList *tracs;
+
 
 public slots:
     void openFile();
