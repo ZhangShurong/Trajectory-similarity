@@ -29,6 +29,8 @@ private:
     QVector<Sequence> seqs;
     int numOfSeqs;
     bool time;
+    int rowcount;
+
     void initTable(QTableWidget *table);
     void initSeqPartTable(QTableWidget *table);
     void initPointTable(QTableWidget *table);

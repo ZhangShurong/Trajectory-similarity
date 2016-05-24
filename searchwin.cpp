@@ -7,6 +7,7 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
     time = false;
     numOfSeqs = 3;
     tracs = new QStringList();
+    rowcount = 0;
     db = new DataBase(1);
     ui->searchMap->initJS();
     ui->searchMap->reload();
@@ -89,10 +90,17 @@ void SearchWin::search()
     seqs.clear();
     refreshTable();
 
-    fillTable(input);
+    fillTable(input);//填充三个表格
 
-    sortPointTable(ui->searchTable_common_point);
-    sortPointTable(ui->searchTable_time_point);
+    if (!time)
+    {
+        sortPointTable(ui->searchTable_common_point);
+    }
+    else
+    {
+        sortPointTable(ui->searchTable_time_point);
+    }
+
 
     ui->searchMap->initJS();
     ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
@@ -104,6 +112,14 @@ void SearchWin::search()
 void SearchWin::sortPointTable(QTableWidget *table)
 {
     table->sortItems(3, Qt::AscendingOrder);
+    int length = rowcount;
+    qDebug()<< "----------------------------------------";
+    qDebug() << length;
+    for (int i =0; i < length; i++)
+    {
+        table->setItem(i,2, new QTableWidgetItem(QString::number(i)));
+    }
+
 }
 
 void SearchWin::initSig()
@@ -117,24 +133,29 @@ void SearchWin::initSig()
 
 void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se)
 {
-    if (pointsV.length() > ROW_NUM)
+    qDebug() << "rowcount = "
+             << QString::number(rowcount);
+    int start = rowcount;
+    int end = start + pointsV.length();
+    if (end > rowcount)
     {
-        table->setRowCount(pointsV.length() + 10);
+        table->setRowCount(end + 10);
     }
-    else
+    else if (rowcount == 0)
     {
         table->setRowCount(ROW_NUM);
     }
-    for (int x = 0; x < pointsV.length(); x++)
+    for (int x = start; x < end; x++)
     {
         table->setItem(x,0, new QTableWidgetItem(se->getID()));
         table->setItem(x,1, new QTableWidgetItem(
-                                                QString::number(pointsV[x].index1)));
-        table->setItem(x,2, new QTableWidgetItem(
-                                                QString::number(pointsV[x].index2)));
+                                                QString::number(pointsV[x - start].index1)));
+//        table->setItem(x,2, new QTableWidgetItem(
+//                                                QString::number(pointsV[x].index2)));
         table->setItem(x,3, new QTableWidgetItem(
-                                                QString::number(pointsV[x].distance)));
+                                                QString::number(pointsV[x - start].distance)));
     }
+    rowcount = end;
 }
 
 void SearchWin::fillTable(Sequence inSeq)

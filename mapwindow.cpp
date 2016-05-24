@@ -103,8 +103,18 @@ void MapWindow::drawPoints(Point *ps_a, int num, QString sqeID)
 {
     QTextStream out(jsFile);
 
+
     for (int i = 0; i < num; i++)
     {
+        QString iconName = "icon"+sqeID;
+        if (i ==0)
+        {
+            iconName = iconName + "start";
+        }
+        else if (i == num -1)
+        {
+            iconName = iconName + "end";
+        }
         QString pid = "p"+QString::number(i)+sqeID; //p01_40,p11_40....p391_40
         out <<"var "
             << pid
@@ -118,7 +128,7 @@ void MapWindow::drawPoints(Point *ps_a, int num, QString sqeID)
             <<" = new BMap.Marker("
             << pid
             << ",{icon:"
-            <<"icon"+sqeID
+            << iconName
             << "});"
             <<"map.addOverlay("
             << "marker"+pid
@@ -423,7 +433,30 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
             << pointColor[c]
             <<"\", new BMap.Size(10,10));\n";
         out.flush();
+
+
         if (showEndpoints)
+        {
+            QString filename = pointColor[c];
+            filename.resize(pointColor[c].length() - 4);
+
+            QString filenameS = filename + "start"+ ".png";
+            QString filenameE = filename + "end"+ ".png";
+
+            out << "var "
+                << "icon"+se_a->getID() + "start"    //icon1_40start
+                << "= new BMap.Icon(\"./pointWithNum_10pix/"
+                << filenameS
+                <<"\", new BMap.Size(10,10));\n";
+            out.flush();
+            out << "var "
+                << "icon"+se_a->getID() + "end"    //icon1_40end
+                << "= new BMap.Icon(\"./pointWithNum_10pix/"
+                << filenameE
+                <<"\", new BMap.Size(10,10));\n";
+            out.flush();
+        }
+        else
         {
             out << "var "
                 << "icon"+se_a->getID() + "start"    //icon1_40start
