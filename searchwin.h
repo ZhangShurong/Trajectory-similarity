@@ -11,6 +11,8 @@ class MainWindow;
 }
 class MapWindow;
 class MainWindow;
+
+
 class SearchWin : public QObject
 {
     Q_OBJECT
@@ -28,13 +30,17 @@ private:
     DataBase *db;
     QVector<Sequence> seqs;
     int numOfSeqs;
-    bool time;
+    bool time;//表示是否有时间
+    bool distinct;
     int rowcount;
     QStringList *tracs;
+    QStringList coincide;
+
     void initTable(QTableWidget *table);
     void initSeqPartTable(QTableWidget *table);
     void initPointTable(QTableWidget *table);
     void showPartofSeq();
+    void drawPoints();
     //void search(Sequence input);
     void search();
     void sortPointTable(QTableWidget *table);

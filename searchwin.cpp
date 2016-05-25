@@ -6,6 +6,7 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
     this->db = db;
     input = new Sequence();
     time = false;
+    distinct = true;
     numOfSeqs = 3;
     tracs = new QStringList();
     rowcount = 0;
@@ -86,6 +87,41 @@ void SearchWin::showPartofSeq()
     qDebug() << "show Part Of Sequence\n";
 }
 
+void SearchWin::drawPoints()
+{
+    QMap<QString, int> seq_index;
+    for (int i = 0; i < seqs.length(); i++)
+    {
+        seq_index.insert(seqs[i].getID(), i);
+    }
+    QString sid = "";
+    int index1 = 0;
+    double dis = 0;
+    for (int j = 0; j < rowcount; j ++)
+    {
+
+        if (!time)
+        {
+            sid =  ui->searchTable_common_point->item(j,0)->text();
+            ui->searchTable_common_point->item(j,1)->text().toInt();
+            ui->searchTable_common_point->item(j,3)->text().toDouble();
+        }
+        else
+        {
+            ui->searchTable_time_point->item(j,0)->text();
+            ui->searchTable_time_point->item(j,1)->text().toInt();
+            ui->searchTable_time_point->item(j,3)->text().toDouble();
+        }
+
+        if (dis > 1)
+        {
+            break;
+        }
+        ui->searchMap->drawPoint(&((seqs[seq_index[sid]])[index1]),"",seq_index[sid],j);
+
+    }
+}
+
 void SearchWin::search()
 {
 //    seqs.clear();
@@ -103,9 +139,13 @@ void SearchWin::search()
     }
 
     ui->searchMap->initJS();
+    ui->searchMap->showPoints(true);
+    ui->searchMap->showTimes(true);
     ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
     ui->searchMap->drawSequences(seqs);
+    drawPoints();
     ui->searchMap->reload();
+    coincide.clear();
     qDebug() << "Search Over";
 }
 
@@ -113,8 +153,6 @@ void SearchWin::sortPointTable(QTableWidget *table)
 {
     table->sortItems(3, Qt::AscendingOrder);
     int length = rowcount;
-    //qDebug()<< "----------------------------------------";
-    //qDebug() << length;
     for (int i =0; i < length; i++)
     {
         table->setItem(i,2, new QTableWidgetItem(QString::number(i)));
@@ -135,6 +173,13 @@ void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> points
 {
    // qDebug() << "rowcount = "
      //        << QString::number(rowcount);
+    if (distinct)
+    {
+        if (coincide.contains(se->getID()))
+        {
+            return;
+        }
+    }
     int start = rowcount;
     int end = start + pointsV.length();
     if (end > rowcount)
@@ -164,15 +209,15 @@ void SearchWin::fillTable(Sequence inSeq)
     Sequence sf;
     double dfDis;
     double maxDis = 0;
-    if (sf.pts->time == "")
-    {
-        qDebug() << "No time";
-        time = false;
-    }
-    else {
-        time = true;
-        qDebug() << "Has time";
-    }
+//    if (sf.pts->time == "")
+//    {
+//        qDebug() << "No time";
+//        time = false;
+//    }
+//    else {
+//        time = true;
+//        qDebug() << "Has time";
+//    }
 
     int c = 0;
     int t = 0;
@@ -180,8 +225,11 @@ void SearchWin::fillTable(Sequence inSeq)
     {
         QTableWidgetItem *tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
-
         dfDis = computeDiscreteFrechet(&inSeq,&sf);
+        if (dfDis == 0)
+        {
+            coincide << sf.getID();
+        }
         tItem->setData(Qt::DisplayRole,dfDis);
         pVec = getNearestPoint(&inSeq, &sf);
 
@@ -204,6 +252,7 @@ void SearchWin::fillTable(Sequence inSeq)
     seqs.append(inSeq);
     if ( c != 0)
     {
+        time = false;
         ui->searchTable_common->sortItems(2,Qt::AscendingOrder);
         for (int i = 0; i < c; i++)
         {
@@ -227,6 +276,7 @@ void SearchWin::fillTable(Sequence inSeq)
     }
     else if (t != 0)
     {
+        time = true;
         ui->searchTable_time->sortItems(2,Qt::AscendingOrder);
         for (int i = 0; i < t; i++)
         {
@@ -339,12 +389,8 @@ void SearchWin::openFile()
     string fileName = file_name.toLocal8Bit().data();
     ifstream fin(fileName.c_str());
     Csv csv(fin);
-//    Sequence inputSe;
     getSquFromFile(&csv,input);
-    qDebug() << "ID is " + input->getID();
-    qDebug() << "-------";
     ui->searchPathEdit->setText(file_name);
-    //search(inputSe);
 }
 
 void SearchWin::rankPartOfSeq()

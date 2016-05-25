@@ -103,10 +103,10 @@ void MapWindow::drawPoints(Point *ps_a, int num, QString sqeID)
 {
     QTextStream out(jsFile);
 
-
+    QString iconName;
     for (int i = 0; i < num; i++)
     {
-        QString iconName = "icon"+sqeID;
+        iconName = "icon"+sqeID;
         if (i ==0)
         {
             iconName = iconName + "start";
@@ -137,7 +137,14 @@ void MapWindow::drawPoints(Point *ps_a, int num, QString sqeID)
         //至此，已画上一个点
         markList << "marker" + pid;
 
-        if (ps_a[i].time != "" && showTime)//三维数据且显示时间为真
+        qDebug()<< QString::number(i) << "\n+++++++++++" ;
+        qDebug() << ps_a[i].time;
+        if (i == 47)
+        {
+            qDebug() << ps_a[i].time;
+        }
+        //if ((ps_a[i].time != "") && showTime)//三维数据且显示时间为真
+        if (!(ps_a[i].time.isEmpty()) && showTime)//三维数据且显示时间为真
         {
             labelList << "label"+pid;
             //var label = new BMap.Label("2016/12/12-24:00:00",{offset:new BMap.Size(-50,-20)});
@@ -289,6 +296,7 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color, int num, bool big)
     {
         pid = "inputS";
     }
+    num = num % (10);
     QTextStream out(jsFile);
     if(color < 0)
     {
@@ -346,6 +354,14 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color, int num, bool big)
             <<");\n";
     }
     out.flush();
+}
+
+void MapWindow::drawPoints(QVector<Point> points_a, int color, bool big)
+{
+    for (int i = 0; i < points_a.length(); i++)
+    {
+        drawPoint(&(points_a[i]), points_a[i].id, color, i, big);
+    }
 }
 
 void MapWindow::showPoints(bool sp_a)

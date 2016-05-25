@@ -92,6 +92,7 @@ void CalWindow::startSlot()
     ui->mapWidget->initJS();
     ui->mapWin->setDefaultCentralPt();
     ui->mapWidget->showPoints(true);
+    ui->mapWidget->showTimes(true);
     ui->mapWidget->showEndPoints(true);
         if (p->getNum()*q->getNum() == 0)
         {
