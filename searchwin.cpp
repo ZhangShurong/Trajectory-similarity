@@ -87,7 +87,7 @@ void SearchWin::showPartofSeq()
 
 void SearchWin::search()
 {
-    seqs.clear();
+//    seqs.clear();
     refreshTable();
 
     fillTable(input);//填充三个表格
@@ -149,8 +149,7 @@ void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> points
         table->setItem(x,0, new QTableWidgetItem(se->getID()));
         table->setItem(x,1, new QTableWidgetItem(
                                                 QString::number(pointsV[x - start].index1)));
-//        table->setItem(x,2, new QTableWidgetItem(
-//                                                QString::number(pointsV[x].index2)));
+
         table->setItem(x,3, new QTableWidgetItem(
                                                 QString::number(pointsV[x - start].distance)));
     }
@@ -390,14 +389,13 @@ void SearchWin::rankSeqPointChecked()
 
 void SearchWin::startSearch()
 {
-    seqs.clear();
+    if (seqs.length() != 0)
+        seqs.clear();
     rowcount = 0;
-    delete tracs;
     if (input.getNum() == 0)
     {
         return;
     }
-
     search();
 }
 
