@@ -24,7 +24,7 @@ public:
     ~SearchWin();
 private:
     Ui::MainWindow *ui;
-    Sequence input;
+    Sequence *input;
     DataBase *db;
     QVector<Sequence> seqs;
     int numOfSeqs;

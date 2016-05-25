@@ -4,6 +4,7 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
 {
     this->ui = ui;
     this->db = db;
+    input = new Sequence();
     time = false;
     numOfSeqs = 3;
     tracs = new QStringList();
@@ -41,7 +42,7 @@ void SearchWin::setDB(DataBase *db)
 
 SearchWin::~SearchWin()
 {
-
+    delete input;
 }
 
 void SearchWin::initTable(QTableWidget *table)
@@ -88,9 +89,9 @@ void SearchWin::showPartofSeq()
 void SearchWin::search()
 {
 //    seqs.clear();
-    refreshTable();
+    //refreshTable();
 
-    fillTable(input);//填充三个表格
+    fillTable(*input);//填充三个表格
 
     if (!time)
     {
@@ -311,12 +312,18 @@ void SearchWin::setNumOfSeqs(int num)
 
 void SearchWin::init()
 {
-    input.clear();
+
 }
 
 
 void SearchWin::openFile()
 {
+
+    if (input->getNum() != 0)
+    {
+        delete input;
+        input = new Sequence();
+    }
     QString file_name = QFileDialog::getOpenFileName(NULL,
             tr("Open File"),
             "",
@@ -333,8 +340,9 @@ void SearchWin::openFile()
     ifstream fin(fileName.c_str());
     Csv csv(fin);
 //    Sequence inputSe;
-    getSquFromFile(&csv,&input);
-    //qDebug() << inputSe.getNum();
+    getSquFromFile(&csv,input);
+    qDebug() << "ID is " + input->getID();
+    qDebug() << "-------";
     ui->searchPathEdit->setText(file_name);
     //search(inputSe);
 }
@@ -389,10 +397,15 @@ void SearchWin::rankSeqPointChecked()
 
 void SearchWin::startSearch()
 {
+    this->ui->searchMap->initJS();
+    this->ui->searchMap->setDefaultCentralPt();
+    this->ui->searchMap->reload();
+    refreshTable();
+    init();
     if (seqs.length() != 0)
         seqs.clear();
     rowcount = 0;
-    if (input.getNum() == 0)
+    if (input->getNum() == 0)
     {
         return;
     }

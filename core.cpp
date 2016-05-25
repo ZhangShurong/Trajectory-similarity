@@ -77,6 +77,7 @@ getSquFromFile(Csv *csv, Sequence *se)
         Sequence *t = new Sequence();
         se = t;
     }
+    se->setID("Input");
     string line;
     bool ok;
     QString xStr;
