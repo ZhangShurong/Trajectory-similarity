@@ -566,11 +566,13 @@ void MainWindow::refreshTable()
 {
     ui->mainTable->clearContents();
     QStringList header;
-    header << tr("ID")
-           << tr("PointNumber")
-           << tr("Frechet Distance")
-           << tr("Similarity");
+    header << "轨迹ID"
+           << "轨迹点数"
+           << "Frechet Distance"
+           << "相似度";
     ui->mainTable->setHorizontalHeaderLabels(header);
+    //ui->mainTable->resizeColumnsToContents();
+    ui->mainTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 //    QStringList *tracs;
     tracs = db->getAllTracID(tName);
     if (tracs->length() == 0)
