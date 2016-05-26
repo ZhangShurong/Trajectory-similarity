@@ -136,15 +136,12 @@ void MapWindow::drawPoints(Point *ps_a, int num, QString sqeID)
         out.flush();
         //至此，已画上一个点
         markList << "marker" + pid;
-
-        qDebug()<< QString::number(i) << "\n+++++++++++" ;
-        qDebug() << ps_a[i].time;
-        if (i == 47)
+        if (i == num -2)
         {
             qDebug() << ps_a[i].time;
         }
-        //if ((ps_a[i].time != "") && showTime)//三维数据且显示时间为真
-        if (!(ps_a[i].time.isEmpty()) && showTime)//三维数据且显示时间为真
+        if (((ps_a[i]).time != "") && showTime)//三维数据且显示时间为真
+        //if (!(ps_a[i].time.isNull()) && showTime)//三维数据且显示时间为真
         {
             labelList << "label"+pid;
             //var label = new BMap.Label("2016/12/12-24:00:00",{offset:new BMap.Size(-50,-20)});

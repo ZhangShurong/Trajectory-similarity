@@ -84,7 +84,7 @@ getSquFromFile(Csv *csv, Sequence *se)
     QString yStr;
     double x;
     double y;
-    QTextStream cout(stdout,  QIODevice::WriteOnly);
+ //   QTextStream cout(stdout,  QIODevice::WriteOnly);
     QVector<Point*> tContainer;
     while (csv->getline(line) != 0) {
         const char *t = line.c_str();
@@ -121,7 +121,7 @@ getSquFromFile(Csv *csv, Sequence *se)
         sort(tContainer.begin(),tContainer.end(),timeCompare);
         for(int i=0;i<tContainer.size();i++){
             se->appendPt(tContainer[i]);
-            cout<<"beign "<<tContainer[i]->time<<endl;
+         //   cout<<"beign "<<tContainer[i]->time<<endl;
         }
     }
        tContainer.clear();
@@ -201,14 +201,14 @@ void initMemSpace(Sequence *p, Sequence *q)
 double  getSecSim(int i1,int j1,int i2,int j2){
     initMemSpace(p, q);
   //if((i1>=0&&i2>=0)&&(i1<=j1&&i2<=j2)&&(j1<=p->pointsNum&&j2<=q->pointsNum)){
-     QTextStream cout(stdout,  QIODevice::WriteOnly);
+    // QTextStream cout(stdout,  QIODevice::WriteOnly);
      Sequence m1;
      Sequence m2;
 
      m1.pointsNum=j1-i1+1;
      m2.pointsNum=j2-i2+1;
 
-     cout<<m1.pointsNum<<" "<<m2.pointsNum<<endl;
+   //  cout<<m1.pointsNum<<" "<<m2.pointsNum<<endl;
 
       m1.pts = new Point[m1.pointsNum];
       m2.pts = new Point[m2.pointsNum];
@@ -225,6 +225,59 @@ double  getSecSim(int i1,int j1,int i2,int j2){
       return computeDFD(m1.pointsNum-1, m2.pointsNum-1,&m1,&m2);
 }
 
+QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2){
+    QVector<QVector<int> >qb;
+    QVector<QString>qst;
+
+   // int beginMin1,beginMin2;
+    QVector<SecCompare> qs1=findBest(p,q,beginMin1,beginMin2);
+
+    if (qs1.length() != 0)
+     {
+         for (int i = 0; i < qs1.length(); i++)
+         {
+             QString s =   QString::number(qs1[i].beginIndex1)+" "
+                         + QString::number(qs1[i].endIndex1)+" "
+                         + QString::number(qs1[i].beginIndex2)+" "
+                         + QString::number(qs1[i].endIndex2);
+            if(!qst.contains(s))
+              qst.append(s);
+         }
+     }
+
+    for(int k=0;k<qst.length();k++){
+        QStringList ql=qst[k].split(" ");
+        int begin1=ql[0].toInt();
+        int end1=ql[1].toInt();
+        int begin2=ql[2].toInt();
+        int end2=ql[3].toInt();
+
+        for(int j=begin1;j<=end1;j++){
+            p->pts[j].painted=true;
+        }
+        for(int m=begin2;m<=end2;m++){
+            q->pts[m].painted=true;
+        }
+    }
+         QVector<int>pv;
+         QVector<int>qv;
+         for(int i=0;i<p->getNum();i++){
+             if((i==0&&p->pts[i].painted)||((!p->pts[i-1].painted)&&p->pts[i].painted)||((p->pts[i].painted)&&(i+1<p->getNum()&&(!p->pts[i+1].painted)))||(i+1==p->getNum()&&p->pts[i].painted)){
+                           pv.append(i);
+                       }
+                   }
+
+         for(int i=0;i<q->getNum();i++){
+               if((i==0&&q->pts[i].painted)||((!q->pts[i-1].painted)&&q->pts[i].painted)||((q->pts[i].painted)&&(i+1<q->getNum()&&(!q->pts[i+1].painted)))||(i+1==q->getNum()&&q->pts[i].painted)){
+                           qv.append(i);
+                       }
+                   }
+         qb.append(pv);
+         qb.append(qv);
+         return qb;
+
+}
+
 QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
 {
       QVector<SecCompare> q1;
@@ -234,9 +287,9 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
 
       p = se_a;
       q = se_b;
-      QTextStream cout(stdout,  QIODevice::WriteOnly);
+//      QTextStream cout(stdout,  QIODevice::WriteOnly);
 
-       cout<<p->pointsNum<<" "<<q->pointsNum<<endl;
+//       cout<<p->pointsNum<<" "<<q->pointsNum<<endl;
        int totalNum=p->pointsNum+q->pointsNum;
 
        int gap;

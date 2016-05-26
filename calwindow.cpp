@@ -104,46 +104,31 @@ void CalWindow::startSlot()
             double x = (p->getCentralPoint().longitude + q->getCentralPoint().longitude)/2;
             double y = (p->getCentralPoint().latitude + q->getCentralPoint().latitude)/2;
             ui->mapWidget->setCentralPoint(x, y, 10);
-
+            double res = computeDiscreteFrechet(p,q);
+            ui->Result->setText(QString::number(res));
             //开始计算
+            QVector<Sequence> t;
+            t.append(*p);
+            t.append(*q);
+            ui->mapWidget->drawSequences(t);
 
+            int beginMin1,beginMin2;
 
-           QVector<QString>qst;
-           QVector<Sequence> t;
-           int beginMin1,beginMin2;
-
-           double res = computeDiscreteFrechet(p,q);
-           ui->Result->setText(QString::number(res));
-           QVector<SecCompare> qs1=findBest(p,q,beginMin1,beginMin2);
-
-           t.append(*p);
-           t.append(*q);
-           ui->mapWidget->drawSequences(t);
-
-           if (qs1.length() != 0)
-            {
-                for (int i = 0; i < qs1.length(); i++)
-                {
-                    QString s =   QString::number(qs1[i].beginIndex1)+" "
-                                + QString::number(qs1[i].endIndex1)+" "
-                                + QString::number(qs1[i].beginIndex2)+" "
-                                + QString::number(qs1[i].endIndex2);
-                   if(!qst.contains(s))
-                     qst.append(s);
-                }
-            }
-
-            for(int i=0;i<qst.length();i++){
-                QStringList ql=qst[i].split(" ");
-                int begin1=ql[0].toInt();
-                int end1=ql[1].toInt();
-                int begin2=ql[2].toInt();
-                int end2=ql[3].toInt();
+            QVector<QVector<int> >qc=getSimplify(p,q,beginMin1,beginMin2);
+            QVector<int>pv=qc[0];
+            QVector<int>qv=qc[1];
+           // qDebug("测试%d",qc[0].size());
+            for(int i=0;i+1<pv.size();i=i+2){
+            //  qDebug("是否进入");
+               // QStringList ql=qst[i].split(" ");
+                int begin1=pv[i];
+                int end1=pv[i+1];
+                int begin2=qv[i];
+                int end2=qv[i+1];
                 ui->mapWidget->highLightPart(p, begin1+beginMin1, end1+beginMin1, 3, 10);
                 ui->mapWidget->highLightPart(q, begin2+beginMin2, end2+beginMin2, 3, 10);
                 //cout<<"qst"<<begin1<<" "<<end1<<" "<<begin2<<" "<<end2<<endl;
             }
-
             //ui->mapWidget->drawPoint(&(p->pts[0]), (QString)p->pts[0].id,6,6,true);
             ui->mapWidget->reload();
         }

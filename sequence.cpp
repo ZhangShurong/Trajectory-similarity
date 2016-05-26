@@ -214,6 +214,7 @@ Point::Point()
     latitude = -1;
     time = "";
     id = "";
+    painted=false;
 }
 
 Point::Point(double x, double y, QString time_a, QString id_a)
@@ -222,4 +223,5 @@ Point::Point(double x, double y, QString time_a, QString id_a)
     latitude = y;
     time = time_a;
     id = id_a;
+    painted=false;
 }

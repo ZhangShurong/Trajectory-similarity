@@ -50,6 +50,7 @@ bool timeCompare(Point*p1,Point*p2);
 double calTimeDistance(Point &a,Point &b);
 double calCoef();
 QVector<SecCompare> findBest(Sequence*p,Sequence*q,int &beginMin1,int &beginMin2);
+QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2);
 QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b);
 bool compareDis(PointCompare p1,PointCompare p2);
 void out2DArray(double **arr, int x, int y);

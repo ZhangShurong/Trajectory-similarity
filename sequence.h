@@ -26,6 +26,7 @@ public:
     QString time;
     QString id;
     Time t;
+    bool painted;
 };
 
 

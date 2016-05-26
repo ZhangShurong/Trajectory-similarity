@@ -34,7 +34,9 @@ private:
     bool distinct;
     int rowcount;
     QStringList *tracs;
-    QStringList coincide;
+    QStringList coincide;//专门存储轨迹id
+
+//    QMap<int, int> p2p;//存贮输入轨迹与数据库轨迹的
 
     void initTable(QTableWidget *table);
     void initSeqPartTable(QTableWidget *table);

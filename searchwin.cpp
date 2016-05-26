@@ -75,8 +75,8 @@ void SearchWin::initPointTable(QTableWidget *table)
     table->clearContents();
     QStringList header;
     header << "轨迹ID"
-           << "轨迹点序号"
-           << "地图中编号"
+           << "点在轨迹中位置"
+           << "编号"
            << "";
 
     table->setHorizontalHeaderLabels(header);
@@ -99,36 +99,31 @@ void SearchWin::drawPoints()
     double dis = 0;
     for (int j = 0; j < rowcount; j ++)
     {
-
         if (!time)
         {
             sid =  ui->searchTable_common_point->item(j,0)->text();
-            ui->searchTable_common_point->item(j,1)->text().toInt();
-            ui->searchTable_common_point->item(j,3)->text().toDouble();
+            index1 =  ui->searchTable_common_point->item(j,1)->text().toInt();
+            dis = ui->searchTable_common_point->item(j,3)->text().toDouble();
         }
         else
         {
-            ui->searchTable_time_point->item(j,0)->text();
-            ui->searchTable_time_point->item(j,1)->text().toInt();
-            ui->searchTable_time_point->item(j,3)->text().toDouble();
+            sid =  ui->searchTable_time_point->item(j,0)->text();
+            index1 = ui->searchTable_time_point->item(j,1)->text().toInt();
+            dis = ui->searchTable_time_point->item(j,3)->text().toDouble();
         }
 
         if (dis > 1)
         {
             break;
         }
-        ui->searchMap->drawPoint(&((seqs[seq_index[sid]])[index1]),"",seq_index[sid],j);
-
+       // ui->searchMap->drawPoint(&((seqs[seq_index[sid]])[index1]),"",seq_index[sid],j);
+       ui->searchMap->drawPoint(&((seqs[seq_index[sid]])[index1]),"",seq_index[sid],true);
     }
 }
 
 void SearchWin::search()
 {
-//    seqs.clear();
-    //refreshTable();
-
     fillTable(*input);//填充三个表格
-
     if (!time)
     {
         sortPointTable(ui->searchTable_common_point);
@@ -145,8 +140,11 @@ void SearchWin::search()
     ui->searchMap->drawSequences(seqs);
     drawPoints();
     ui->searchMap->reload();
-    coincide.clear();
+
     qDebug() << "Search Over";
+    coincide.clear();
+    seqs.clear();
+    rowcount = 0;
 }
 
 void SearchWin::sortPointTable(QTableWidget *table)
@@ -206,7 +204,7 @@ void SearchWin::fillTable(Sequence inSeq)
 {
     string tb = "importtest";
     QVector<PointCompare> pVec;
-    Sequence sf;
+
     double dfDis;
     double maxDis = 0;
 //    if (sf.pts->time == "")
@@ -223,6 +221,7 @@ void SearchWin::fillTable(Sequence inSeq)
     int t = 0;
     for (int i = 0;i < tracs->length();i++)
     {
+        Sequence sf;
         QTableWidgetItem *tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
         dfDis = computeDiscreteFrechet(&inSeq,&sf);
@@ -239,7 +238,8 @@ void SearchWin::fillTable(Sequence inSeq)
             fillPointTable(ui->searchTable_time_point, pVec, &sf);
             t++;
         }
-        else if (!sf.hasTime() && !inSeq.hasTime()) {
+        else if (!sf.hasTime() && !inSeq.hasTime())
+        {
             ui->searchTable_common->setItem(c,2,tItem);
             fillPointTable(ui->searchTable_common_point, pVec, &sf);
             c++;
@@ -256,6 +256,7 @@ void SearchWin::fillTable(Sequence inSeq)
         ui->searchTable_common->sortItems(2,Qt::AscendingOrder);
         for (int i = 0; i < c; i++)
         {
+            Sequence sf;
             if (i < numOfSeqs) {
                 QString id = ui->searchTable_common->item(i, 0)->text();
                 db->getSequenceByID(tb,&sf,id.toStdString());
@@ -280,6 +281,7 @@ void SearchWin::fillTable(Sequence inSeq)
         ui->searchTable_time->sortItems(2,Qt::AscendingOrder);
         for (int i = 0; i < t; i++)
         {
+            Sequence sf;
             if (i < numOfSeqs)
             {
                 QString id = ui->searchTable_time->item(i, 0)->text();
@@ -369,7 +371,7 @@ void SearchWin::init()
 void SearchWin::openFile()
 {
 
-    if (input->getNum() != 0)
+    if (input != NULL)
     {
         delete input;
         input = new Sequence();
@@ -448,9 +450,7 @@ void SearchWin::startSearch()
     this->ui->searchMap->reload();
     refreshTable();
     init();
-    if (seqs.length() != 0)
-        seqs.clear();
-    rowcount = 0;
+
     if (input->getNum() == 0)
     {
         return;
