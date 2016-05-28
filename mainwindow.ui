@@ -169,7 +169,7 @@ color:white;
      <string notr="true">font-family:'微软雅黑';</string>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>7</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QWidget" name="layoutWidget">
@@ -1497,7 +1497,18 @@ color:white;
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="page_8"/>
+    <widget class="QWidget" name="page_8">
+     <widget class="lcmWidget" name="widget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>961</width>
+        <height>561</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
    </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
@@ -1505,7 +1516,7 @@ color:white;
       <x>-10</x>
       <y>30</y>
       <width>1021</width>
-      <height>82</height>
+      <height>84</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -1928,6 +1939,12 @@ color:white;
    <class>MapWindow</class>
    <extends>QWidget</extends>
    <header>mapwindow.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>lcmWidget</class>
+   <extends>QWidget</extends>
+   <header>lcmwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
