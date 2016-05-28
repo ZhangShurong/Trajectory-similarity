@@ -52,6 +52,7 @@ public:
     void drawSequences(QVector<Sequence> se_draw_a);
     void drawSequences(QVector<Sequence> se_draw_a, QStringList coin_list);
     void drawSequence(Sequence se_a, int c = 3, int lWeight = 3);
+    void drawSequencePair(Sequence *se_a, Sequence *se_b, int c);
 
     void createFunc();
 
