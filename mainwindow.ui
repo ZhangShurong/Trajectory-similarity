@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>965</width>
-    <height>709</height>
+    <height>781</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -784,9 +784,6 @@ color:white;
                 <string>轨迹预览：</string>
                </property>
               </widget>
-              <zorder>label_19</zorder>
-              <zorder>line</zorder>
-              <zorder>stackedWidget_2</zorder>
              </widget>
             </item>
            </layout>
@@ -911,8 +908,6 @@ color:white;
                  </widget>
                 </item>
                </layout>
-               <zorder>infoBox</zorder>
-               <zorder>canvasWidget</zorder>
               </widget>
               <widget class="QWidget" name="page_10">
                <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -1711,7 +1706,18 @@ color:white;
         </property>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_8"/>
+      <widget class="QWidget" name="page_8">
+       <widget class="lcmWidget" name="widget" native="true">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>951</width>
+          <height>601</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </item>
     <item>
@@ -1722,7 +1728,6 @@ color:white;
      </widget>
     </item>
    </layout>
-   <zorder>layoutWidget</zorder>
    <zorder>stackedWidget</zorder>
    <zorder>label_10</zorder>
    <zorder>frame</zorder>
@@ -1740,6 +1745,12 @@ color:white;
    <class>MapWindow</class>
    <extends>QWidget</extends>
    <header>mapwindow.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>lcmWidget</class>
+   <extends>QWidget</extends>
+   <header>lcmwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
