@@ -90,6 +90,30 @@ void MapWindow::drawSequence(Sequence se_a, int c, int lWeight)
     createFunc();
 }
 
+void MapWindow::drawSequencePair(Sequence *se_a, Sequence *se_b, int c)
+{
+    if (se_a == NULL || se_b == NULL)
+    {
+        cerr << "drawSequencePair: Nothing to do." << endl;
+        return;
+    }
+    QTextStream out(jsFile);
+    size_t pointsCount = se_a->getNum() > se_b->getNum() ? se_a->getNum() : se_b->getNum();
+    cerr << "Total Points Counts: " << pointsCount << endl;
+    c %= color.length();
+    for (size_t i = 0; i < pointsCount; ++i)
+    {
+        out << "var cm" << i <<  "=new BMap.Polyline(["
+            << "new BMap.Point(" << QString::number(se_a->pts[i].longitude)
+                << "," << QString::number(se_a->pts[i].latitude) << "),"
+            << "new BMap.Point(" << QString::number(se_b->pts[i].longitude)
+                << "," << QString::number(se_b->pts[i].latitude) << ")],"
+            << "{strokeColor:\"" + color[c] + "\", strokeWeight:1,strokeOpacity:0.5});\n"
+            << "map.addOverlay(cm" << i << ");";
+            out.flush();
+    }
+}
+
 void MapWindow::initMap()
 {
     QTextStream out(jsFile);
@@ -394,7 +418,7 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
 {
     if (se_a == NULL)
     {
-        setCentralPoint(116.3,39.9,5);
+        setCentralPoint(116.3, 39.9, 5);
         return;
     }
 
@@ -408,7 +432,7 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
                   + QString::number(se_a->pts[i].latitude)
                   + "),";
     }
-    c = c%color.length();//防止颜色超界
+    c = c % color.length();//防止颜色超界
 
     str = str + "], {strokeColor:\""
               + color[c]

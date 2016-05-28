@@ -2,7 +2,7 @@
 
 lcmWidget::lcmWidget(QWidget *parent) : QWidget(parent)
 {
-    raw_seq[0] = raw_seq[1] = common_seq = NULL;
+    raw_seq[0] = raw_seq[1] = common_seq[0] = common_seq[1] = NULL;
     setupUi();
     setupActions();
 }
@@ -89,11 +89,15 @@ void lcmWidget::openFile(int i)
 
 void lcmWidget::calcLcmSequence()
 {
-    if (common_seq != NULL) {
-        delete common_seq;
+    for (int i = 0; i < 2; ++i) {
+        if (common_seq[i] != NULL) {
+            delete common_seq[i];
+        }
+        common_seq[i] = new Sequence;
     }
-    common_seq = new Sequence;
-    Sequence &p = *raw_seq[0], &q = *raw_seq[1], &common = *common_seq;
+
+    Sequence &p   = *raw_seq[0], &q   = *raw_seq[1];
+    Sequence &c_p = *common_seq[0], &c_q = *common_seq[1];
 
     QVector< QVector <QPair<size_t, char> > > m(p.pointsNum + 1);
 
@@ -126,11 +130,13 @@ void lcmWidget::calcLcmSequence()
             --i;
             break;
         case '\\':
-            common.appendPt(&p[i - 1]);
+            c_p.appendPt(&p[i - 1]);
+            c_q.appendPt(&q[i - 1]);
             --i;
             --j;
+            break;
         default:
-            cerr << "Unrecognized character" << endl;
+            cerr << "Unrecognized character: " << m[i][j].first << endl;
             break;
         }
     }
@@ -140,28 +146,30 @@ void lcmWidget::drawSequences()
 {
     QPair<double, double> centralPoint(0.0, 0.0);
     int noneNullCount = 0;
-    Sequence *seqs[] = {raw_seq[0], raw_seq[1], common_seq};
-    for (int i = 0; i < 3; ++i) {
+    Sequence *seqs[] = {raw_seq[0], raw_seq[1]/*, common_seq[0], common_seq[1]*/};
+    for (size_t i = 0; i < sizeof(seqs) / sizeof(seqs[0]); ++i) {
         if (seqs[i] == NULL)
             continue;
         ++noneNullCount;
     }
-    if (noneNullCount == 0)
+    if (noneNullCount == 0) {
+        //cerr << "No sequence to draw!" << endl;
         return;
-    for (int i = 0; i < 3; ++i) {
+    }
+    for (size_t i = 0; i < sizeof(seqs) / sizeof(seqs[0]); ++i) {
         if (seqs[i] == NULL)
             continue;
-        centralPoint.first  += seqs[i]->getCentralPoint().longitude / (double)noneNullCount;
-        centralPoint.second += seqs[i]->getCentralPoint().latitude  / (double)noneNullCount;
+        centralPoint.first  += seqs[i]->getCentralPoint().longitude;
+        centralPoint.second += seqs[i]->getCentralPoint().latitude;
     }
-    centralPoint.first /= noneNullCount;
+    centralPoint.first  /= noneNullCount;
     centralPoint.second /= noneNullCount;
 
     map->initJS();
     map->setDefaultCentralPt();
     map->showPoints(true);
     map->setCentralPoint(centralPoint.first, centralPoint.second, 10);
-    for (int i = 0; i < 3; ++i) {
+    for (size_t i = 0; i < sizeof(seqs) / sizeof(seqs[0]); ++i) {
         if (seqs[i] == NULL)
             continue;
         map->drawSequence(*seqs[i], i);
@@ -191,8 +199,11 @@ void lcmWidget::onRefreshButtonClicked()
                              tr("计算公共轨迹需要选择两条轨迹"), QMessageBox::Yes);
     } else {
         calcLcmSequence();
+        drawSequences();
+        map->drawSequencePair(common_seq[0], common_seq[1], 1);
+        return;
     }
-    drawSequences();
+    drawSequences();// */
 }
 
 void lcmWidget::updateThreshold()

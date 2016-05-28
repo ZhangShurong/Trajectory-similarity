@@ -29,7 +29,7 @@ private:
     QLabel      *fileNameLabel[2];
 
     /****** Non-UI part ********/
-    Sequence *raw_seq[2], *common_seq;
+    Sequence *raw_seq[2], *common_seq[2];
     double threshold;
 
 signals:
