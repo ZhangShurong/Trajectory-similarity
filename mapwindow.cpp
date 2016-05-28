@@ -82,6 +82,20 @@ void MapWindow::drawSequences(QVector<Sequence> se_draw_a)
     createFunc();
 }
 
+void MapWindow::drawSequences(QVector<Sequence> se_draw_a, QStringList coin_list)
+{
+    markList.clear();
+    labelList.clear();
+
+    for (int i = 0; i< se_draw_a.length(); i++)
+    {
+        if (coin_list.contains(se_draw_a[i].getID()))
+            continue;
+        drawSqu(&(se_draw_a[i]), i);
+    }
+    createFunc();
+}
+
 void MapWindow::drawSequence(Sequence se_a, int c, int lWeight)
 {
     markList.clear();

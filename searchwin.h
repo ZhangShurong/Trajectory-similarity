@@ -33,6 +33,9 @@ private:
     bool time;//表示是否有时间
     bool distinct;
     int rowcount;
+    QMap<QString, int> seq_index;
+    QMap<QString, Sequence> id_seq_map;
+
     QStringList *tracs;
     QStringList coincide;//专门存储轨迹id
 

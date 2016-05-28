@@ -72,12 +72,15 @@ void SearchWin::initSeqPartTable(QTableWidget *table)
 
 void SearchWin::initPointTable(QTableWidget *table)
 {    
+    table->setColumnCount(5);
+    table->setRowCount(ROW_NUM);
     table->clearContents();
     QStringList header;
     header << "轨迹ID"
            << "点在轨迹中位置"
-           << "编号"
-           << "";
+           << "地图中编号"
+           << "DIS"
+           << "点在输入轨迹中位置";
 
     table->setHorizontalHeaderLabels(header);
 }
@@ -89,36 +92,55 @@ void SearchWin::showPartofSeq()
 
 void SearchWin::drawPoints()
 {
-    QMap<QString, int> seq_index;
-    for (int i = 0; i < seqs.length(); i++)
-    {
-        seq_index.insert(seqs[i].getID(), i);
-    }
+//    QMap<QString, int> seq_index;
+//    for (int i = 0; i < seqs.length(); i++)
+//    {
+//        seq_index.insert(seqs[i].getID(), i);
+//    }
     QString sid = "";
+    int index2 = 0;
     int index1 = 0;
     double dis = 0;
+    int num = 0;
     for (int j = 0; j < rowcount; j ++)
     {
+
+
         if (!time)
         {
             sid =  ui->searchTable_common_point->item(j,0)->text();
-            index1 =  ui->searchTable_common_point->item(j,1)->text().toInt();
+            index2 =  ui->searchTable_common_point->item(j,1)->text().toInt();
+            index1 =  ui->searchTable_common_point->item(j,4)->text().toInt();
             dis = ui->searchTable_common_point->item(j,3)->text().toDouble();
+            if (dis !=0 )
+                num = ui->searchTable_common_point->item(j,2)->text().toInt();
         }
         else
         {
             sid =  ui->searchTable_time_point->item(j,0)->text();
-            index1 = ui->searchTable_time_point->item(j,1)->text().toInt();
+            index2 = ui->searchTable_time_point->item(j,1)->text().toInt();
+            index1 =  ui->searchTable_time_point->item(j,4)->text().toInt();
             dis = ui->searchTable_time_point->item(j,3)->text().toDouble();
+            if (dis !=0 )
+                num = ui->searchTable_time_point->item(j,2)->text().toInt();
         }
 
         if (dis > 1)
         {
             break;
         }
+        if (dis == 0){
+            ui->searchMap->drawPoint(&((id_seq_map[sid]).pts[index2]),"",seq_index[sid],true);
+        }
+        else
+        {
+            ui->searchMap->drawPoint(&((id_seq_map[sid]).pts[index2]),"",seq_index[sid],num);
+            ui->searchMap->drawPoint(&(input->pts[index1]),"",seq_index[sid],num);
+        }
        // ui->searchMap->drawPoint(&((seqs[seq_index[sid]])[index1]),"",seq_index[sid],j);
-       ui->searchMap->drawPoint(&((seqs[seq_index[sid]])[index1]),"",seq_index[sid],true);
+
     }
+    seq_index.clear();
 }
 
 void SearchWin::search()
@@ -137,13 +159,14 @@ void SearchWin::search()
     ui->searchMap->showPoints(true);
     ui->searchMap->showTimes(true);
     ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
-    ui->searchMap->drawSequences(seqs);
+    ui->searchMap->drawSequences(seqs, coincide);
     drawPoints();
     ui->searchMap->reload();
 
     qDebug() << "Search Over";
     coincide.clear();
     seqs.clear();
+    id_seq_map.clear();
     rowcount = 0;
 }
 
@@ -151,9 +174,18 @@ void SearchWin::sortPointTable(QTableWidget *table)
 {
     table->sortItems(3, Qt::AscendingOrder);
     int length = rowcount;
+    int j = 0;
     for (int i =0; i < length; i++)
     {
-        table->setItem(i,2, new QTableWidgetItem(QString::number(i)));
+        if (table->item(i,3)->text().toDouble() == 0)
+        {
+            table->setItem(i,2, new QTableWidgetItem(""));
+            continue;
+        }
+
+        table->setItem(i,2, new QTableWidgetItem(QString::number(j)));
+        j ++;
+        seq_index.insert(table->item(i,0)->text(), table->item(i,2)->text().toInt());
     }
 
 }
@@ -192,10 +224,12 @@ void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> points
     {
         table->setItem(x,0, new QTableWidgetItem(se->getID()));
         table->setItem(x,1, new QTableWidgetItem(
-                                                QString::number(pointsV[x - start].index1)));
+                                                QString::number(pointsV[x - start].index2)));
 
         table->setItem(x,3, new QTableWidgetItem(
                                                 QString::number(pointsV[x - start].distance)));
+        table->setItem(x,4, new QTableWidgetItem(
+                                                QString::number(pointsV[x - start].index1)));
     }
     rowcount = end;
 }
@@ -207,16 +241,6 @@ void SearchWin::fillTable(Sequence inSeq)
 
     double dfDis;
     double maxDis = 0;
-//    if (sf.pts->time == "")
-//    {
-//        qDebug() << "No time";
-//        time = false;
-//    }
-//    else {
-//        time = true;
-//        qDebug() << "Has time";
-//    }
-
     int c = 0;
     int t = 0;
     for (int i = 0;i < tracs->length();i++)
@@ -250,6 +274,7 @@ void SearchWin::fillTable(Sequence inSeq)
         }
     }
     seqs.append(inSeq);
+    id_seq_map.insert(inSeq.getID(), inSeq);
     if ( c != 0)
     {
         time = false;
@@ -261,6 +286,7 @@ void SearchWin::fillTable(Sequence inSeq)
                 QString id = ui->searchTable_common->item(i, 0)->text();
                 db->getSequenceByID(tb,&sf,id.toStdString());
                 seqs.append(sf);
+                id_seq_map.insert(sf.getID(), sf);
             }
 
             QTableWidgetItem *tItem = new QTableWidgetItem();
@@ -287,6 +313,7 @@ void SearchWin::fillTable(Sequence inSeq)
                 QString id = ui->searchTable_time->item(i, 0)->text();
                 db->getSequenceByID(tb,&sf,id.toStdString());
                 seqs.append(sf);
+                id_seq_map.insert(sf.getID(), sf);
             }
             QTableWidgetItem *tItem = new QTableWidgetItem();
             double dis = ui->searchTable_time->item(i, 2)->text().toDouble();
