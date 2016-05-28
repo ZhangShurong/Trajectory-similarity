@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     calwindow.cpp \
     searchwin.cpp \
-    settingwin.cpp
+    settingwin.cpp \
+    lcmwidget.cpp
 
 HEADERS += \
     csv.h \
@@ -37,7 +38,8 @@ HEADERS += \
     mainwindow.h \
     calwindow.h \
     searchwin.h \
-    settingwin.h
+    settingwin.h \
+    lcmwidget.h
 
 RESOURCES += \
     res.qrc \
