@@ -113,7 +113,6 @@ void CalWindow::startSlot()
             ui->mapWidget->drawSequences(t);
 
             int beginMin1,beginMin2;
-
             QVector<QVector<int> >qc=getSimplify(p,q,beginMin1,beginMin2);
             QVector<int>pv=qc[0];
             QVector<int>qv=qc[1];

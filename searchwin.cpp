@@ -10,6 +10,7 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
     numOfSeqs = 3;
     tracs = new QStringList();
     rowcount = 0;
+    partRowcount = 0;
     db = new DataBase(1);
     ui->searchMap->initJS();
     ui->searchMap->reload();
@@ -168,6 +169,7 @@ void SearchWin::search()
     seqs.clear();
     id_seq_map.clear();
     rowcount = 0;
+    partRowcount = 0;
 }
 
 void SearchWin::sortPointTable(QTableWidget *table)
@@ -234,6 +236,36 @@ void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> points
     rowcount = end;
 }
 
+void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partInfo,
+                              int beginMin1,int beginMin2,Sequence *se)
+{
+    if (distinct)
+    {
+        if (coincide.contains(se->getID()))
+        {
+            return;
+        }
+    }
+    QVector<int>pv=partInfo[0];
+    QVector<int>qv=partInfo[1];
+    //int start = partRowcount;
+   // int end = start + pv.size();
+
+               // qDebug("测试%d",qc[0].size());
+    for(int i=0;i+1<pv.size();i=i+2){
+        int begin1=pv[i];
+        int end1=pv[i+1];
+        int begin2=qv[i];
+        int end2=qv[i+1];
+        table->setItem(partRowcount, 0, new QTableWidgetItem(se->getID()));
+        table->setItem(partRowcount, 1, new QTableWidgetItem(QString::number(begin1+beginMin1)));
+        table->setItem(partRowcount, 2, new QTableWidgetItem(QString::number(begin2+beginMin2)));
+        //ui->searchMap->highLightPart(p, begin1+beginMin1, end1+beginMin1, 3, 10);
+       // ui->searchMap->highLightPart(q, begin2+beginMin2, end2+beginMin2, 3, 10);
+        partRowcount ++;
+    }
+}
+
 void SearchWin::fillTable(Sequence inSeq)
 {
     string tb = "importtest";
@@ -256,9 +288,15 @@ void SearchWin::fillTable(Sequence inSeq)
         tItem->setData(Qt::DisplayRole,dfDis);
         pVec = getNearestPoint(&inSeq, &sf);
 
+        //计算轨迹端
+        //int beginMin1,beginMin2;
+       // QVector<QVector<int> >qc=getSimplify(&inSeq,&sf,beginMin1,beginMin2);
+
+
         if (sf.hasTime() && inSeq.hasTime())
         {
             ui->searchTable_time->setItem(t,2,tItem);
+            //fillPartTable(ui->searchTable_time_part, qc, beginMin1, beginMin2, &sf);
             fillPointTable(ui->searchTable_time_point, pVec, &sf);
             t++;
         }
@@ -266,6 +304,7 @@ void SearchWin::fillTable(Sequence inSeq)
         {
             ui->searchTable_common->setItem(c,2,tItem);
             fillPointTable(ui->searchTable_common_point, pVec, &sf);
+            //fillPartTable(ui->searchTable_common_part, qc, beginMin1, beginMin2, &sf);
             c++;
         }
         if (dfDis >= maxDis)

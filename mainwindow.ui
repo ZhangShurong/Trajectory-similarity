@@ -1707,16 +1707,11 @@ color:white;
        </widget>
       </widget>
       <widget class="QWidget" name="page_8">
-       <widget class="lcmWidget" name="widget" native="true">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>951</width>
-          <height>601</height>
-         </rect>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_23">
+        <item>
+         <widget class="lcmWidget" name="widget" native="true"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
