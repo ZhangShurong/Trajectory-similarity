@@ -17,9 +17,7 @@ double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
     q = sb;
     coef=calCoef();
     initMemSpace(sa, sb);
-    double res = computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
-    //out2DArray(mem, sa->getNum(), sb->getNum());
-    return res;
+    return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
 }
 double euclideanDistance(Point a, Point b)
 {
@@ -86,7 +84,7 @@ getSquFromFile(Csv *csv, Sequence *se)
     QString yStr;
     double x;
     double y;
- //   QTextStream cout(stdout,  QIODevice::WriteOnly);
+  //  QTextStream cout(stdout,  QIODevice::WriteOnly);
     QVector<Point*> tContainer;
     while (csv->getline(line) != 0) {
         const char *t = line.c_str();
@@ -123,7 +121,7 @@ getSquFromFile(Csv *csv, Sequence *se)
         sort(tContainer.begin(),tContainer.end(),timeCompare);
         for(int i=0;i<tContainer.size();i++){
             se->appendPt(tContainer[i]);
-         //   cout<<"beign "<<tContainer[i]->time<<endl;
+       //     cout<<"beign "<<tContainer[i]->time<<endl;
         }
     }
        tContainer.clear();
@@ -202,29 +200,84 @@ void initMemSpace(Sequence *p, Sequence *q)
 //分别输入两个轨迹段的起点和终位置
 double  getSecSim(int i1,int j1,int i2,int j2){
     initMemSpace(p, q);
-  //if((i1>=0&&i2>=0)&&(i1<=j1&&i2<=j2)&&(j1<=p->pointsNum&&j2<=q->pointsNum)){
-    // QTextStream cout(stdout,  QIODevice::WriteOnly);
+/*
      Sequence m1;
      Sequence m2;
 
      m1.pointsNum=j1-i1+1;
      m2.pointsNum=j2-i2+1;
 
-   //  cout<<m1.pointsNum<<" "<<m2.pointsNum<<endl;
 
       m1.pts = new Point[m1.pointsNum];
       m2.pts = new Point[m2.pointsNum];
 
      for(int i=i1;i<=j1;i++){
-       //  cout<<"fsdfdsf"<<endl;
          m1.pts[i-i1]=p->pts[i];
      }
      for(int i=i2;i<=j2;i++){
-        // cout<<"asdf"<<endl;
          m2.pts[i-i2]=q->pts[i];
      }
+*/
+    //  return computeDFD(m1.pointsNum-1, m2.pointsNum-1,&m1,&m2);
+    return computeDFD_new(i1, j1, i2, j2);
+}
 
-      return computeDFD(m1.pointsNum-1, m2.pointsNum-1,&m1,&m2);
+QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
+{
+      QVector<SecCompare> q1;
+      QVector<SecCompare> q2;
+      QVector<SecCompare> q3;
+
+      p = se_a;
+      q = se_b;
+       int totalNum=p->pointsNum+q->pointsNum;
+
+       int gap;
+       int h;
+
+       if(totalNum<=200&&totalNum>=40){
+           if(a==1){
+               gap=2;
+               h=1;
+           }else if(a==2){
+               gap=1;
+               h=1;
+           }
+       }else if(totalNum<40){
+            gap=1;
+            h=1;
+       }else if(totalNum>200){
+           gap=5;
+           h=gap;
+       }
+
+
+         for(int i=gap;i<gap+3;i++){
+               calculateSec(i,h,q1);
+          }
+
+        for(int j=gap;j<gap+5;j++){
+               mergeChange(j,q1,q2);
+        }
+          sort(q2.begin(),q2.end(),compare);
+          for(int i=0;i<q2.size();i++){
+            // cout<<i<<" ("<<q2[i].beginIndex1<<","<<q2[i].endIndex1<<")"<<","<<"("<<q2[i].beginIndex2<<","<<q2[i].endIndex2<<")       similarity="<<q2[i].simliarity<<endl;
+            q1.append(q2[i]);
+            if(i>100)
+                break;
+          }
+          sort(q1.begin(),q1.end(),compare);
+
+          if(q1.size()>100){
+              for(int i=0;i<100;i++){
+                  q3.append(q1[i]);
+              }
+          }else{
+              for(int i=0;i<q1.size();i++){
+                  q3.append(q1[i]);
+              }
+          }
+          return q3;
 }
 
 QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2){
@@ -280,67 +333,6 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q,int& beginMin1,int& beg
 
 }
 
-QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
-{
-      QVector<SecCompare> q1;
-      QVector<SecCompare> q2;
-      QVector<SecCompare> q3;
- //     QVector<SecCompare> q4;
-
-      p = se_a;
-      q = se_b;
-//      QTextStream cout(stdout,  QIODevice::WriteOnly);
-
-//       cout<<p->pointsNum<<" "<<q->pointsNum<<endl;
-       int totalNum=p->pointsNum+q->pointsNum;
-
-       int gap;
-       int h;
-
-       if(totalNum<=200&&totalNum>=40){
-           if(a==1){
-               gap=5;
-               h=1;
-           }else if(a==2){
-               gap=1;
-               h=1;
-           }
-       }else if(totalNum<40){
-            gap=1;
-            h=1;
-       }else if(totalNum>200){
-           gap=5;
-           h=gap;
-       }
-
-
-         for(int i=gap;i<gap+3;i++){
-               calculateSec(i,h,q1);
-          }
-
-        for(int j=gap;j<gap+5;j++){
-               mergeChange(j,q1,q2);
-        }
-          sort(q2.begin(),q2.end(),compare);
-          for(int i=0;i<q2.size();i++){
-            // cout<<i<<" ("<<q2[i].beginIndex1<<","<<q2[i].endIndex1<<")"<<","<<"("<<q2[i].beginIndex2<<","<<q2[i].endIndex2<<")       similarity="<<q2[i].simliarity<<endl;
-            q1.append(q2[i]);
-            if(i>100)
-                break;
-          }
-          sort(q1.begin(),q1.end(),compare);
-
-          if(q1.size()>100){
-              for(int i=0;i<100;i++){
-                  q3.append(q1[i]);
-              }
-          }else{
-              for(int i=0;i<q1.size();i++){
-                  q3.append(q1[i]);
-              }
-          }
-          return q3;
-}
 
 QVector<SecCompare> findBest(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2){
 
@@ -370,7 +362,7 @@ QVector<SecCompare> findBest(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2
     m1.pointsNum=endMax1-beginMin1+1;
     m2.pointsNum=endMax2-beginMin2+1;
 
-    //cout<<m1.pointsNum<<" "<<m2.pointsNum<<endl;
+
 
      m1.pts = new Point[m1.pointsNum];
      m2.pts = new Point[m2.pointsNum];
@@ -415,6 +407,8 @@ double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
     else
         mem[i][j] = 10000;
 
+    // printMemory();
+    // return the DFD
     return mem[i][j];
 }
 
@@ -640,32 +634,15 @@ bool compareDis(PointCompare p1,PointCompare p2){
 
 void out2DArray(double **arr, int x, int y)
 {
-    FILE *memFile = fopen("./mem.md","w");
-
-
     int i;
-    for (int m = 0; m < y; m++)
-    {
-        fprintf(memFile,"%d|", m);
-    }
-    fprintf(memFile,"\n");
-    for (int m = 0; m < x; m++)
-    {
-        fprintf(memFile,"---|");
-    }
-    fprintf(memFile,"\n");
     for (i = 0; i < x; i++)
     {
-
         for (int j = 0; j < y; j++)
         {
             printf("%4f\t", arr[i][j]);
-            fprintf(memFile,"%f|", arr[i][j]);
         }
         printf("\n");
-        fprintf(memFile,"\n");
     }
-    fclose(memFile);
 }
 
 
@@ -684,4 +661,33 @@ void getSec(int m, int n)
 
         }
     }
+}
+
+
+double computeDFD_new(int startx, int endx, int starty, int endy)
+{
+    if (mem[endx][endy] > -1)
+        return mem[endx][endy];
+    // if top left column, just compute the distance
+    else if (endx == startx && endy == starty)
+        mem[endx][endy] = euclideanDistance(p->pts[endx], q->pts[endy]);
+    // can either be the actual distance or distance pulled from above
+    else if (endx > startx && endy == starty)
+        mem[endx][endy] = max(computeDFD_new(startx, endx - 1, starty, endy), euclideanDistance(p->pts[endx], q->pts[endy]));
+    // can either be the distance pulled from the left or the actual
+    // distance
+    else if (endx == startx && endy > starty)
+        mem[endx][endy] = max(computeDFD_new(startx, endx, starty ,endy - 1), euclideanDistance(p->pts[endx], q->pts[endy]));
+    // can be the actual distance, or distance from above or from the left
+    else if (endx > startx && endy > starty) {
+        double temp = min(min(computeDFD_new(startx, endx - 1, starty ,endy), computeDFD_new(startx, endx - 1,starty,  endy - 1)), computeDFD_new(startx, endx, starty, endy - 1));
+        mem[endx][endy] = max(temp, euclideanDistance(p->pts[endx], q->pts[endy]));
+    }
+    // infinite
+    else
+        mem[endx][endy] = 10000;
+
+    // printMemory();
+    // return the DFD
+    return mem[endx][endy];
 }

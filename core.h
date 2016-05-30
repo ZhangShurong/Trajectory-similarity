@@ -55,4 +55,5 @@ QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b);
 bool compareDis(PointCompare p1,PointCompare p2);
 void out2DArray(double **arr, int x, int y);
 void getSec(int m, int n);
+double computeDFD_new(int startx, int endx, int starty, int endy);
 #endif // CORE_H
