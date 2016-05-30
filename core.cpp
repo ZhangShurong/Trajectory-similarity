@@ -178,13 +178,7 @@ bool timeCompare(Point*p1,Point*p2){
 
 void initMemSpace(Sequence *p, Sequence *q)
 {
-  //  Sequence *m;
 
-//    if(p->getNum()>=q->getNum()){
-//          m = p;
-//      }else{
-//          m=q;
-//      }
        mem = new double*[p->getNum()];
        for (int k = 0; k < p->getNum(); k++)
        {
@@ -259,6 +253,8 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
                   q3.append(q1[i]);
               }
           }
+          q2.clear();
+          q1.clear();
           return q3;
 }
 
@@ -311,6 +307,7 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q,int& beginMin1,int& beg
                    }
          qb.append(pv);
          qb.append(qv);
+         qst.clear();
          return qb;
 
 }
@@ -344,18 +341,18 @@ QVector<SecCompare> findBest(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2
     m1.pointsNum=endMax1-beginMin1+1;
     m2.pointsNum=endMax2-beginMin2+1;
 
-
-
      m1.pts = new Point[m1.pointsNum];
      m2.pts = new Point[m2.pointsNum];
 
     for(int i=beginMin1;i<=endMax1;i++){
         m1.pts[i-beginMin1]=p->pts[i];
     }
+
     for(int i=beginMin2;i<=endMax2;i++){
         m2.pts[i-beginMin2]=q->pts[i];
     }
 
+   temp.clear();
    QVector<SecCompare>qs= getBestSce(findSimilarSection(&m1,&m2,2),2);
    return qs;
 }
