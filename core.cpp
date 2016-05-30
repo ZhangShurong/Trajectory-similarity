@@ -178,20 +178,20 @@ bool timeCompare(Point*p1,Point*p2){
 
 void initMemSpace(Sequence *p, Sequence *q)
 {
-    Sequence *m;
+  //  Sequence *m;
 
-    if(p->getNum()>=q->getNum()){
-          m = p;
-      }else{
-          m=q;
-      }
-       mem = new double*[m->getNum()];
-       for (int k = 0; k < m->getNum(); k++)
+//    if(p->getNum()>=q->getNum()){
+//          m = p;
+//      }else{
+//          m=q;
+//      }
+       mem = new double*[p->getNum()];
+       for (int k = 0; k < p->getNum(); k++)
        {
-           mem[k] = new double[m->getNum()];
+           mem[k] = new double[q->getNum()];
        }
-       for (int i = 0; i < m->getNum(); i++) {
-                   for (int j = 0; j < m->getNum(); j++) {
+       for (int i = 0; i < p->getNum(); i++) {
+                   for (int j = 0; j < q->getNum(); j++) {
                        mem[i][j] = -1.0;
                    }
                }
@@ -200,25 +200,7 @@ void initMemSpace(Sequence *p, Sequence *q)
 //分别输入两个轨迹段的起点和终位置
 double  getSecSim(int i1,int j1,int i2,int j2){
     initMemSpace(p, q);
-/*
-     Sequence m1;
-     Sequence m2;
 
-     m1.pointsNum=j1-i1+1;
-     m2.pointsNum=j2-i2+1;
-
-
-      m1.pts = new Point[m1.pointsNum];
-      m2.pts = new Point[m2.pointsNum];
-
-     for(int i=i1;i<=j1;i++){
-         m1.pts[i-i1]=p->pts[i];
-     }
-     for(int i=i2;i<=j2;i++){
-         m2.pts[i-i2]=q->pts[i];
-     }
-*/
-    //  return computeDFD(m1.pointsNum-1, m2.pointsNum-1,&m1,&m2);
     return computeDFD_new(i1, j1, i2, j2);
 }
 
@@ -237,7 +219,7 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
 
        if(totalNum<=200&&totalNum>=40){
            if(a==1){
-               gap=2;
+               gap=1;
                h=1;
            }else if(a==2){
                gap=1;
