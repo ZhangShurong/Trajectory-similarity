@@ -48,13 +48,16 @@ private:
     void initPointTable(QTableWidget *table);
     void showPartofSeq();
     void drawPoints();
-    //void search(Sequence input);
+
+//void search(Sequence input);
+
     void search();
     void sortPointTable(QTableWidget *table);
     void initSig();
     void fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se);
     void fillPartTable(QTableWidget *table, QVector< QVector<int> > partInfo, int beginMin1, int beginMin2, Sequence *se);
     void fillTable(Sequence inSeq);
+    void calSecPart();
 
 
 public slots:

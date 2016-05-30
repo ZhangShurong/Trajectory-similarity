@@ -571,9 +571,7 @@ void MainWindow::refreshTable()
            << "Frechet Distance"
            << "相似度";
     ui->mainTable->setHorizontalHeaderLabels(header);
-    //ui->mainTable->resizeColumnsToContents();
     ui->mainTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-//    QStringList *tracs;
     tracs = db->getAllTracID(tName);
     if (tracs->length() == 0)
         ui->mainTable->clear();

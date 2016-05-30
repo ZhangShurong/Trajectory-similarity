@@ -12,6 +12,7 @@ private:
     bool showPoint;
     bool showTime;
     bool showEndpoints;
+    int filterStatus;//0 only common;1 only time; others all
 
     QString test;
     QString jsFilePath;
@@ -68,6 +69,7 @@ public:
     void showPoints(bool sp_a);
     void showTimes(bool st_a);
     void showEndPoints(bool se_a);
+    void setFilter(int mod);
 
 
     void highLightPart(Sequence *se_a, int start, int end, int c, int lWeight = 5);
