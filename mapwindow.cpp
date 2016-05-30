@@ -232,12 +232,17 @@ void MapWindow::initWidget()
 void MapWindow::setCentralPoint(double x, double y, int zoom)
 {
      QTextStream out(jsFile);
+//     QString str = "var point = new BMap.Point(" + QString::number(x) + ","+QString::number(y)+");\n"
+//             + "map.centerAndZoom(point," + zoom + ");\n";
+
      out <<"var point = new BMap.Point("
          <<QString::number(x)
-         <<","+QString::number(y)+");\n"
+         <<","+QString::number(y)+");"
          <<"map.centerAndZoom(point,"
          << zoom
-         <<");\n";
+         <<");";
+
+     //out << str;
      out.flush();
 }
 
@@ -414,6 +419,11 @@ void MapWindow::showEndPoints(bool se_a)
     showEndpoints = se_a;
 }
 
+void MapWindow::setFilter(int mod)
+{
+    filterStatus = mod;
+}
+
 void MapWindow::highLightPart(Sequence *se_a, int start, int end, int c, int lWeight)
 {
     QString ID = "t" + se_a->getID();
@@ -443,10 +453,24 @@ void MapWindow::highLightPart(Sequence *se_a, int start, int end, int c, int lWe
 
 void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
 {
+
     if (se_a == NULL)
     {
         setCentralPoint(116.3, 39.9, 5);
         return;
+    }
+    if (filterStatus == 0)
+    {
+        if (se_a->hasTime()){
+            return;
+        }
+    }
+    else if(filterStatus == 1)
+    {
+        if (!se_a->hasTime())
+        {
+            return;
+        }
     }
 
     QString ID = "t" + se_a->getID();//如t1_40
@@ -538,7 +562,6 @@ void MapWindow::createFunc()
     }
     */
 
-
     if (markList.length() > 0)
     {
         out << "function showOver(){";
@@ -590,6 +613,7 @@ MapWindow::MapWindow(QWidget *parent):QWidget(parent)
     showPoint = false;
     showTime = false;
     showEndpoints = false;
+    filterStatus = -1;//all
     draw();
     editJs();
 }
