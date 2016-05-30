@@ -17,7 +17,9 @@ double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
     q = sb;
     coef=calCoef();
     initMemSpace(sa, sb);
-    return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
+    double res = computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
+    //out2DArray(mem, sa->getNum(), sb->getNum());
+    return res;
 }
 double euclideanDistance(Point a, Point b)
 {
@@ -413,8 +415,6 @@ double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
     else
         mem[i][j] = 10000;
 
-    // printMemory();
-    // return the DFD
     return mem[i][j];
 }
 
@@ -640,15 +640,32 @@ bool compareDis(PointCompare p1,PointCompare p2){
 
 void out2DArray(double **arr, int x, int y)
 {
+    FILE *memFile = fopen("./mem.md","w");
+
+
     int i;
+    for (int m = 0; m < y; m++)
+    {
+        fprintf(memFile,"%d|", m);
+    }
+    fprintf(memFile,"\n");
+    for (int m = 0; m < x; m++)
+    {
+        fprintf(memFile,"---|");
+    }
+    fprintf(memFile,"\n");
     for (i = 0; i < x; i++)
     {
+
         for (int j = 0; j < y; j++)
         {
             printf("%4f\t", arr[i][j]);
+            fprintf(memFile,"%f|", arr[i][j]);
         }
         printf("\n");
+        fprintf(memFile,"\n");
     }
+    fclose(memFile);
 }
 
 
