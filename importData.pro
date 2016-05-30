@@ -8,7 +8,6 @@ QT       += core sql gui widgets webkitwidgets printsupport
 
 TARGET = importData
 
-TRANSLATIONS += Chinese.ts
 TEMPLATE = app
 
 
