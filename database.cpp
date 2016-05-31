@@ -105,8 +105,10 @@ string DataBase::insertData(Csv *csv, string tbName)
     }
 
     while (csv->getline(line) != 0) {
-
-
+        if (line.empty())
+        {
+            continue;
+        }
         const char *t = line.c_str();
         if (!(t[0]>=0 && t[0]<=127))
             continue;
