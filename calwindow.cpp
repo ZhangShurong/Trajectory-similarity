@@ -112,23 +112,19 @@ void CalWindow::startSlot()
             t.append(*q);
             ui->mapWidget->drawSequences(t);
 
+
             int beginMin1,beginMin2;
             QVector<QVector<int> >qc=getSimplify(p,q,beginMin1,beginMin2);
             QVector<int>pv=qc[0];
             QVector<int>qv=qc[1];
-           // qDebug("测试%d",qc[0].size());
             for(int i=0;i+1<pv.size();i=i+2){
-            //  qDebug("是否进入");
-               // QStringList ql=qst[i].split(" ");
                 int begin1=pv[i];
                 int end1=pv[i+1];
                 int begin2=qv[i];
                 int end2=qv[i+1];
                 ui->mapWidget->highLightPart(p, begin1+beginMin1, end1+beginMin1, 3, 10);
                 ui->mapWidget->highLightPart(q, begin2+beginMin2, end2+beginMin2, 3, 10);
-                //cout<<"qst"<<begin1<<" "<<end1<<" "<<begin2<<" "<<end2<<endl;
             }
-            //ui->mapWidget->drawPoint(&(p->pts[0]), (QString)p->pts[0].id,6,6,true);
             ui->mapWidget->reload();
         }
 }

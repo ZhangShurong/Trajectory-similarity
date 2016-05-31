@@ -5,6 +5,7 @@
 #include "header.h"
 #include <cassert>
 #include <iostream>
+#include <string.h>
 
 struct Time{
     int year;
@@ -20,6 +21,7 @@ class Point
 public:
     Point();
     Point(double x, double y, QString time_a = "", QString id_a = "");
+   // Point(Point &p);
     void buildPoint(QString pt, QString te, QString ID);
     double longitude;
     double latitude;

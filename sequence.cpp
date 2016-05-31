@@ -23,7 +23,7 @@ Sequence::Sequence()
     seek = 0;
     id = "";
     pointsNum = 0;
-    initSize = 50;
+    initSize = 15;
     pts = new Point[initSize];
 }
 
@@ -40,17 +40,21 @@ void Sequence::clear()
 
 void Sequence::appendPt(Point *pt)
 {
-    pts[seek] = *pt;
-    seek++;
-    pointsNum = seek;
     if (seek == initSize)
     {
         initSize *=2;
         Point *temp = new Point[initSize];
-        temp = pts;
+        for (int i = 0; i < seek; i++)
+        {
+            temp[i] = pts[i];
+        }
         delete []pts;
         pts = temp;
     }
+    pts[seek] = *pt;
+    seek++;
+    pointsNum = seek;
+
 }
 
 void Sequence::setPtNum(int num)
@@ -225,3 +229,14 @@ Point::Point(double x, double y, QString time_a, QString id_a)
     id = id_a;
     painted=false;
 }
+/*
+Point::Point(Point &p)
+{
+    p.id = id;
+    p.latitude = latitude;
+    p.longitude = longitude;
+    p.painted = painted;;
+    p.time = time;
+    p.t = t;
+}
+*/
