@@ -5,10 +5,12 @@
 #include <calwindow.h>
 
 using namespace std;
-double **mem;
+double **mem = NULL;
 Sequence *p;
 Sequence *q;
 double coef;
+int mX;
+int mY;
 
 
 double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
@@ -178,17 +180,28 @@ bool timeCompare(Point*p1,Point*p2){
 
 void initMemSpace(Sequence *p, Sequence *q)
 {
-
-       mem = new double*[p->getNum()];
-       for (int k = 0; k < p->getNum(); k++)
-       {
-           mem[k] = new double[q->getNum()];
-       }
-       for (int i = 0; i < p->getNum(); i++) {
-                   for (int j = 0; j < q->getNum(); j++) {
-                       mem[i][j] = -1.0;
-                   }
-               }
+    if(mem != NULL)
+    {
+        for (int i =0; i < mX; i++)
+        {
+            delete [] mem[i];
+            mem[i] = NULL;
+        }
+        delete []mem;
+        mem = NULL;
+    }
+    mX = p->getNum();
+    mY = q->getNum();
+    mem = new double*[mX];
+    for (int k = 0; k < mX; k++)
+    {
+        mem[k] = new double[mY];
+    }
+    for (int i = 0; i < mX; i++) {
+        for (int j = 0; j < mY; j++) {
+            mem[i][j] = -1.0;
+        }
+    }
 }
 
 //分别输入两个轨迹段的起点和终位置
@@ -226,8 +239,6 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
            gap=5;
            h=gap;
        }
-
-
          for(int i=gap;i<gap+3;i++){
                calculateSec(i,h,q1);
           }
@@ -235,27 +246,25 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
         for(int j=gap;j<gap+5;j++){
                mergeChange(j,q1,q2);
         }
-          sort(q2.begin(),q2.end(),compare);
-          for(int i=0;i<q2.size();i++){
-            // cout<<i<<" ("<<q2[i].beginIndex1<<","<<q2[i].endIndex1<<")"<<","<<"("<<q2[i].beginIndex2<<","<<q2[i].endIndex2<<")       similarity="<<q2[i].simliarity<<endl;
+        sort(q2.begin(),q2.end(),compare);
+        for(int i=0;i<q2.size();i++)
+        {
             q1.append(q2[i]);
             if(i>100)
                 break;
-          }
-          sort(q1.begin(),q1.end(),compare);
+        }
+        sort(q1.begin(),q1.end(),compare);
 
-          if(q1.size()>100){
-              for(int i=0;i<100;i++){
-                  q3.append(q1[i]);
-              }
-          }else{
-              for(int i=0;i<q1.size();i++){
-                  q3.append(q1[i]);
-              }
-          }
-          q2.clear();
-          q1.clear();
-          return q3;
+        if(q1.size()>100){
+            for(int i=0;i<100;i++){
+                q3.append(q1[i]);
+            }
+        }else{
+            for(int i=0;i<q1.size();i++){
+                q3.append(q1[i]);
+            }
+        }
+        return q3;
 }
 
 QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2){

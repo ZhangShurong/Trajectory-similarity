@@ -160,8 +160,8 @@ void SearchWin::search()
     ui->searchMap->showTimes(true);
     ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
     ui->searchMap->setFilter(time);
-    ui->searchMap->drawSequences(seqs, coincide);
-    drawPoints();
+    //ui->searchMap->drawSequences(seqs, coincide);
+    //drawPoints();
     ui->searchMap->reload();
 
     qDebug() << "Search Over";
@@ -254,10 +254,11 @@ void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partIn
         table->setItem(partRowcount, 0, new QTableWidgetItem(se->getID()));
         table->setItem(partRowcount, 1, new QTableWidgetItem(QString::number(begin1+beginMin1)));
         table->setItem(partRowcount, 2, new QTableWidgetItem(QString::number(end1+beginMin1)));
-        ui->searchMap->highLightPart(input, begin1+beginMin1, end1+beginMin1, 3, 10);
-        ui->searchMap->highLightPart(se, begin2+beginMin2, end2+beginMin2, 3, 10);
+        //ui->searchMap->highLightPart(input, begin1+beginMin1, end1+beginMin1, 3, 10);
+        //ui->searchMap->highLightPart(se, begin2+beginMin2, end2+beginMin2, 3, 10);
         partRowcount ++;
     }
+
 }
 
 void SearchWin::fillTable(Sequence inSeq)
@@ -381,7 +382,6 @@ void SearchWin::calSecPart()
     int beginMin2=0;
     string tb = "importtest";
     QVector<PointCompare> pVec;
-    double dfDis;
     Sequence sf;
 
     for (int i = 0;i < tracs->length();i++)

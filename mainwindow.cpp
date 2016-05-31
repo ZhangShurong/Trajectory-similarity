@@ -645,11 +645,19 @@ void MainWindow::search(Sequence input)
     double dfDis;
     double maxDis = 0;
 
+    /*----------
+    QVector<QVector<int> >qc;
+    int beginMin1=0;
+    int beginMin2=0;
+    */
+
     for (int i = 0;i < tracs->length();i++)
     {
         QTableWidgetItem *tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
         dfDis = computeDiscreteFrechet(&input,&sf);
+
+        //qc = getSimplify(&input,&sf,beginMin1,beginMin2);
 
         tItem->setData(Qt::DisplayRole,dfDis);
         ui->mainTable->setItem(i,2,tItem);
