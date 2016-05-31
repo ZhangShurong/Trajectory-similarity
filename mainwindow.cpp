@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QMouseEvent>
 #include <QPropertyAnimation>
+#include <QProgressDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -326,14 +327,19 @@ void MainWindow::openFilesSlot()
     {
         return;
     }
+    QProgressDialog progress(tr("Importing Sequence data..."), tr("cancel"), 0, fileNames.length(), this);
+    progress.setWindowModality(Qt::WindowModal);
+
     for (int i = 0; i < fileNames.length() ; i++)
     {
+        progress.setValue(i);
         string fileName = fileNames[i].toLocal8Bit().data();
         string trcID;
         ifstream fin(fileName.c_str());
         Csv csv(fin);
         trcID = db->insertData(&csv, tName);
     }
+    progress.setValue(fileNames.length());
     refreshTable();
 }
 
