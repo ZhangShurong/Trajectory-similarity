@@ -13,6 +13,8 @@ private:
     bool showTime;
     bool showEndpoints;
     int filterStatus;//0 only common;1 only time; others all
+    int numOfSeq;//在draw sequence 中使用， 限制vector 中轨迹的条数
+
 
     QString test;
     QString jsFilePath;
@@ -60,6 +62,7 @@ public:
     void setCentralPoint(double x, double y,int zoom);
     void setCentralPoint(Point pt,int zoom);
     void setDefaultCentralPt();
+    void setNumOfSeq(int n);
 
     void reload();
 

@@ -104,25 +104,65 @@ void CalWindow::startSlot()
             double x = (p->getCentralPoint().longitude + q->getCentralPoint().longitude)/2;
             double y = (p->getCentralPoint().latitude + q->getCentralPoint().latitude)/2;
             ui->mapWidget->setCentralPoint(x, y, 10);
+             //开始计算
+
+
+
+            //整条轨迹计算部分
             double res = computeDiscreteFrechet(p,q);
             ui->Result->setText(QString::number(res));
-            //开始计算
+
+            //轨迹点计算部分
+            QVector<PointCompare> pc=getNearestPoint(p,q);
+            PointCompare pc1=pc[0];
+            ui->bianhao1->setText(QString::number(1));
+            ui->bianhao2->setText(QString::number(2));
+            ui->xuliehao1->setText(QString::number(pc1.index1));
+            ui->xuliehao2->setText(QString::number(pc1.index2));
+            double lati1,lati2,longiti1,longiti2;
+            lati1=p->pts[pc1.index1].latitude;
+            lati2=q->pts[pc1.index2].latitude;
+            longiti1=p->pts[pc1.index1].longitude;
+            longiti2=q->pts[pc1.index2].longitude;
+            ui->latitude1->setText(QString::number(lati1));
+            ui->latitude2->setText(QString::number(lati2));
+            ui->longitude1->setText(QString::number(longiti1));
+            ui->longitude2->setText(QString::number(longiti2));
+            ui->color1->setText("绿色");
+            ui->color2->setText("绿色");
+
+            if(!p->pts[pc1.index1].time.isEmpty()){
+                ui->time1->setText(p->pts[pc1.index1].time);
+                ui->time2->setText(q->pts[pc1.index2].time);
+            }else{
+                ui->time1->setText("不含时间");
+                ui->time2->setText("不含时间");
+            }
+
+            //轨迹段计算部分
             QVector<Sequence> t;
             t.append(*p);
             t.append(*q);
             ui->mapWidget->drawSequences(t);
 
-            int beginMin1,beginMin2;
-            QVector<QVector<int> >qc=getSimplify(p,q,beginMin1,beginMin2);
+           // int beginMin1,beginMin2;
+            QVector<QVector<int> >qc=getSimplify(p,q);
             QVector<int>pv=qc[0];
             QVector<int>qv=qc[1];
+
+            ui->start1->setText(QString::number(pv[0]));
+            ui->end1->setText(QString::number(pv[1]));
+            ui->start2->setText(QString::number(qv[0]));
+            ui->end2->setText(QString::number(qv[1]));
+            ui->g_bianhao1->setText("1");
+            ui->g_bianhao2->setText("2");
             for(int i=0;i+1<pv.size();i=i+2){
                 int begin1=pv[i];
                 int end1=pv[i+1];
                 int begin2=qv[i];
                 int end2=qv[i+1];
-                ui->mapWidget->highLightPart(p, begin1+beginMin1, end1+beginMin1, 3, 10);
-                ui->mapWidget->highLightPart(q, begin2+beginMin2, end2+beginMin2, 3, 10);
+                ui->mapWidget->highLightPart(p, begin1, end1, 3, 10);
+                ui->mapWidget->highLightPart(q, begin2, end2, 3, 10);
             }
             ui->mapWidget->reload();
         }

@@ -31,7 +31,8 @@ struct SecCompare{
     double simliarity;//轨迹段相似度
 };
 
-QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a,int a);
+void initP_Q(Sequence *m, Sequence *n);
+QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a);
 void initMemSpace(Sequence *p, Sequence *q);
 void getSquFromFile(Csv *csv, Sequence *se);
 double computeDiscreteFrechet(Sequence *sa,Sequence *sb);
@@ -39,7 +40,7 @@ double computeDFD(int i,int j, Sequence *p_a, Sequence * q_a);
 double euclideanDistance(Point a, Point b);
 double  getSecSim(int i1,int j1,int i2,int j2);
 bool compare(SecCompare s1,SecCompare s2);
-QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a);//调用以计算轨迹段
+QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b);//调用以计算轨迹段
 void calculateSec(int gap, int h,QVector<SecCompare>&q1);
 void mergeChange(int gap,QVector<SecCompare>&q1,QVector<SecCompare>&q2);
 Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres);
@@ -49,8 +50,8 @@ Time &loadToStruct(QString time);
 bool timeCompare(Point*p1,Point*p2);
 double calTimeDistance(Point &a,Point &b);
 double calCoef();
-QVector<SecCompare> findBest(Sequence*p,Sequence*q,int &beginMin1,int &beginMin2);
-QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2);
+QVector<SecCompare> findBest(Sequence*p,Sequence*q);
+QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q);
 QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b);
 bool compareDis(PointCompare p1,PointCompare p2);
 void out2DArray(double **arr, int x, int y);

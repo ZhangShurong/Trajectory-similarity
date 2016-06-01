@@ -18,6 +18,7 @@ Sequence::Sequence(QString ID)
     pts = new Point[pointsNum];
 }
 
+
 Sequence::Sequence()
 {
     seek = 0;

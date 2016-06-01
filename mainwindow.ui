@@ -555,7 +555,7 @@ color:white;
        <string notr="true">font-family:'微软雅黑';</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -1011,32 +1011,6 @@ color:white;
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QToolButton" name="searchWinBtn">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">border:0px</string>
-              </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset resource="res.qrc">
-                <normaloff>:/images/check_normal.png</normaloff>:/images/check_normal.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>166</width>
-                <height>66</height>
-               </size>
-              </property>
-             </widget>
-            </item>
            </layout>
           </item>
           <item>
@@ -1057,7 +1031,7 @@ color:white;
                 <item>
                  <widget class="QStackedWidget" name="searchStackedWidget">
                   <property name="currentIndex">
-                   <number>1</number>
+                   <number>0</number>
                   </property>
                   <widget class="QWidget" name="page_13">
                    <layout class="QHBoxLayout" name="horizontalLayout_10">
@@ -1128,23 +1102,23 @@ color:white;
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_15">
                <item>
-                <widget class="QRadioButton" name="searchSequenceCBox">
+                <widget class="QPushButton" name="calSeqBtn">
                  <property name="text">
-                  <string>轨迹排名</string>
+                  <string>搜索轨迹</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QRadioButton" name="searchPartCBox">
+                <widget class="QPushButton" name="calSeqPartBtn">
                  <property name="text">
-                  <string>轨迹段排名</string>
+                  <string>搜索轨迹段</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QRadioButton" name="searchPointCBox">
+                <widget class="QPushButton" name="calSeqPointBtn">
                  <property name="text">
-                  <string>轨迹点排名</string>
+                  <string>搜索轨迹点</string>
                  </property>
                 </widget>
                </item>
@@ -1244,234 +1218,400 @@ color:white;
               <height>16777215</height>
              </size>
             </property>
-            <widget class="QWidget" name="layoutWidget_3">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>360</y>
-               <width>241</width>
-               <height>32</height>
-              </rect>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="QLabel" name="ResLabel">
-                <property name="text">
-                 <string>相似度：</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="Result"/>
-              </item>
-              <item>
-               <widget class="QPushButton" name="startBtn">
-                <property name="text">
-                 <string>计算</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QGroupBox" name="groupBox">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>240</y>
-               <width>261</width>
-               <height>111</height>
-              </rect>
-             </property>
-             <property name="title">
-              <string>轨迹段2信息：</string>
-             </property>
-             <widget class="QLabel" name="label_3">
-              <property name="geometry">
-               <rect>
-                <x>20</x>
-                <y>20</y>
-                <width>81</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>维度：</string>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_20">
-              <property name="geometry">
-               <rect>
-                <x>20</x>
-                <y>40</y>
-                <width>54</width>
-                <height>12</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>起点：</string>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_21">
-              <property name="geometry">
-               <rect>
-                <x>20</x>
-                <y>60</y>
-                <width>54</width>
-                <height>12</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>终点：</string>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_22">
-              <property name="geometry">
-               <rect>
-                <x>20</x>
-                <y>80</y>
-                <width>91</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>相似轨迹段颜色：</string>
-              </property>
-             </widget>
-             <widget class="QPushButton" name="pushButton_2">
-              <property name="geometry">
-               <rect>
-                <x>170</x>
-                <y>80</y>
-                <width>75</width>
-                <height>23</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>详细信息</string>
-              </property>
-             </widget>
-            </widget>
-            <widget class="QGroupBox" name="groupBox_2">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>120</y>
-               <width>261</width>
-               <height>111</height>
-              </rect>
-             </property>
-             <property name="title">
-              <string>轨迹段1信息：</string>
-             </property>
-             <widget class="QLabel" name="label_23">
-              <property name="geometry">
-               <rect>
-                <x>20</x>
-                <y>20</y>
-                <width>81</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>维度：</string>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_24">
-              <property name="geometry">
-               <rect>
-                <x>20</x>
-                <y>40</y>
-                <width>54</width>
-                <height>12</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>起点：</string>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_25">
-              <property name="geometry">
-               <rect>
-                <x>20</x>
-                <y>60</y>
-                <width>54</width>
-                <height>12</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>终点：</string>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_26">
-              <property name="geometry">
-               <rect>
-                <x>20</x>
-                <y>80</y>
-                <width>91</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>相似轨迹段颜色：</string>
-              </property>
-             </widget>
-             <widget class="QPushButton" name="pushButton_5">
-              <property name="geometry">
-               <rect>
-                <x>170</x>
-                <y>80</y>
-                <width>75</width>
-                <height>23</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>详细信息</string>
-              </property>
-             </widget>
-            </widget>
-            <widget class="QGroupBox" name="groupBox_3">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>10</y>
-               <width>261</width>
-               <height>111</height>
-              </rect>
-             </property>
-             <property name="title">
-              <string>说明：</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <item>
-               <widget class="QLabel" name="label_27">
-                <property name="text">
-                 <string>起点：图中用带有 S 的点表示</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_28">
-                <property name="text">
-                 <string>终点：图中用带有 E 的点表示</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_29">
-                <property name="text">
-                 <string>轨迹1颜色：红</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_30">
-                <property name="text">
-                 <string>轨迹2颜色：蓝</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_5">
+               <item>
+                <widget class="QGroupBox" name="groupBox_3">
+                 <property name="title">
+                  <string>说明：</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_2">
+                  <item>
+                   <widget class="QLabel" name="label_27">
+                    <property name="text">
+                     <string>起点：图中用带有 S 的点表示</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_28">
+                    <property name="text">
+                     <string>终点：图中用带有 E 的点表示</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_29">
+                    <property name="text">
+                     <string>轨迹1颜色：红</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_30">
+                    <property name="text">
+                     <string>轨迹2颜色：蓝</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTabWidget" name="tabWidget">
+                    <property name="currentIndex">
+                     <number>1</number>
+                    </property>
+                    <widget class="QWidget" name="tab_5">
+                     <attribute name="title">
+                      <string>最相似轨迹段对</string>
+                     </attribute>
+                     <layout class="QVBoxLayout" name="verticalLayout_10">
+                      <item>
+                       <widget class="QGroupBox" name="groupBox_2">
+                        <property name="title">
+                         <string>轨迹段1信息：</string>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_19">
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_28">
+                           <item>
+                            <widget class="QLabel" name="label_24">
+                             <property name="text">
+                              <string>起点：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="start1"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_29">
+                           <item>
+                            <widget class="QLabel" name="label_25">
+                             <property name="text">
+                              <string>终点：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="end1"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_30">
+                           <item>
+                            <widget class="QLabel" name="label_26">
+                             <property name="text">
+                              <string>所属轨迹编号：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="g_bianhao1"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="pushButton_5">
+                           <property name="text">
+                            <string>详细信息</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QGroupBox" name="groupBox">
+                        <property name="title">
+                         <string>轨迹段2信息：</string>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_20">
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_31">
+                           <item>
+                            <widget class="QLabel" name="label_20">
+                             <property name="text">
+                              <string>起点：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="start2"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_32">
+                           <item>
+                            <widget class="QLabel" name="label_21">
+                             <property name="text">
+                              <string>终点：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="end2"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_33">
+                           <item>
+                            <widget class="QLabel" name="label_22">
+                             <property name="text">
+                              <string>所属轨迹段编号：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="g_bianhao2"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="pushButton_2">
+                           <property name="text">
+                            <string>详细信息</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                    <widget class="QWidget" name="tab_6">
+                     <attribute name="title">
+                      <string>最邻近轨迹点对</string>
+                     </attribute>
+                     <layout class="QVBoxLayout" name="verticalLayout_22">
+                      <item>
+                       <widget class="QGroupBox" name="groupBox_9">
+                        <property name="title">
+                         <string>轨迹点1</string>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_11">
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_34">
+                           <item>
+                            <widget class="QLabel" name="label_3">
+                             <property name="text">
+                              <string>所属轨迹编号：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="bianhao1"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_35">
+                           <item>
+                            <widget class="QLabel" name="label_7">
+                             <property name="text">
+                              <string>轨迹中的点序列号：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="xuliehao1"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_36">
+                           <item>
+                            <widget class="QLabel" name="label_8">
+                             <property name="text">
+                              <string>经度：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="longitude1"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_37">
+                           <item>
+                            <widget class="QLabel" name="label_9">
+                             <property name="text">
+                              <string>纬度：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="latitude1"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_38">
+                           <item>
+                            <widget class="QLabel" name="label_13">
+                             <property name="text">
+                              <string>颜色：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="color1"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_39">
+                           <item>
+                            <widget class="QLabel" name="label_35">
+                             <property name="text">
+                              <string>时间：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="time1"/>
+                           </item>
+                          </layout>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QGroupBox" name="groupBox_10">
+                        <property name="title">
+                         <string>轨迹点2</string>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_21">
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_40">
+                           <item>
+                            <widget class="QLabel" name="label_23">
+                             <property name="text">
+                              <string>所属轨迹编号：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="bianhao2"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_41">
+                           <item>
+                            <widget class="QLabel" name="label_31">
+                             <property name="text">
+                              <string>轨迹中点序列号:</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="xuliehao2"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_42">
+                           <item>
+                            <widget class="QLabel" name="label_32">
+                             <property name="text">
+                              <string>经度：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="longitude2"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_43">
+                           <item>
+                            <widget class="QLabel" name="label_33">
+                             <property name="text">
+                              <string>纬度：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="latitude2"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_44">
+                           <item>
+                            <widget class="QLabel" name="label_34">
+                             <property name="text">
+                              <string>颜色：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="color2"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_45">
+                           <item>
+                            <widget class="QLabel" name="label_36">
+                             <property name="text">
+                              <string>时间：</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="time2"/>
+                           </item>
+                          </layout>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="pushButton">
+                        <property name="text">
+                         <string>详细信息</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <item>
+                     <widget class="QLabel" name="ResLabel">
+                      <property name="text">
+                       <string>相似度：</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="Result"/>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="startBtn">
+                      <property name="text">
+                       <string>计算</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>

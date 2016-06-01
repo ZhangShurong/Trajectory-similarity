@@ -211,7 +211,7 @@ double  getSecSim(int i1,int j1,int i2,int j2){
     return computeDFD_new(i1, j1, i2, j2);
 }
 
-QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
+QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
 {
       QVector<SecCompare> q1;
       QVector<SecCompare> q2;
@@ -224,17 +224,9 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
        int gap;
        int h;
 
-       if(totalNum<=200&&totalNum>=40){
-           if(a==1){
+      if(totalNum<=200&&totalNum>=0){
                gap=1;
                h=1;
-           }else if(a==2){
-               gap=1;
-               h=1;
-           }
-       }else if(totalNum<40){
-            gap=1;
-            h=1;
        }else if(totalNum>200){
            gap=5;
            h=gap;
@@ -267,12 +259,12 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b,int a)
         return q3;
 }
 
-QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2){
+QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q){
     QVector<QVector<int> >qb;
     QVector<QString>qst;
 
    // int beginMin1,beginMin2;
-    QVector<SecCompare> qs1=findBest(p,q,beginMin1,beginMin2);
+    QVector<SecCompare> qs1=findBest(p,q);
 
     if (qs1.length() != 0)
      {
@@ -322,48 +314,9 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q,int& beginMin1,int& beg
 }
 
 
-QVector<SecCompare> findBest(Sequence*p,Sequence*q,int& beginMin1,int& beginMin2){
-
-    QVector<SecCompare> temp = getBestSce(findSimilarSection(p, q,1),1);
-
-//    int beginMin1,beginMin2;
-    beginMin1=temp[0].beginIndex1;
-    int endMax1=temp[0].endIndex1;
-    beginMin2=temp[0].beginIndex2;
-    int endMax2=temp[0].endIndex2;
-
-    for (int i = 0; i < temp.length(); i++)
-    {
-       if(temp[i].beginIndex1<=beginMin1)
-           beginMin1=temp[i].beginIndex1;
-       if(temp[i].beginIndex2<=beginMin2)
-           beginMin2=temp[i].beginIndex2;
-       if(temp[i].endIndex1>endMax1)
-           endMax1=temp[i].endIndex1;
-       if(temp[i].endIndex2>endMax2)
-           endMax2=temp[i].endIndex2;
-    }
-
-    Sequence m1;
-    Sequence m2;
-
-    m1.pointsNum=endMax1-beginMin1+1;
-    m2.pointsNum=endMax2-beginMin2+1;
-
-     m1.pts = new Point[m1.pointsNum];
-     m2.pts = new Point[m2.pointsNum];
-
-    for(int i=beginMin1;i<=endMax1;i++){
-        m1.pts[i-beginMin1]=p->pts[i];
-    }
-
-    for(int i=beginMin2;i<=endMax2;i++){
-        m2.pts[i-beginMin2]=q->pts[i];
-    }
-
-   temp.clear();
-   QVector<SecCompare>qs= getBestSce(findSimilarSection(&m1,&m2,2),2);
-   return qs;
+QVector<SecCompare> findBest(Sequence*p,Sequence*q){
+    QVector<SecCompare> temp = getBestSce(findSimilarSection(p, q));
+    return temp;
 }
 
 
@@ -489,7 +442,7 @@ Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres)
     return commonSeq;
 }
 
-QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a,int a)
+QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a)
 {
     QVector<SecCompare> t;
    // QVector<SecCompare> t1;
@@ -502,7 +455,6 @@ QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a,int a)
     int length = secCompareV_a[0].endIndex1 - secCompareV_a[0].beginIndex1;
    // t.append(secCompareV_a[0]);
 
-   if(a==1){
        for (i = 0; i < secCompareV_a.length() ; i++)
        {
            if (secCompareV_a[i].simliarity > (similarity+0.001))
@@ -525,17 +477,7 @@ QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a,int a)
                   }
            }
        }
-   }else if(a==2){
-        QVector<QString>qst1;
-       for (i = 0; i < secCompareV_a.length() && secCompareV_a[i].simliarity <=similarity+0.001; i++)
-       {
-           QString s = QString::number(secCompareV_a[i].beginIndex1, 10)+" "+ QString::number(secCompareV_a[i].endIndex1, 10)+" "+QString::number(secCompareV_a[i].beginIndex2, 10)+" "+QString::number(secCompareV_a[i].endIndex2, 10);
-           if(!qst1.contains(s)){
-                qst1.append(s);
-                t.append(secCompareV_a[i]);
-           }
-       }
-   }
+
     return t;
 }
 
@@ -678,4 +620,10 @@ double computeDFD_new(int startx, int endx, int starty, int endy)
     // printMemory();
     // return the DFD
     return mem[endx][endy];
+}
+
+void initP_Q(Sequence *m, Sequence *n)
+{
+    p = m;
+    q = n;
 }

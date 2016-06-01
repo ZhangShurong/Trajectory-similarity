@@ -74,8 +74,12 @@ void MapWindow::drawSequences(QVector<Sequence> se_draw_a)
 {
     markList.clear();
     labelList.clear();
-
-    for (int i = 0; i< se_draw_a.length(); i++)
+    int num = se_draw_a.length();
+    if (numOfSeq != -1 && numOfSeq < num)
+    {
+        num  = numOfSeq;
+    }
+    for (int i = 0; i< num; i++)
     {
             drawSqu(&(se_draw_a[i]), i);
     }
@@ -86,12 +90,23 @@ void MapWindow::drawSequences(QVector<Sequence> se_draw_a, QStringList coin_list
 {
     markList.clear();
     labelList.clear();
-
+    int num = se_draw_a.length();
+    if (numOfSeq != -1 && numOfSeq < num)
+    {
+        num  = numOfSeq;
+    }
+    int j = 0;
     for (int i = 0; i< se_draw_a.length(); i++)
     {
         if (coin_list.contains(se_draw_a[i].getID()))
             continue;
-        drawSqu(&(se_draw_a[i]), i);
+        drawSqu(&(se_draw_a[i]), j);
+        j++;
+        num--;
+        if (num == 0)
+        {
+            break;
+        }
     }
     createFunc();
 }
@@ -130,6 +145,7 @@ void MapWindow::drawSequencePair(Sequence *se_a, Sequence *se_b, int c)
 
 void MapWindow::initMap()
 {
+    numOfSeq = -1;
     QTextStream out(jsFile);
     out << "var map = new BMap.Map(\"allmap\");\n"
         << "map.enableScrollWheelZoom(true);\n";
@@ -261,6 +277,11 @@ void MapWindow::setCentralPoint(Point pt, int zoom)
 void MapWindow::setDefaultCentralPt()
 {
     drawSqu(NULL);
+}
+
+void MapWindow::setNumOfSeq(int n)
+{
+    numOfSeq = n;
 }
 
 void MapWindow::reload()
@@ -614,6 +635,7 @@ MapWindow::MapWindow(QWidget *parent):QWidget(parent)
     showTime = false;
     showEndpoints = false;
     filterStatus = -1;//all
+    numOfSeq = -1;
     draw();
     editJs();
 }
@@ -627,6 +649,9 @@ MapWindow::MapWindow(QString js, QString html, QWidget *parent):QWidget(parent)
     se_draw = new Sequence();
     showPoint = false;
     showTime = false;
+    showEndpoints = false;
+    filterStatus = -1;//all
+    numOfSeq = -1;//全部绘制
     draw();
     editJs();
 }

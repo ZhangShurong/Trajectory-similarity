@@ -45,6 +45,7 @@ public:
     int pointsNum;
     Point *pts;
     Sequence(QString ID);
+   // Sequence(Sequence &se);
     Sequence();
     void clear();//Some problem
     void appendPt(Point *pt);

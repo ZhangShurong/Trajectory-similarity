@@ -65,25 +65,24 @@ void SearchWin::initSeqPartTable(QTableWidget *table)
     table->setRowCount(ROW_NUM);
     table->clearContents();
     QStringList header;
-    header << tr("ID")
-           << tr("PointNumber")
-           << tr("StartPoint")
-           << tr("EndPoint");
+    header << tr("轨迹段所在轨迹")
+           << tr("起点-终点")
+           << tr("对应起点-终点")
+           << tr("相似度");
     table->setHorizontalHeaderLabels(header);
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 void SearchWin::initPointTable(QTableWidget *table)
 {    
-    table->setColumnCount(5);
+    table->setColumnCount(4);
     table->setRowCount(ROW_NUM);
     table->clearContents();
     QStringList header;
-    header << "轨迹ID"
+    header << "轨迹点所在轨迹"
            << "点在轨迹中位置"
-           << "地图中编号"
-           << "DIS"
-           << "点在输入轨迹中位置";
+           << "点在输入轨迹中位置"
+           << "DIS";
 
     table->setHorizontalHeaderLabels(header);
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -142,7 +141,7 @@ void SearchWin::drawPoints()
     }
     seq_index.clear();
 }
-
+/*
 void SearchWin::search()
 {
     fillTable(*input);//填充三个表格
@@ -160,17 +159,117 @@ void SearchWin::search()
     ui->searchMap->showTimes(true);
     ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
     ui->searchMap->setFilter(time);
-    //ui->searchMap->drawSequences(seqs, coincide);
+    ui->searchMap->setNumOfSeq(4);
+    ui->searchMap->drawSequences(seqs, coincide);
     //drawPoints();
     ui->searchMap->reload();
 
     qDebug() << "Search Over";
 
 }
-
-void SearchWin::sortPointTable(QTableWidget *table)
+*/
+void SearchWin::searchSeq()
 {
-    table->sortItems(3, Qt::AscendingOrder);
+    string tb = "importtest";
+    double dfDis;
+    double maxDis = 0;
+    int c = 0;
+    int t = 0;
+
+    seqs.append(*input);
+    id_seq_map.insert(input->getID(), *input);
+
+    for (int i = 0;i < tracs->length();i++)
+    {
+        //将轨迹存入内存，便于后期使用
+        Sequence sf;
+        QTableWidgetItem *tItem = new QTableWidgetItem();
+        db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
+        seqs.append(sf);
+        id_seq_map.insert(sf.getID(), sf);
+
+        dfDis = computeDiscreteFrechet(input,&sf);
+        if (dfDis == 0)
+        {
+            coincide << sf.getID();
+        }
+        tItem->setData(Qt::DisplayRole,dfDis);
+
+        if (sf.hasTime() && input->hasTime())
+        {
+            ui->searchTable_time->setItem(t,2,tItem);
+            t++;
+        }
+        else if (!sf.hasTime() && !input->hasTime())
+        {
+            ui->searchTable_common->setItem(c,2,tItem);
+            c++;
+        }
+        if (dfDis >= maxDis)
+        {
+            maxDis = dfDis;
+        }
+    }
+
+
+    if ( c != 0)
+    {
+        time = false;
+        ui->searchTable_common->sortItems(2,Qt::AscendingOrder);
+        for (int i = 0; i < c; i++)
+        {
+            Sequence sf;
+            if (i < numOfSeqs) {
+                QString id = ui->searchTable_common->item(i, 0)->text();
+                sf = id_seq_map[id];
+                //db->getSequenceByID(tb,&sf,id.toStdString());
+            }
+
+            QTableWidgetItem *tItem = new QTableWidgetItem();
+            double dis = ui->searchTable_common->item(i, 2)->text().toDouble();
+            double percent = (maxDis - dis)/maxDis * 100;
+
+            if (percent < 0)
+            {
+                percent = 0;
+            }
+            tItem->setData(Qt::DisplayRole,
+                           QString::number(percent) + "%");
+            ui->searchTable_common->setItem(i,3,tItem);
+        }
+    }
+    else if (t != 0)
+    {
+        time = true;
+        ui->searchTable_time->sortItems(2,Qt::AscendingOrder);
+        for (int i = 0; i < t; i++)
+        {
+            Sequence sf;
+            if (i < numOfSeqs)
+            {
+                QString id = ui->searchTable_time->item(i, 0)->text();
+                sf = id_seq_map[id];
+                //db->getSequenceByID(tb,&sf,id.toStdString());
+            }
+            QTableWidgetItem *tItem = new QTableWidgetItem();
+            double dis = ui->searchTable_time->item(i, 2)->text().toDouble();
+            double percent = (maxDis - dis)/maxDis * 100;
+            if (percent < 0)
+            {
+                percent = 0;
+            }
+            tItem->setData(Qt::DisplayRole,
+                           QString::number(percent) + "%");
+            ui->searchTable_time->setItem(i,3,tItem);
+        }
+    }
+}
+
+void SearchWin::sortPointTable()
+{
+    ui->searchTable_common_point->sortItems(3, Qt::AscendingOrder);
+    ui->searchTable_time_point->sortItems(3, Qt::AscendingOrder);
+    /*
     int length = rowcount;
     int j = 0;
     for (int i =0; i < length; i++)
@@ -185,16 +284,28 @@ void SearchWin::sortPointTable(QTableWidget *table)
         j ++;
         seq_index.insert(table->item(i,0)->text(), table->item(i,2)->text().toInt());
     }
+    */
 
+}
+
+void SearchWin::sortPartTable()
+{
+    ui->searchTable_common_part->sortItems(3, Qt::AscendingOrder);
+    ui->searchTable_time_part->sortItems(3, Qt::AscendingOrder);
+}
+
+void SearchWin::sortSeqTable()
+{
+    ui->searchTable_common->sortItems(2, Qt::AscendingOrder);
+    ui->searchTable_time->sortItems(2, Qt::AscendingOrder);
 }
 
 void SearchWin::initSig()
 {
     connect(ui->searchStartBtn, SIGNAL(clicked()), this, SLOT(openFile()));
-    connect(ui->searchPartCBox, SIGNAL(clicked()), this, SLOT(rankPartOfSeq()));
-    connect(ui->searchSequenceCBox, SIGNAL(clicked()), this, SLOT(rankSeqChecked()));
-    connect(ui->searchPointCBox, SIGNAL(clicked()), this, SLOT(rankSeqPointChecked()));
-    connect(ui->searchWinBtn, SIGNAL(clicked()), this, SLOT(startSearch()));
+    connect(ui->calSeqPartBtn, SIGNAL(clicked()), this, SLOT(rankPartOfSeq()));
+    connect(ui->calSeqBtn, SIGNAL(clicked()), this, SLOT(rankSeqClicked()));
+    connect(ui->calSeqPointBtn, SIGNAL(clicked()), this, SLOT(rankSeqPointClicked()));
 }
 
 void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se)
@@ -226,14 +337,13 @@ void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> points
 
         table->setItem(x,3, new QTableWidgetItem(
                                                 QString::number(pointsV[x - start].distance)));
-        table->setItem(x,4, new QTableWidgetItem(
+        table->setItem(x,2, new QTableWidgetItem(
                                                 QString::number(pointsV[x - start].index1)));
     }
     rowcount = end;
 }
 
-void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partInfo,
-                              int beginMin1,int beginMin2,Sequence *se)
+void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partInfo,Sequence *se)
 {
     if (distinct)
     {
@@ -243,19 +353,33 @@ void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partIn
         }
     }
 
+    /*
+     *    header << tr("轨迹段所在轨迹")
+           << tr("起点-终点")
+           << tr("对应起点-终点")
+           << tr("相似度");
+     */
     QVector<int>pv=partInfo[0];
     QVector<int>qv=partInfo[1];
-    qDebug() << "size is "<< pv.size();
+    QString str;
+    initP_Q(input, se);
+    initMemSpace(input, se);
     for(int i=0; i<pv.size() - 1; i=i+2){
         int begin1=pv[i];
         int end1=pv[i+1];
         int begin2=qv[i];
         int end2=qv[i+1];
+
         table->setItem(partRowcount, 0, new QTableWidgetItem(se->getID()));
-        table->setItem(partRowcount, 1, new QTableWidgetItem(QString::number(begin1+beginMin1)));
-        table->setItem(partRowcount, 2, new QTableWidgetItem(QString::number(end1+beginMin1)));
-        //ui->searchMap->highLightPart(input, begin1+beginMin1, end1+beginMin1, 3, 10);
-        //ui->searchMap->highLightPart(se, begin2+beginMin2, end2+beginMin2, 3, 10);
+        str  = QString::number(begin2) + "-"+QString::number(end2);
+        table->setItem(partRowcount, 1, new QTableWidgetItem(str));
+
+        str  = QString::number(begin1) + "-"+QString::number(end1);
+        table->setItem(partRowcount, 2, new QTableWidgetItem(str));
+
+        double res = computeDFD_new(begin1, end1, begin2, end2);
+        str  = QString::number(res);
+        table->setItem(partRowcount, 3, new QTableWidgetItem(str));
         partRowcount ++;
     }
 
@@ -278,7 +402,6 @@ void SearchWin::fillTable(Sequence inSeq)
         Sequence sf;
         QTableWidgetItem *tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
-
         seqs.append(sf);
         id_seq_map.insert(sf.getID(), sf);
 
@@ -375,30 +498,29 @@ void SearchWin::calSecPart()
     ui->searchMap->showPoints(true);
     ui->searchMap->showTimes(true);
     ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
+    ui->searchMap->setNumOfSeq(4);
     ui->searchMap->drawSequences(seqs, coincide);
 
-    QVector<QVector<int> >qc;
-    int beginMin1=0;
-    int beginMin2=0;
-    string tb = "importtest";
-    QVector<PointCompare> pVec;
-    Sequence sf;
+    searchSeq();
 
+    QVector<QVector<int> >qc;
+    Sequence sf;
     for (int i = 0;i < tracs->length();i++)
     {
-        db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
-        int beginMin1,beginMin2;
-        qc = getSimplify(input,&sf,beginMin1,beginMin2);
+
+
+        sf = id_seq_map[tracs->at(i)];
+        qc = getSimplify(input,&sf);
 
         if (sf.hasTime() && input->hasTime())
         {
             fillPartTable(ui->searchTable_time_part,
-                      qc, beginMin1, beginMin2, &sf);
+                      qc, &sf);
         }
         else if (!sf.hasTime() && !input->hasTime())
         {
             fillPartTable(ui->searchTable_common_part,
-                      qc, beginMin1, beginMin2, &sf);
+                      qc, &sf);
         }
     }
     ui->searchMap->reload();
@@ -407,6 +529,46 @@ void SearchWin::calSecPart()
     id_seq_map.clear();
     rowcount = 0;
     partRowcount = 0;
+}
+
+void SearchWin::drawSeq()
+{
+    ui->searchMap->initJS();
+    ui->searchMap->showPoints(true);
+    ui->searchMap->showTimes(true);
+    ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
+    ui->searchMap->setFilter(time);
+    ui->searchMap->setNumOfSeq(4);
+    ui->searchMap->drawSequences(seqs, coincide);
+    //drawPoints();
+    ui->searchMap->reload();
+}
+
+void SearchWin::searchPoint()
+{
+    if (seqs.isEmpty())
+    {
+        refreshTable();
+        searchSeq();
+    }
+    QVector<PointCompare> pVec;
+    for (int i = 0;i < tracs->length();i++)
+    {
+        Sequence sf;
+        sf = id_seq_map[tracs->at(i)];
+        if (sf.hasTime() && input->hasTime())
+        {
+            pVec = getNearestPoint(input, &sf);
+            fillPointTable(ui->searchTable_time_point, pVec, &sf);
+        }
+        else if (!sf.hasTime() && !input->hasTime())
+        {
+            pVec = getNearestPoint(input, &sf);
+            fillPointTable(ui->searchTable_common_point, pVec, &sf);
+        }
+    }
+
+
 }
 
 void SearchWin::refreshTable()
@@ -474,9 +636,6 @@ void SearchWin::init()
     coincide.clear();
     seqs.clear();
     id_seq_map.clear();
-    rowcount = 0;
-    partRowcount = 0;
-
 }
 
 
@@ -505,69 +664,103 @@ void SearchWin::openFile()
     Csv csv(fin);
     getSquFromFile(&csv,input);
     ui->searchPathEdit->setText(file_name);
+    init();
 }
 
 void SearchWin::rankPartOfSeq()
 {
+    if (input == NULL)
+    {
+        return;
+    }
+    if (input->getNum() == 0)
+    {
+        return;
+    }
+    partRowcount = 0;
+    this->ui->searchMap->initJS();
+    this->ui->searchMap->setDefaultCentralPt();
+    this->ui->searchMap->reload();
     calSecPart();
-    bool flag = (ui->searchPartCBox->isChecked());
-    if (flag)
+    sortPartTable();
+    if (time)
     {
-        ui->searchStackedWidget->setCurrentIndex(2);
-        ui->searchStackedWidget_time->setCurrentIndex(2);
-        showPartofSeq();
+        ui->searchtabWidget->setCurrentIndex(1);
     }
     else
     {
-        ui->searchStackedWidget->setCurrentIndex(0);
-        ui->searchStackedWidget_time->setCurrentIndex(0);
+        ui->searchtabWidget->setCurrentIndex(0);
     }
+    ui->searchStackedWidget->setCurrentIndex(2);
+    ui->searchStackedWidget_time->setCurrentIndex(2);
+
 }
 
-void SearchWin::rankSeqChecked()
-{
-    bool flag = (ui->searchSequenceCBox->isChecked());
-    if (flag)
-    {
-        ui->searchStackedWidget->setCurrentIndex(0);
-        ui->searchStackedWidget_time->setCurrentIndex(0);
-        showPartofSeq();
-    }
-    else
-    {
-        ui->searchStackedWidget->setCurrentIndex(0);
-        ui->searchStackedWidget_time->setCurrentIndex(0);
-    }
-}
-
-void SearchWin::rankSeqPointChecked()
-{
-    bool flag = (ui->searchPointCBox->isChecked());
-    if (flag)
-    {
-        ui->searchStackedWidget->setCurrentIndex(1);
-        ui->searchStackedWidget_time->setCurrentIndex(1);
-        showPartofSeq();
-    }
-    else
-    {
-        ui->searchStackedWidget->setCurrentIndex(0);
-        ui->searchStackedWidget_time->setCurrentIndex(0);
-    }
-}
-
-void SearchWin::startSearch()
+void SearchWin::rankSeqClicked()
 {
     this->ui->searchMap->initJS();
     this->ui->searchMap->setDefaultCentralPt();
     this->ui->searchMap->reload();
     refreshTable();
-    init();
+    //init();
 
+    if (input == NULL)
+    {
+        return;
+    }
     if (input->getNum() == 0)
     {
         return;
     }
-    search();
+    searchSeq();
+    sortSeqTable();
+    drawSeq();
+
+    if (time)
+    {
+        ui->searchtabWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        ui->searchtabWidget->setCurrentIndex(0);
+    }
+    ui->searchStackedWidget->setCurrentIndex(0);
+    ui->searchStackedWidget_time->setCurrentIndex(0);
+
+    showPartofSeq();
+
 }
+
+void SearchWin::rankSeqPointClicked()
+{
+
+    if (input == NULL)
+    {
+        return;
+    }
+    if (input->getNum() == 0)
+    {
+        return;
+    }
+
+    rowcount = 0;
+    this->ui->searchMap->initJS();
+    this->ui->searchMap->setDefaultCentralPt();
+    this->ui->searchMap->reload();
+    searchPoint();
+    if (time)
+    {
+        ui->searchtabWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        ui->searchtabWidget->setCurrentIndex(0);
+    }
+    ui->searchStackedWidget->setCurrentIndex(1);
+    sortPointTable();
+    ui->searchStackedWidget_time->setCurrentIndex(1);
+    showPartofSeq();
+
+}
+
 
