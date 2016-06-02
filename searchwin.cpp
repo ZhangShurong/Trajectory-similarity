@@ -4,6 +4,11 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
 {
     this->ui = ui;
     this->db = db;
+
+    seqFlag = false;
+    partFlag = false;
+    pointFlag  = false;
+
     input = new Sequence();
     time = false;
     distinct = true;
@@ -12,6 +17,7 @@ SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
     rowcount = 0;
     partRowcount = 0;
     db = new DataBase(1);
+
     ui->searchMap->initJS();
     ui->searchMap->reload();
     initTable(ui->searchTable_common);
@@ -598,6 +604,10 @@ void SearchWin::setNumOfSeqs(int num)
 
 void SearchWin::init()
 {
+//    time = false;
+    seqFlag = false;
+    partFlag = false;
+    pointFlag  = false;
     coincide.clear();
     seqs.clear();
     id_seq_map.clear();
@@ -631,8 +641,17 @@ void SearchWin::openFile()
     ifstream fin(fileName.c_str());
     Csv csv(fin);
     getSquFromFile(&csv,input);
+
     ui->searchPathEdit->setText(file_name);
     init();
+    if (input->hasTime())
+    {
+        time = true;
+    }
+    else
+    {
+        time = false;
+    }
     refreshTable();
 }
 
@@ -646,8 +665,24 @@ void SearchWin::rankPartOfSeq()
     {
         return;
     }
-    partRowcount = 0;
 
+    if (time)
+    {
+        ui->searchtabWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        ui->searchtabWidget->setCurrentIndex(0);
+    }
+    ui->searchStackedWidget->setCurrentIndex(2);
+    ui->searchStackedWidget_time->setCurrentIndex(2);
+
+    if (partFlag)
+    {
+        return;
+    }
+
+    partRowcount = 0;
     this->ui->searchMap->initJS();
     this->ui->searchMap->setDefaultCentralPt();
     this->ui->searchMap->reload();
@@ -664,17 +699,7 @@ void SearchWin::rankPartOfSeq()
     }
     calSecPart();
     sortPartTable();
-    if (time)
-    {
-        ui->searchtabWidget->setCurrentIndex(1);
-    }
-    else
-    {
-        ui->searchtabWidget->setCurrentIndex(0);
-    }
-    ui->searchStackedWidget->setCurrentIndex(2);
-    ui->searchStackedWidget_time->setCurrentIndex(2);
-
+    partFlag = true;
 }
 
 void SearchWin::rankSeqClicked()
@@ -687,6 +712,21 @@ void SearchWin::rankSeqClicked()
     {
         return;
     }
+    if (time)
+    {
+        ui->searchtabWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        ui->searchtabWidget->setCurrentIndex(0);
+    }
+    ui->searchStackedWidget->setCurrentIndex(0);
+    ui->searchStackedWidget_time->setCurrentIndex(0);
+    if (seqFlag)
+    {
+        return;
+    }
+
     this->ui->searchMap->initJS();
     this->ui->searchMap->setDefaultCentralPt();
     this->ui->searchMap->reload();
@@ -702,18 +742,8 @@ void SearchWin::rankSeqClicked()
         sortSeqTable();
     }
     drawSeq();
-    if (time)
-    {
-        ui->searchtabWidget->setCurrentIndex(1);
-    }
-    else
-    {
-        ui->searchtabWidget->setCurrentIndex(0);
-    }
-    ui->searchStackedWidget->setCurrentIndex(0);
-    ui->searchStackedWidget_time->setCurrentIndex(0);
-
     showPartofSeq();
+    seqFlag = true;
 
 }
 
@@ -729,6 +759,21 @@ void SearchWin::rankSeqPointClicked()
         return;
     }
 
+    if (time)
+    {
+        ui->searchtabWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        ui->searchtabWidget->setCurrentIndex(0);
+    }
+    ui->searchStackedWidget->setCurrentIndex(1);
+    ui->searchStackedWidget_time->setCurrentIndex(1);
+
+    if (pointFlag)
+    {
+        return;
+    }
     rowcount = 0;
     this->ui->searchMap->initJS();
     this->ui->searchMap->setDefaultCentralPt();
@@ -744,19 +789,10 @@ void SearchWin::rankSeqPointClicked()
         sortSeqTable();
     }
     searchPoint();
-    if (time)
-    {
-        ui->searchtabWidget->setCurrentIndex(1);
-    }
-    else
-    {
-        ui->searchtabWidget->setCurrentIndex(0);
-    }
-    ui->searchStackedWidget->setCurrentIndex(1);
     sortPointTable();
-    ui->searchStackedWidget_time->setCurrentIndex(1);
     showPartofSeq();
 
+    pointFlag = true;
 }
 
 

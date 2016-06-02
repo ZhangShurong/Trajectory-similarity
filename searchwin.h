@@ -35,6 +35,11 @@ private:
     int rowcount;
     int partRowcount;
 
+    bool seqFlag;
+    bool partFlag;
+    bool pointFlag;
+
+
     QMap<QString, int> seq_index;
     QMap<QString, Sequence> id_seq_map;
 
