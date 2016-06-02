@@ -8,7 +8,7 @@ DataBase::DataBase()
     initDb();
 }
 
-DataBase::DataBase(int i)
+DataBase::DataBase(int /*i*/)
 {
 
 }

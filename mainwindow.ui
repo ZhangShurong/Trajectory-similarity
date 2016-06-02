@@ -1857,16 +1857,12 @@ color:white;
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>网络已连接</string>
-      </property>
-     </widget>
+     <widget class="NetStatIndicator" name="widget_2" native="true"/>
     </item>
    </layout>
    <zorder>stackedWidget</zorder>
-   <zorder>label_10</zorder>
    <zorder>frame</zorder>
+   <zorder>widget_2</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -1887,6 +1883,12 @@ color:white;
    <class>lcmWidget</class>
    <extends>QWidget</extends>
    <header>lcmwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>NetStatIndicator</class>
+   <extends>QWidget</extends>
+   <header>netstatindicator.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

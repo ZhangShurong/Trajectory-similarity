@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core sql gui widgets webkitwidgets printsupport
+QT       += core sql gui widgets webkitwidgets printsupport network
 
 TARGET = importData
 
@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     calwindow.cpp \
     searchwin.cpp \
     settingwin.cpp \
-    lcmwidget.cpp
+    lcmwidget.cpp \
+    netstatindicator.cpp
 
 HEADERS += \
     csv.h \
@@ -38,7 +39,8 @@ HEADERS += \
     calwindow.h \
     searchwin.h \
     settingwin.h \
-    lcmwidget.h
+    lcmwidget.h \
+    netstatindicator.h
 
 RESOURCES += \
     res.qrc \
