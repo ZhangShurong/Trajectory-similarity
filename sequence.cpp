@@ -28,6 +28,14 @@ Sequence::Sequence()
     pts = new Point[initSize];
 }
 
+void Sequence::initPainted()
+{
+    for(int i = 0; i < pointsNum; i++)
+    {
+        pts[i].painted = false;
+    }
+}
+
 void Sequence::clear()
 {
     if (pointsNum != 0)

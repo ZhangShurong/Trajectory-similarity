@@ -430,13 +430,13 @@ void MainWindow::showInMapSlot_R()
         se_draw.append(input);
         se_draw.append(selectedSeqS[0]);
         Point center = getCenterPoint(se_draw);
-        ui->mapWin->setCentralPoint(center,5);
+        ui->mapWin->setCentralPoint(center,getZoom(se_draw));
         ui->mapWin->drawSequences(se_draw);
     }
     else
     {
         Point center = getCenterPoint(selectedSeqS);
-        ui->mapWin->setCentralPoint(center,5);
+        ui->mapWin->setCentralPoint(center,getZoom(selectedSeqS));
         ui->mapWin->drawSequences(selectedSeqS);
     }
 
@@ -467,6 +467,8 @@ void MainWindow::goBackSlot()
 
 void MainWindow::showInMap()
 {
+    showInMapSlot_R();
+    /*
     ui->mapWin->initJS();
     selectedSeqS= getCurrentSeqs();
     if (selectedSeqS.length() == 0)
@@ -479,6 +481,7 @@ void MainWindow::showInMap()
     ui->mapWin->reload();
     //ui->mapWin->show();
     ui->stackedWidget->setCurrentIndex(3);
+    */
 }
 
 void MainWindow::setSlot()
@@ -610,6 +613,7 @@ void MainWindow::initSig()
     connect(ui->searchBtn, SIGNAL(clicked()), this, SLOT(searchInDB()));
     connect(ui->gobackBtn, SIGNAL(clicked()), this, SLOT(goBackSlot()));
     connect(ui->shoeInMapBtn, SIGNAL(clicked()), this, SLOT(showInMap()));
+    //connect(ui->shoeInMapBtn, SIGNAL(clicked()), this, SLOT(showInMapSlot_R()));
     connect(ui->clearDataBtn, SIGNAL(clicked()), this, SLOT(clearDB()));
     connect(ui->exportBtn, SIGNAL(clicked()), this, SLOT(exportSlot()));
     connect(ui->detailBtn, SIGNAL(clicked()), this, SLOT(detailSlot_R()));

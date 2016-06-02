@@ -34,6 +34,8 @@ private:
     bool distinct;
     int rowcount;
     int partRowcount;
+    int pos_c;
+    int pos_t;
 
     bool seqFlag;
     bool partFlag;

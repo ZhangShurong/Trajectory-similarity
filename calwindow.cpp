@@ -26,10 +26,7 @@ void CalWindow::openFile1()
 {
     if (p->getNum() != 0)
     {
-        Sequence *t = new Sequence();
-        t = p;
-        delete t;
-        p = NULL;
+        delete p;
         p = new Sequence();
     }
     QString file_name = QFileDialog::getOpenFileName(NULL,
@@ -57,10 +54,7 @@ void CalWindow::openFile2()
 {
     if (q->getNum() != 0)
     {
-        Sequence *t = new Sequence();
-        t = q;
-        delete t;
-        q = NULL;
+        delete q;
         q = new Sequence();
     }
     QString file_name = QFileDialog::getOpenFileName(NULL,
@@ -100,13 +94,8 @@ void CalWindow::startSlot()
         }
         else
         {
-            //设定地图中心点
-            double x = (p->getCentralPoint().longitude + q->getCentralPoint().longitude)/2;
-            double y = (p->getCentralPoint().latitude + q->getCentralPoint().latitude)/2;
-            ui->mapWidget->setCentralPoint(x, y, 10);
+
              //开始计算
-
-
 
             //整条轨迹计算部分
             double res = computeDiscreteFrechet(p,q);
@@ -143,7 +132,14 @@ void CalWindow::startSlot()
             QVector<Sequence> t;
             t.append(*p);
             t.append(*q);
+
+
+            //设定地图中心点
+            double x = (p->getCentralPoint().longitude + q->getCentralPoint().longitude)/2;
+            double y = (p->getCentralPoint().latitude + q->getCentralPoint().latitude)/2;
+            ui->mapWidget->setCentralPoint(x, y, getZoom(t));
             ui->mapWidget->drawSequences(t);
+
 
            // int beginMin1,beginMin2;
             QVector<QVector<int> >qc=getSimplify(p,q);
@@ -164,6 +160,7 @@ void CalWindow::startSlot()
                 ui->mapWidget->highLightPart(p, begin1, end1, 3, 10);
                 ui->mapWidget->highLightPart(q, begin2, end2, 3, 10);
             }
+            qc.clear();
             ui->mapWidget->reload();
         }
 }

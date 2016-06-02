@@ -1,6 +1,8 @@
 #ifndef CORE_H
 #define CORE_H
 
+#define EARTH_RADIUS 6378.137
+#define PI 3.14
 #include <QString>
 #include <QFileDialog>
 #include <iostream>
@@ -16,12 +18,6 @@ struct PointCompare{
   int index2;
   double distance;
 };
-
-//struct PointCollection{
-//    QVector<int>p1;
-//    QVector<int>p2;
-//};
-
 
 struct SecCompare{
     int beginIndex1;//起点1
@@ -42,7 +38,7 @@ double  getSecSim(int i1,int j1,int i2,int j2);
 bool compare(SecCompare s1,SecCompare s2);
 QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b);//调用以计算轨迹段
 void calculateSec(int gap, int h,QVector<SecCompare>&q1);
-void mergeChange(int gap,QVector<SecCompare>&q1,QVector<SecCompare>&q2);
+void mergeChange(int gap,QVector<SecCompare>&q1,QVector<SecCompare>&q2,double limit);
 Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres);
 Point getCenterPoint(Sequence *se_a, int num);
 Point getCenterPoint(QVector<Sequence> seqV);
@@ -55,6 +51,9 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q);
 QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b);
 bool compareDis(PointCompare p1,PointCompare p2);
 void out2DArray(double **arr, int x, int y);
-void getSec(int m, int n);
 double computeDFD_new(int startx, int endx, int starty, int endy);
+double rad(double d);
+double getDistance(double lng1, double lat1, double lng2, double lat2);
+int getZoom(QVector<Sequence> seqV);
+int getZoom(Sequence seq_a);
 #endif // CORE_H

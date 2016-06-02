@@ -47,6 +47,7 @@ public:
     Sequence(QString ID);
    // Sequence(Sequence &se);
     Sequence();
+    void initPainted();
     void clear();//Some problem
     void appendPt(Point *pt);
     void setPtNum(int num);

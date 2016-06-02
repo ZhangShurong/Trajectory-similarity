@@ -495,13 +495,39 @@ void SearchWin::calSecPart()
 
 void SearchWin::drawSeq()
 {
+    QVector<Sequence> temp;
+    temp.append(*input);
+    int seqToDraw = 3;
+    QString str = "";
+    if (time)
+    {
+        //for (int i =0 ;i  < pos_t; i++)
+        if (seqToDraw > pos_t)
+            seqToDraw = pos_t;
+        for (int i =0 ;i  < seqToDraw; i++)
+        {
+            str = ui->searchTable_time->item(i,0)->text();
+            temp.append(id_seq_map[str]);
+        }
+    }
+    else
+    {
+        //for (int i =0 ;i  < pos_c; i++)
+        if (seqToDraw > pos_c)
+            seqToDraw = pos_c;
+        for (int i =0 ;i  < seqToDraw; i++)
+        {
+            str = ui->searchTable_common->item(i,0)->text();
+            temp.append(id_seq_map[str]);
+        }
+    }
+
     ui->searchMap->initJS();
     ui->searchMap->showPoints(true);
     ui->searchMap->showTimes(true);
-    ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
-    ui->searchMap->setFilter(time);
-    ui->searchMap->setNumOfSeq(4);
-    ui->searchMap->drawSequences(seqs, coincide);
+    ui->searchMap->setCentralPoint(getCenterPoint(temp), getZoom(temp));
+    //ui->searchMap->drawSequences(seqs, coincide);
+    ui->searchMap->drawSequences(temp, coincide);
     //drawPoints();
     ui->searchMap->reload();
 }
@@ -563,8 +589,8 @@ void SearchWin::refreshTable()
         ui->searchTable_time->clearContents();
     }
     else {
-        int pos_c = 0;
-        int pos_t = 0;
+        pos_c = 0;
+        pos_t = 0;
         if (tracs->length() > ROW_NUM)
         {
             ui->searchTable_common->setRowCount(tracs->length() + 10);

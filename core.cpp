@@ -223,6 +223,7 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
 
        int gap;
        int h;
+       double limit=computeDiscreteFrechet(p,q);
 
       if(totalNum<=200&&totalNum>=0){
                gap=1;
@@ -231,37 +232,39 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
            gap=5;
            h=gap;
        }
-         for(int i=gap;i<gap+3;i++){
+         for(int i=gap;i<gap+6;i++){
                calculateSec(i,h,q1);
           }
 
         for(int j=gap;j<gap+5;j++){
-               mergeChange(j,q1,q2);
+               mergeChange(j,q1,q2,limit);
         }
         sort(q2.begin(),q2.end(),compare);
         for(int i=0;i<q2.size();i++)
         {
             q1.append(q2[i]);
-            if(i>100)
-                break;
+//            if(i>100)
+//                break;
         }
         sort(q1.begin(),q1.end(),compare);
 
-        if(q1.size()>100){
-            for(int i=0;i<100;i++){
-                q3.append(q1[i]);
-            }
-        }else{
-            for(int i=0;i<q1.size();i++){
-                q3.append(q1[i]);
-            }
-        }
-        q1.clear();
+//        if(q1.size()>1000){
+//            for(int i=0;i<1000;i++){
+//                q3.append(q1[i]);
+//            }
+//        }else{
+//            for(int i=0;i<q1.size();i++){
+//                q3.append(q1[i]);
+//            }
+//        }
+//        q1.clear();
         q2.clear();
-        return q3;
+        return q1;
 }
 
 QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q){
+	p->initPainted();
+	q->initPainted();
     QVector<QVector<int> >qb;
     QVector<QString>qst;
 
@@ -299,19 +302,19 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q){
          QVector<int>qv;
          int k1=0;int k2=0;
          for(int i=0;i<p->getNum();i++){
-             if((i==0&&p->pts[i].painted)||((!p->pts[i-1].painted)&&p->pts[i].painted)||((p->pts[i].painted)&&(i+1<p->getNum()&&(!p->pts[i+1].painted)))||(i+1==p->getNum()&&p->pts[i].painted)){
+             if((i==0&&p->pts[i].painted)||((!p->pts[i-1].painted)&&p->pts[i].painted)||((p->pts[i].painted)&&((i+1<p->getNum())&&(!p->pts[i+1].painted)))||(i+1==p->getNum()&&p->pts[i].painted)){
                            pv.append(i);
                            k1++;
                        }
                    }
 
          for(int i=0;i<q->getNum();i++){
-               if((i==0&&q->pts[i].painted)||((!q->pts[i-1].painted)&&q->pts[i].painted)||((q->pts[i].painted)&&(i+1<q->getNum()&&(!q->pts[i+1].painted)))||(i+1==q->getNum()&&q->pts[i].painted)){
+               if((i==0&&q->pts[i].painted)||((!q->pts[i-1].painted)&&q->pts[i].painted)||((q->pts[i].painted)&&((i+1<q->getNum())&&(!q->pts[i+1].painted)))||(i+1==q->getNum()&&q->pts[i].painted)){
                            qv.append(i);
                            k2++;
                        }
                    }
-
+        qDebug()<<"ceishi"<<k1<<k2;
          if(k1!=k2){
              if(k1>k2){
                  for(int i=0;i<k1-k2;i=i+2){
@@ -329,6 +332,8 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q){
          qb.append(pv);
          qb.append(qv);
          qst.clear();
+         pv.clear();
+         qv.clear();
          return qb;
 
 }
@@ -375,7 +380,7 @@ double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
 
 void calculateSec(int gap, int h, QVector<SecCompare> &q1)
 {
-    int t=0;
+   // int t=0;
     for(int i=0;i<p->pointsNum-gap;i=i+h){
         for(int j=0;j<q->pointsNum-gap;  j=j+h){
       SecCompare s;
@@ -386,16 +391,18 @@ void calculateSec(int gap, int h, QVector<SecCompare> &q1)
       double result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
       s.simliarity=result;
       q1.append(s);
-      t++;
+      //t++;
     }
 //        if(t>1000)
 //            break;
     }
 }
 
-void mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2)
+void mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2,double limit)
 {
-    double limit = 0.2;
+ //   double res = computeDiscreteFrechet(p,q);
+   // double limit = 0.8;
+    limit=limit*0.1;
     for(int i=0;i<q1.size();i++){
         if(q1[i].simliarity<=limit){
             for(int j=0;j<q1.size();j++){
@@ -471,33 +478,19 @@ QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a)
         return t;
     }
     int i;
+    QVector<QString>qst;
     double similarity  = secCompareV_a[0].simliarity;
-    int length = secCompareV_a[0].endIndex1 - secCompareV_a[0].beginIndex1;
-   // t.append(secCompareV_a[0]);
 
        for (i = 0; i < secCompareV_a.length() ; i++)
        {
-           if (secCompareV_a[i].simliarity > (similarity+0.001))
+           if (secCompareV_a[i].simliarity > (similarity+0.0001))
                break;
-           if (length <= secCompareV_a[i].endIndex1 - secCompareV_a[i].beginIndex1)
-           {
-               length = secCompareV_a[i].endIndex1 - secCompareV_a[i].beginIndex1;
-           }
-       }
-      QVector<QString>qst;
-       for (i = 0; i < secCompareV_a.length() && secCompareV_a[i].simliarity <=similarity+0.001; i++)
-       {
-           if (length <= secCompareV_a[i].endIndex1 - secCompareV_a[i].beginIndex1)
-           {
-
-         QString s = QString::number(secCompareV_a[i].beginIndex1, 10)+" "+ QString::number(secCompareV_a[i].endIndex1, 10)+" "+QString::number(secCompareV_a[i].beginIndex2, 10)+" "+QString::number(secCompareV_a[i].endIndex2, 10);
-                  if(!qst.contains(s)){
-                       qst.append(s);
-                       t.append(secCompareV_a[i]);
-                  }
-           }
-       }
-
+           QString s = QString::number(secCompareV_a[i].beginIndex1, 10)+" "+ QString::number(secCompareV_a[i].endIndex1, 10)+" "+QString::number(secCompareV_a[i].beginIndex2, 10)+" "+QString::number(secCompareV_a[i].endIndex2, 10);
+                    if(!qst.contains(s)){
+                         qst.append(s);
+                         t.append(secCompareV_a[i]);
+                    }
+      }
     return t;
 }
 
@@ -596,24 +589,6 @@ void out2DArray(double **arr, int x, int y)
 }
 
 
-void getSec(int m, int n)
-{
-    double **temp = new double*[m];
-    for (int x = 0; x < m ;x++)
-    {
-        temp[x] = new double[n];
-    }
-    for (int i = 0; i < p->getNum() - m + 1; i++)
-    {
-        for (int j =0; j < q->getNum() - n + 1; j ++)
-        {
-            //从mem中取出一个坐标为(i,j)到(i + m - 1; j + n - 1)的矩阵
-
-        }
-    }
-}
-
-
 double computeDFD_new(int startx, int endx, int starty, int endy)
 {
     if (mem[endx][endy] > -1)
@@ -646,4 +621,115 @@ void initP_Q(Sequence *m, Sequence *n)
 {
     p = m;
     q = n;
+}
+
+
+double getDistance(double lng1, double lat1, double lng2, double lat2)
+{
+    double radLat1 = rad(lat1);
+    double radLat2 = rad(lat2);
+    double a = radLat1 - radLat2;
+    double b = rad(lng1) - rad(lng2);
+    double s = 2 * asin(sqrt(pow(sin(a/2),2) +
+                cos(radLat1)*cos(radLat2)*pow(sin(b/2),2)));
+    s = s * EARTH_RADIUS;
+    s = round(s * 10000) / 10000;
+    return s;
+}
+
+
+int getZoom(QVector<Sequence> seqV)
+{
+    double maxLon = seqV[0].getMaxX();
+    double maxLat = seqV[0].getMaxY();
+    double minLon = seqV[0].getMinX();
+    double minLat = seqV[0].getMinY();
+    for (int i = 1;i<seqV.length();i++)
+    {
+        if (seqV[i].getMaxX() > maxLon)
+        {
+            maxLon = seqV[i].getMaxX() ;
+        }
+        if (seqV[i].getMaxY() > maxLat)
+        {
+            maxLat = seqV[i].getMaxY() ;
+        }
+        if (seqV[i].getMinX() < minLon)
+        {
+            minLon = seqV[i].getMinX() ;
+        }
+        if (seqV[i].getMinY() < minLat)
+        {
+            minLat = seqV[i].getMinY() ;
+        }
+    }
+    double res = getDistance(minLon, minLat, maxLon, maxLat);\
+    int dis = res / 8.0;
+    if ( dis > 100)
+    {
+        return 6;
+    }
+    else if (dis > 25)
+    {
+        return 8;
+    }
+    else if(dis > 5 )
+    {
+        return 11;
+    }
+    else if (dis > 1)
+    {
+        return 13;
+    }
+    else if (dis > 0.2)
+    {
+        return 15;
+    }
+    else if (dis > 0.05)
+    {
+        return 16;
+    }
+    return 6;
+}
+
+
+double rad(double d)
+{
+    return d * PI / 180.0;
+}
+
+
+int getZoom(Sequence seq_a)
+{
+    double maxLon = seq_a.getMaxX();
+    double maxLat = seq_a.getMaxY();
+    double minLon = seq_a.getMinX();
+    double minLat = seq_a.getMinY();
+    double res = getDistance(minLon, minLat, maxLon, maxLat);\
+    int dis = res / 8.0;
+    if ( dis > 100)
+    {
+        return 6;
+    }
+    else if (dis > 25)
+    {
+        return 8;
+    }
+    else if(dis > 5 )
+    {
+        return 11;
+    }
+    else if (dis > 1)
+    {
+        return 13;
+    }
+    else if (dis > 0.2)
+    {
+        return 15;
+    }
+    else if (dis > 0.05)
+    {
+        return 16;
+    }
+    return 6;
 }
