@@ -323,11 +323,14 @@ void MainWindow::openFilesSlot()
                                                          "",
                                                          "CSV Files(*.csv)",
                                                          0);
-    if(fileNames.length() == 0)
+    if (fileNames.length() == 0)
     {
         return;
     }
-    QProgressDialog progress(tr("Importing Sequence data..."), tr("cancel"), 0, fileNames.length(), this);
+    QProgressDialog progress(tr("正在导入轨迹数据，请稍候..."),
+                             tr("取消"),
+                             0, fileNames.length(), // Range
+                             this);
     progress.setWindowModality(Qt::WindowModal);
 
     for (int i = 0; i < fileNames.length() ; i++)
@@ -338,6 +341,9 @@ void MainWindow::openFilesSlot()
         ifstream fin(fileName.c_str());
         Csv csv(fin);
         trcID = db->insertData(&csv, tName);
+        if (progress.wasCanceled()) {
+            break;
+        }
     }
     progress.setValue(fileNames.length());
     refreshTable();
