@@ -170,23 +170,18 @@ void SearchWin::search()
 */
 void SearchWin::searchSeq()
 {
-    string tb = "importtest";
     double dfDis;
     double maxDis = 0;
     int c = 0;
     int t = 0;
 
-    seqs.append(*input);
-    id_seq_map.insert(input->getID(), *input);
 
     for (int i = 0;i < tracs->length();i++)
     {
-        //将轨迹存入内存，便于后期使用
+
         Sequence sf;
+        sf = id_seq_map[tracs->at(i)];
         QTableWidgetItem *tItem = new QTableWidgetItem();
-        db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
-        seqs.append(sf);
-        id_seq_map.insert(sf.getID(), sf);
 
         dfDis = computeDiscreteFrechet(input,&sf);
         if (dfDis == 0)
@@ -218,13 +213,6 @@ void SearchWin::searchSeq()
         ui->searchTable_common->sortItems(2,Qt::AscendingOrder);
         for (int i = 0; i < c; i++)
         {
-            Sequence sf;
-            if (i < numOfSeqs) {
-                QString id = ui->searchTable_common->item(i, 0)->text();
-                sf = id_seq_map[id];
-                //db->getSequenceByID(tb,&sf,id.toStdString());
-            }
-
             QTableWidgetItem *tItem = new QTableWidgetItem();
             double dis = ui->searchTable_common->item(i, 2)->text().toDouble();
             double percent = (maxDis - dis)/maxDis * 100;
@@ -244,13 +232,6 @@ void SearchWin::searchSeq()
         ui->searchTable_time->sortItems(2,Qt::AscendingOrder);
         for (int i = 0; i < t; i++)
         {
-            Sequence sf;
-            if (i < numOfSeqs)
-            {
-                QString id = ui->searchTable_time->item(i, 0)->text();
-                sf = id_seq_map[id];
-                //db->getSequenceByID(tb,&sf,id.toStdString());
-            }
             QTableWidgetItem *tItem = new QTableWidgetItem();
             double dis = ui->searchTable_time->item(i, 2)->text().toDouble();
             double percent = (maxDis - dis)/maxDis * 100;
@@ -486,29 +467,10 @@ void SearchWin::fillTable(Sequence inSeq)
 
 void SearchWin::calSecPart()
 {
-    if (!input)
-    {
-        return;
-    }
-    else if (input->getNum() == 0)
-    {
-        return;
-    }
-    ui->searchMap->initJS();
-    ui->searchMap->showPoints(true);
-    ui->searchMap->showTimes(true);
-    ui->searchMap->setCentralPoint(getCenterPoint(seqs), 5);
-    ui->searchMap->setNumOfSeq(4);
-    ui->searchMap->drawSequences(seqs, coincide);
-
-    searchSeq();
-
-    QVector<QVector<int> >qc;
-    Sequence sf;
     for (int i = 0;i < tracs->length();i++)
     {
-
-
+        QVector<QVector<int> >qc;
+        Sequence sf;
         sf = id_seq_map[tracs->at(i)];
         qc = getSimplify(input,&sf);
 
@@ -523,12 +485,6 @@ void SearchWin::calSecPart()
                       qc, &sf);
         }
     }
-    ui->searchMap->reload();
-    coincide.clear();
-    seqs.clear();
-    id_seq_map.clear();
-    rowcount = 0;
-    partRowcount = 0;
 }
 
 void SearchWin::drawSeq()
@@ -546,11 +502,6 @@ void SearchWin::drawSeq()
 
 void SearchWin::searchPoint()
 {
-    if (seqs.isEmpty())
-    {
-        refreshTable();
-        searchSeq();
-    }
     QVector<PointCompare> pVec;
     for (int i = 0;i < tracs->length();i++)
     {
@@ -567,8 +518,22 @@ void SearchWin::searchPoint()
             fillPointTable(ui->searchTable_common_point, pVec, &sf);
         }
     }
+}
 
+void SearchWin::loadIntoMem()
+{
+    string tb = "importtest";
+    seqs.append(*input);
+    id_seq_map.insert(input->getID(), *input);
 
+    for (int i = 0;i < tracs->length();i++)
+    {
+        //将轨迹存入内存，便于后期使用
+        Sequence sf;
+        db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
+        seqs.append(sf);
+        id_seq_map.insert(sf.getID(), sf);
+    }
 }
 
 void SearchWin::refreshTable()
@@ -636,6 +601,9 @@ void SearchWin::init()
     coincide.clear();
     seqs.clear();
     id_seq_map.clear();
+    ui->searchtabWidget->setCurrentIndex(0);
+    ui->searchStackedWidget->setCurrentIndex(0);
+    ui->searchStackedWidget_time->setCurrentIndex(0);
 }
 
 
@@ -665,6 +633,7 @@ void SearchWin::openFile()
     getSquFromFile(&csv,input);
     ui->searchPathEdit->setText(file_name);
     init();
+    refreshTable();
 }
 
 void SearchWin::rankPartOfSeq()
@@ -678,9 +647,21 @@ void SearchWin::rankPartOfSeq()
         return;
     }
     partRowcount = 0;
+
     this->ui->searchMap->initJS();
     this->ui->searchMap->setDefaultCentralPt();
     this->ui->searchMap->reload();
+
+    if (seqs.length() == 0)
+    {
+        loadIntoMem();
+
+    }
+    if (coincide.length() == 0)
+    {
+        searchSeq();
+        sortSeqTable();
+    }
     calSecPart();
     sortPartTable();
     if (time)
@@ -698,12 +679,6 @@ void SearchWin::rankPartOfSeq()
 
 void SearchWin::rankSeqClicked()
 {
-    this->ui->searchMap->initJS();
-    this->ui->searchMap->setDefaultCentralPt();
-    this->ui->searchMap->reload();
-    refreshTable();
-    //init();
-
     if (input == NULL)
     {
         return;
@@ -712,10 +687,21 @@ void SearchWin::rankSeqClicked()
     {
         return;
     }
-    searchSeq();
-    sortSeqTable();
-    drawSeq();
+    this->ui->searchMap->initJS();
+    this->ui->searchMap->setDefaultCentralPt();
+    this->ui->searchMap->reload();
 
+    if (seqs.length() == 0)
+    {
+        loadIntoMem();
+    }
+
+    if (coincide.length() == 0)
+    {
+        searchSeq();
+        sortSeqTable();
+    }
+    drawSeq();
     if (time)
     {
         ui->searchtabWidget->setCurrentIndex(1);
@@ -747,6 +733,16 @@ void SearchWin::rankSeqPointClicked()
     this->ui->searchMap->initJS();
     this->ui->searchMap->setDefaultCentralPt();
     this->ui->searchMap->reload();
+    if (seqs.length() == 0)
+    {
+        loadIntoMem();
+    }
+
+    if (coincide.length() == 0)
+    {
+        searchSeq();
+        sortSeqTable();
+    }
     searchPoint();
     if (time)
     {

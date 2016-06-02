@@ -256,6 +256,8 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
                 q3.append(q1[i]);
             }
         }
+        q1.clear();
+        q2.clear();
         return q3;
 }
 
@@ -295,17 +297,35 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q){
     }
          QVector<int>pv;
          QVector<int>qv;
+         int k1=0;int k2=0;
          for(int i=0;i<p->getNum();i++){
              if((i==0&&p->pts[i].painted)||((!p->pts[i-1].painted)&&p->pts[i].painted)||((p->pts[i].painted)&&(i+1<p->getNum()&&(!p->pts[i+1].painted)))||(i+1==p->getNum()&&p->pts[i].painted)){
                            pv.append(i);
+                           k1++;
                        }
                    }
 
          for(int i=0;i<q->getNum();i++){
                if((i==0&&q->pts[i].painted)||((!q->pts[i-1].painted)&&q->pts[i].painted)||((q->pts[i].painted)&&(i+1<q->getNum()&&(!q->pts[i+1].painted)))||(i+1==q->getNum()&&q->pts[i].painted)){
                            qv.append(i);
+                           k2++;
                        }
                    }
+
+         if(k1!=k2){
+             if(k1>k2){
+                 for(int i=0;i<k1-k2;i=i+2){
+                     qv.append(qv[k2-2]);
+                     qv.append(qv[k2-1]);
+                 }
+             }else{
+                 for(int i=0;i<k2-k1;i=i+2){
+                     pv.append(pv[k1-2]);
+                     pv.append(pv[k1-1]);
+                 }
+             }
+         }
+
          qb.append(pv);
          qb.append(qv);
          qst.clear();

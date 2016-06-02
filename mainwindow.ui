@@ -1258,7 +1258,7 @@ color:white;
                   <item>
                    <widget class="QTabWidget" name="tabWidget">
                     <property name="currentIndex">
-                     <number>1</number>
+                     <number>0</number>
                     </property>
                     <widget class="QWidget" name="tab_5">
                      <attribute name="title">
@@ -1313,13 +1313,6 @@ color:white;
                            </item>
                           </layout>
                          </item>
-                         <item>
-                          <widget class="QPushButton" name="pushButton_5">
-                           <property name="text">
-                            <string>详细信息</string>
-                           </property>
-                          </widget>
-                         </item>
                         </layout>
                        </widget>
                       </item>
@@ -1371,14 +1364,14 @@ color:white;
                            </item>
                           </layout>
                          </item>
-                         <item>
-                          <widget class="QPushButton" name="pushButton_2">
-                           <property name="text">
-                            <string>详细信息</string>
-                           </property>
-                          </widget>
-                         </item>
                         </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="pushButton_2">
+                        <property name="text">
+                         <string>详细信息</string>
+                        </property>
                        </widget>
                       </item>
                      </layout>
@@ -1406,6 +1399,20 @@ color:white;
                            <item>
                             <widget class="QLineEdit" name="bianhao1"/>
                            </item>
+                           <item>
+                            <layout class="QHBoxLayout" name="horizontalLayout_38">
+                             <item>
+                              <widget class="QLabel" name="label_13">
+                               <property name="text">
+                                <string>颜色：</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="color1"/>
+                             </item>
+                            </layout>
+                           </item>
                           </layout>
                          </item>
                          <item>
@@ -1423,44 +1430,34 @@ color:white;
                           </layout>
                          </item>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_36">
+                          <layout class="QHBoxLayout" name="horizontalLayout_46">
                            <item>
-                            <widget class="QLabel" name="label_8">
-                             <property name="text">
-                              <string>经度：</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="longitude1"/>
-                           </item>
-                          </layout>
-                         </item>
-                         <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_37">
-                           <item>
-                            <widget class="QLabel" name="label_9">
-                             <property name="text">
-                              <string>纬度：</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="latitude1"/>
-                           </item>
-                          </layout>
-                         </item>
-                         <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_38">
-                           <item>
-                            <widget class="QLabel" name="label_13">
-                             <property name="text">
-                              <string>颜色：</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="color1"/>
+                            <layout class="QHBoxLayout" name="horizontalLayout_36">
+                             <item>
+                              <widget class="QLabel" name="label_8">
+                               <property name="text">
+                                <string>经度：</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="longitude1"/>
+                             </item>
+                             <item>
+                              <layout class="QHBoxLayout" name="horizontalLayout_37">
+                               <item>
+                                <widget class="QLabel" name="label_9">
+                                 <property name="text">
+                                  <string>纬度：</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLineEdit" name="latitude1"/>
+                               </item>
+                              </layout>
+                             </item>
+                            </layout>
                            </item>
                           </layout>
                          </item>
@@ -1499,6 +1496,20 @@ color:white;
                            <item>
                             <widget class="QLineEdit" name="bianhao2"/>
                            </item>
+                           <item>
+                            <layout class="QHBoxLayout" name="horizontalLayout_44">
+                             <item>
+                              <widget class="QLabel" name="label_34">
+                               <property name="text">
+                                <string>颜色：</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="color2"/>
+                             </item>
+                            </layout>
+                           </item>
                           </layout>
                          </item>
                          <item>
@@ -1516,44 +1527,34 @@ color:white;
                           </layout>
                          </item>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_42">
+                          <layout class="QHBoxLayout" name="horizontalLayout_47">
                            <item>
-                            <widget class="QLabel" name="label_32">
-                             <property name="text">
-                              <string>经度：</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="longitude2"/>
-                           </item>
-                          </layout>
-                         </item>
-                         <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_43">
-                           <item>
-                            <widget class="QLabel" name="label_33">
-                             <property name="text">
-                              <string>纬度：</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="latitude2"/>
-                           </item>
-                          </layout>
-                         </item>
-                         <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_44">
-                           <item>
-                            <widget class="QLabel" name="label_34">
-                             <property name="text">
-                              <string>颜色：</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="color2"/>
+                            <layout class="QHBoxLayout" name="horizontalLayout_42">
+                             <item>
+                              <widget class="QLabel" name="label_32">
+                               <property name="text">
+                                <string>经度：</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="longitude2"/>
+                             </item>
+                             <item>
+                              <layout class="QHBoxLayout" name="horizontalLayout_43">
+                               <item>
+                                <widget class="QLabel" name="label_33">
+                                 <property name="text">
+                                  <string>纬度：</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLineEdit" name="latitude2"/>
+                               </item>
+                              </layout>
+                             </item>
+                            </layout>
                            </item>
                           </layout>
                          </item>

@@ -57,8 +57,11 @@ private:
     void fillPartTable(QTableWidget *table, QVector< QVector<int> > partInfo, Sequence *se);
     void fillTable(Sequence inSeq);
     void calSecPart();
+
     void drawSeq();
+
     void searchPoint();
+    void loadIntoMem();
 
 public slots:
     void openFile();
