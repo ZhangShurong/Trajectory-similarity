@@ -23,6 +23,7 @@ public:
     void refreshTable();
     void setNumOfSeqs(int num);
     void init();
+    void clearInput();
     ~SearchWin();
 private:
     Ui::MainWindow *ui;
@@ -44,6 +45,9 @@ private:
 
     QMap<QString, int> seq_index;
     QMap<QString, Sequence> id_seq_map;
+    QMap<double, QString> res_seq;
+    QMap<double, QString> res_part;
+    QMap<double, QString> res_point;
 
     QStringList *tracs;
     QStringList coincide;//专门存储轨迹id
@@ -62,7 +66,6 @@ private:
     void initSig();
     void fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se);
     void fillPartTable(QTableWidget *table, QVector< QVector<int> > partInfo, Sequence *se);
-    void fillTable(Sequence inSeq);
     void calSecPart();
 
     void drawSeq();

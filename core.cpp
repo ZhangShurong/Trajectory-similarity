@@ -314,7 +314,6 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q){
                            k2++;
                        }
                    }
-        qDebug()<<"ceishi"<<k1<<k2;
          if(k1!=k2){
              if(k1>k2){
                  for(int i=0;i<k1-k2;i=i+2){

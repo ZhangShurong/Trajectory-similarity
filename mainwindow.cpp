@@ -143,6 +143,7 @@ void MainWindow::startAnimation()
 
 void MainWindow::on_searchToolButton_clicked()
 {
+    searchWin->clearInput();
     refreshTable();
     if (ui->stackedWidget->currentIndex() !=1 )
     {

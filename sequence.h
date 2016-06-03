@@ -7,7 +7,8 @@
 #include <iostream>
 #include <string.h>
 
-struct Time{
+struct Time
+{
     int year;
     int month;
     int day;
@@ -30,8 +31,6 @@ public:
     Time t;
     bool painted;
 };
-
-
 
 class Sequence
 {
@@ -68,5 +67,4 @@ public:
     int getIndex(Point pt);
     bool hasTime();
 };
-
 #endif // SEQUENCE_H
