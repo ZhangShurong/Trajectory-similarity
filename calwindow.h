@@ -23,6 +23,8 @@ private:
     Ui::MainWindow *ui;
     Sequence *p;
     Sequence *q;
+    void calSeq();
+    void calPoint();
 
 protected:
 

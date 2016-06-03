@@ -22,6 +22,51 @@ CalWindow::~CalWindow()
 
 }
 
+void CalWindow::calSeq()
+{
+    double res = computeDiscreteFrechet(p,q);
+    ui->Result->setText(QString::number(res));
+}
+
+void CalWindow::calPoint()
+{
+    QVector<PointCompare> pc=getNearestPoint(p,q);
+    PointCompare pc1=pc[0];
+    ui->bianhao1->setText(QString::number(1));
+    ui->bianhao2->setText(QString::number(2));
+    ui->xuliehao1->setText(QString::number(pc1.index1));
+    ui->xuliehao2->setText(QString::number(pc1.index2));
+    double lati1,lati2,longiti1,longiti2;
+    lati1=p->pts[pc1.index1].latitude;
+    lati2=q->pts[pc1.index2].latitude;
+    longiti1=p->pts[pc1.index1].longitude;
+    longiti2=q->pts[pc1.index2].longitude;
+
+    ui->latitude1->setText(QString::number(lati1));
+    ui->latitude2->setText(QString::number(lati2));
+    ui->longitude1->setText(QString::number(longiti1));
+    ui->longitude2->setText(QString::number(longiti2));
+    ui->color1->setText("绿色");
+    ui->color2->setText("绿色");
+    if(!p->pts[pc1.index1].time.isEmpty()){
+        ui->time1->setText(p->pts[pc1.index1].time);
+        ui->time2->setText(q->pts[pc1.index2].time);
+    }else{
+        ui->time1->setText("不含时间");
+        ui->time2->setText("不含时间");
+    }
+
+
+    //DrawPoints()
+    for (int i = 0; i < pc.length(); i++)
+    {
+        Point m =  p->pts[pc[i].index1];
+        ui->mapWidget->drawPoint(&m,"p"+QString::number(i),6,true);
+        Point n =  p->pts[pc[i].index2];
+        ui->mapWidget->drawPoint(&n,"q"+QString::number(i),6,true);
+    }
+}
+
 void CalWindow::openFile1()
 {
     if (p->getNum() != 0)
@@ -83,62 +128,39 @@ void CalWindow::openFile2()
 void CalWindow::startSlot()
 {
    // QTextStream cout(stdout,  QIODevice::WriteOnly);
-    ui->mapWidget->initJS();
-    ui->mapWin->setDefaultCentralPt();
-    ui->mapWidget->showPoints(true);
-    ui->mapWidget->showTimes(true);
-    ui->mapWidget->showEndPoints(true);
+
         if (p->getNum()*q->getNum() == 0)
         {
+            ui->mapWidget->initJS();
+            ui->mapWidget->setDefaultCentralPt();
+            ui->mapWidget->showPoints(true);
+            ui->mapWidget->showTimes(true);
+            ui->mapWidget->showEndPoints(true);
             return;
         }
         else
         {
-
-             //开始计算
-
-            //整条轨迹计算部分
-            double res = computeDiscreteFrechet(p,q);
-            ui->Result->setText(QString::number(res));
-
-            //轨迹点计算部分
-            QVector<PointCompare> pc=getNearestPoint(p,q);
-            PointCompare pc1=pc[0];
-            ui->bianhao1->setText(QString::number(1));
-            ui->bianhao2->setText(QString::number(2));
-            ui->xuliehao1->setText(QString::number(pc1.index1));
-            ui->xuliehao2->setText(QString::number(pc1.index2));
-            double lati1,lati2,longiti1,longiti2;
-            lati1=p->pts[pc1.index1].latitude;
-            lati2=q->pts[pc1.index2].latitude;
-            longiti1=p->pts[pc1.index1].longitude;
-            longiti2=q->pts[pc1.index2].longitude;
-            ui->latitude1->setText(QString::number(lati1));
-            ui->latitude2->setText(QString::number(lati2));
-            ui->longitude1->setText(QString::number(longiti1));
-            ui->longitude2->setText(QString::number(longiti2));
-            ui->color1->setText("绿色");
-            ui->color2->setText("绿色");
-
-            if(!p->pts[pc1.index1].time.isEmpty()){
-                ui->time1->setText(p->pts[pc1.index1].time);
-                ui->time2->setText(q->pts[pc1.index2].time);
-            }else{
-                ui->time1->setText("不含时间");
-                ui->time2->setText("不含时间");
-            }
-
+            ui->mapWidget->initJS();
+            ui->mapWidget->showPoints(true);
+            ui->mapWidget->showTimes(true);
+            ui->mapWidget->showEndPoints(true);
             //轨迹段计算部分
             QVector<Sequence> t;
             t.append(*p);
             t.append(*q);
-
-
             //设定地图中心点
             double x = (p->getCentralPoint().longitude + q->getCentralPoint().longitude)/2;
             double y = (p->getCentralPoint().latitude + q->getCentralPoint().latitude)/2;
             ui->mapWidget->setCentralPoint(x, y, getZoom(t));
             ui->mapWidget->drawSequences(t);
+             //开始计算
+
+            //整条轨迹计算部分
+            calSeq();
+
+            //轨迹点计算部分
+            calPoint();
+
 
 
            // int beginMin1,beginMin2;

@@ -314,11 +314,11 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color, bool big)
     else
     {
         color = color % pointColor.length();
-        QString path = "";
+        QString path = "pointico/10pix/";
         QString size = "new BMap.Size(10,10));";
         if (big)
         {
-            path = "15pix/";
+            path = "pointico/15pix/";
             size = "new BMap.Size(15,15));";
         }
         //qDebug() << color;
@@ -377,14 +377,14 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color, int num, bool big)
     else
     {
         color = color % pointColor.length();
-        QString path = "pointWithNum_10pix/";
+        QString path = "pointico/pointWithNum_10pix/";
         QString size = "new BMap.Size(10,10));";
         QString filename = pointColor[color];
         filename.resize(pointColor[color].length() - 4);
         filename = filename + "num" + QString::number(num) + ".png";
         if (big)
         {
-            path = "pointWithNum_15pix/";
+            path = "pointico/pointWithNum_15pix/";
             size = "new BMap.Size(15,15));";
         }
         //qDebug() << color;
@@ -521,18 +521,20 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
     //至此，折线已经画完
     if (showPoint)
     {
+        QString path = "pointico/10pix/";
         c = c % pointColor.length();
         //qDebug() << color;
         out << "var "
             << "icon"+se_a->getID()    //icon1_40
             << "= new BMap.Icon(\"./"
-            << pointColor[c]
+            << path + pointColor[c]
             <<"\", new BMap.Size(10,10));\n";
         out.flush();
 
 
         if (showEndpoints)
         {
+            QString pathForEnd = "pointico/pointWithNum_20pix/";
             QString filename = pointColor[c];
             filename.resize(pointColor[c].length() - 4);
 
@@ -541,15 +543,15 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
 
             out << "var "
                 << "icon"+se_a->getID() + "start"    //icon1_40start
-                << "= new BMap.Icon(\"./pointWithNum_10pix/"
-                << filenameS
-                <<"\", new BMap.Size(10,10));\n";
+                << "= new BMap.Icon(\"./"
+                << pathForEnd + filenameS
+                <<"\", new BMap.Size(20,20));\n";
             out.flush();
             out << "var "
                 << "icon"+se_a->getID() + "end"    //icon1_40end
-                << "= new BMap.Icon(\"./pointWithNum_10pix/"
-                << filenameE
-                <<"\", new BMap.Size(10,10));\n";
+                << "= new BMap.Icon(\"./"
+                << pathForEnd + filenameE
+                <<"\", new BMap.Size(20,20));\n";
             out.flush();
         }
         else
