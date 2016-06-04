@@ -12,6 +12,14 @@ class MainWindow;
 class MapWindow;
 class MainWindow;
 
+struct partInfo
+{
+    QString id;
+    int start;
+    int end;
+    int inputStart;
+    int inputEnd;
+};
 
 class SearchWin : public QObject
 {
@@ -45,10 +53,10 @@ private:
 
     QMap<QString, int> seq_index;
     QMap<QString, Sequence> id_seq_map;
-    QMap<double, QString> res_seq;
-    QMap<double, QString> res_part;
+/*    QMap<double, QString> res_seq;
+    QMap<double, partInfo> res_part;
     QMap<double, QString> res_point;
-
+*/
     QStringList *tracs;
     QStringList coincide;//专门存储轨迹id
 
@@ -69,6 +77,7 @@ private:
     void calSecPart();
 
     void drawSeq();
+    void drawPart();
 
     void searchPoint();
     void loadIntoMem();

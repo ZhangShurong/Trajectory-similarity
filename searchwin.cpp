@@ -163,7 +163,7 @@ void SearchWin::searchSeq()
         QTableWidgetItem *tItem = new QTableWidgetItem();
 
         dfDis = computeDiscreteFrechet(input,&sf);
-        res_seq.insert(dfDis,sf.getID());
+
         if (dfDis == 0)
         {
             coincide << sf.getID();
@@ -366,51 +366,130 @@ void SearchWin::drawSeq()
     int seqToDraw = 3;
     QVector<Sequence> temp;
     temp.append(*input);
-
-    if (!res_seq.empty())
+    if(tracs->length() == 0)
     {
-        double min = res_seq.begin().key();
-        QMap<double, QString>::const_iterator i;
-        for (i = res_seq.begin(); i != res_seq.end(); i++)
-        {
-            if(i.key() > min)
-                break;
-            temp.append(id_seq_map[i.value()]);
-            if(temp.length() == seqToDraw)
-                break;
-        }
+        return;
     }
-
-
-/*
-
-    QString str = "";
     if (time)
     {
-        //for (int i =0 ;i  < pos_t; i++)
-        if (seqToDraw > pos_t)
-            seqToDraw = pos_t;
-        for (int i =0 ;i  < seqToDraw; i++)
+        double minRes = (ui->searchTable_time->item(0,2)->text()).toDouble();
+        for(int i =  0; i < tracs->length(); i++)
         {
-            str = ui->searchTable_time->item(i,0)->text();
-            temp.append(id_seq_map[str]);
+            QString id = ui->searchTable_time->item(i,0)->text();
+            double res = (ui->searchTable_time->item(i,2)->text()).toDouble();
+            if(res > minRes)
+            {
+                break;
+            }
+            temp.append(id_seq_map[id]);
+            if (temp.length() > seqToDraw)
+            {
+                break;
+            }
         }
     }
     else
     {
-        //for (int i =0 ;i  < pos_c; i++)
-        if (seqToDraw > pos_c)
-            seqToDraw = pos_c;
-        for (int i =0 ;i  < seqToDraw; i++)
+        double minRes = (ui->searchTable_common->item(0,2)->text()).toDouble();
+        for(int i =  0; i < tracs->length(); i++)
         {
-            str = ui->searchTable_common->item(i,0)->text();
-            temp.append(id_seq_map[str]);
+            QString id = ui->searchTable_common->item(i,0)->text();
+            double res = (ui->searchTable_common->item(i,2)->text()).toDouble();
+            if(res > minRes)
+            {
+                break;
+            }
+            temp.append(id_seq_map[id]);
+            if (temp.length() > seqToDraw)
+            {
+                break;
+            }
         }
     }
-*/
+
     ui->searchMap->initJS();
     ui->searchMap->showPoints(true);
     ui->searchMap->showTimes(true);
+    ui->searchMap->setCentralPoint(getCenterPoint(temp), getZoom(temp));
+    ui->searchMap->drawSequences(temp, coincide);
+    ui->searchMap->reload();
+}
+
+void SearchWin::drawPart()
+{
+    int seqToDraw = 3;
+    QVector<Sequence> temp;
+    temp.append(*input);
+    ui->searchMap->initJS();
+    ui->searchMap->showPoints(true);
+    ui->searchMap->showTimes(true);
+
+    if (time)
+    {
+        double minRes = (ui->searchTable_time_part->item(0,3)->text()).toDouble();
+        for(int i =  0; i < partRowcount - 1; i++)
+        {
+            QString id = ui->searchTable_time_part->item(i,0)->text();
+            QString idn = ui->searchTable_time_part->item(i+1, 0)->text();
+            double res = (ui->searchTable_time_part->item(i,3)->text()).toDouble();
+
+            if(res > minRes)
+            {
+                break;
+            }
+            if (id != idn)
+            {
+                temp.append(id_seq_map[id]);
+            }
+            QString index1 = ui->searchTable_time_part->item(i,1)->text();
+            QString index2 = ui->searchTable_time_part->item(i,2)->text();
+
+            int S = index1.split("-")[0].toInt();
+            int E = index1.split("-")[1].toInt();
+            ui->searchMap->highLightPart(&(id_seq_map[id]),S,E,3,10);
+            int inputS = index2.split("-")[0].toInt();
+            int inputE = index2.split("-")[1].toInt();
+            ui->searchMap->highLightPart(input,inputS,inputE,3,10);
+            if (temp.length() > seqToDraw)
+            {
+                break;
+            }
+        }
+    }
+    else
+    {
+        double minRes = (ui->searchTable_common_part->item(0,3)->text()).toDouble();
+        for(int i =  0; i < partRowcount - 1; i++)
+        {
+            QString id = ui->searchTable_common_part->item(i,0)->text();
+            QString idn = ui->searchTable_common_part->item(i+1, 0)->text();
+            double res = (ui->searchTable_common_part->item(i,3)->text()).toDouble();
+
+            if(res > minRes)
+            {
+                break;
+            }
+            if (id != idn)
+            {
+                temp.append(id_seq_map[id]);
+            }
+            QString index1 = ui->searchTable_common_part->item(i,1)->text();
+            QString index2 = ui->searchTable_common_part->item(i,2)->text();
+
+            int S = index1.split("-")[0].toInt();
+            int E = index1.split("-")[1].toInt();
+            ui->searchMap->highLightPart(&(id_seq_map[id]),S,E,3,10);
+            int inputS = index2.split("-")[0].toInt();
+            int inputE = index2.split("-")[1].toInt();
+            ui->searchMap->highLightPart(input,inputS,inputE,3,10);
+            if (temp.length() > seqToDraw)
+            {
+                break;
+            }
+        }
+    }
+
+
     ui->searchMap->setCentralPoint(getCenterPoint(temp), getZoom(temp));
     ui->searchMap->drawSequences(temp, coincide);
     ui->searchMap->reload();
@@ -518,10 +597,8 @@ void SearchWin::init()
     seqFlag = false;
     partFlag = false;
     pointFlag  = false;
+
     coincide.clear();
-    res_seq.clear();
-    res_part.clear();
-    res_point.clear();
     seqs.clear();
     id_seq_map.clear();
     ui->searchtabWidget->setCurrentIndex(0);
@@ -617,6 +694,7 @@ void SearchWin::rankPartOfSeq()
     }
     calSecPart();
     sortPartTable();
+    drawPart();
     partFlag = true;
 }
 
