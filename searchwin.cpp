@@ -99,54 +99,6 @@ void SearchWin::showPartofSeq()
     //qDebug() << "show Part Of Sequence\n";
 }
 
-void SearchWin::drawPoints()
-{
-
-    QString sid = "";
-    int index2 = 0;
-    int index1 = 0;
-    double dis = 0;
-    int num = 0;
-    for (int j = 0; j < rowcount; j ++)
-    {
-
-
-        if (!time)
-        {
-            sid =  ui->searchTable_common_point->item(j,0)->text();
-            index2 =  ui->searchTable_common_point->item(j,1)->text().toInt();
-            index1 =  ui->searchTable_common_point->item(j,4)->text().toInt();
-            dis = ui->searchTable_common_point->item(j,3)->text().toDouble();
-            if (dis !=0 )
-                num = ui->searchTable_common_point->item(j,2)->text().toInt();
-        }
-        else
-        {
-            sid =  ui->searchTable_time_point->item(j,0)->text();
-            index2 = ui->searchTable_time_point->item(j,1)->text().toInt();
-            index1 =  ui->searchTable_time_point->item(j,4)->text().toInt();
-            dis = ui->searchTable_time_point->item(j,3)->text().toDouble();
-            if (dis !=0 )
-                num = ui->searchTable_time_point->item(j,2)->text().toInt();
-        }
-
-        if (dis > 1)
-        {
-            break;
-        }
-        if (dis == 0){
-            ui->searchMap->drawPoint(&((id_seq_map[sid]).pts[index2]),"",seq_index[sid],true);
-        }
-        else
-        {
-            ui->searchMap->drawPoint(&((id_seq_map[sid]).pts[index2]),"",seq_index[sid],num);
-            ui->searchMap->drawPoint(&(input->pts[index1]),"",seq_index[sid],num);
-        }
-       // ui->searchMap->drawPoint(&((seqs[seq_index[sid]])[index1]),"",seq_index[sid],j);
-
-    }
-    seq_index.clear();
-}
 
 void SearchWin::searchSeq()
 {
@@ -495,6 +447,92 @@ void SearchWin::drawPart()
     ui->searchMap->reload();
 }
 
+void SearchWin::drawPoints()
+{
+    int seqToDraw = 3;
+    QVector<Sequence> temp;
+    temp.append(*input);
+    ui->searchMap->initJS();
+    ui->searchMap->showPoints(true);
+    ui->searchMap->showTimes(true);
+
+    if (time)
+    {
+        double minRes = (ui->searchTable_time_point->item(0,3)->text()).toDouble();
+        for(int i =  0; i < rowcount - 1; i++)
+        {
+            QString id = ui->searchTable_time_point->item(i,0)->text();
+            QString idn = ui->searchTable_time_point->item(i+1, 0)->text();
+            double res = (ui->searchTable_time_point->item(i,3)->text()).toDouble();
+            if(res > minRes)
+            {
+                break;
+            }
+            if (id != idn)
+            {
+                temp.append(id_seq_map[id]);
+            }
+
+            QString index1 = ui->searchTable_time_point->item(i,1)->text();
+            QString index2 = ui->searchTable_time_point->item(i,2)->text();
+
+            int S = index1.toInt();
+            ui->searchMap->drawPoint(id_seq_map[id].pts[S],"p"+
+                                     id_seq_map[id].getID()+QString::number(i),6,true);
+
+            int inputS = index2.toInt();
+            ui->searchMap->drawPoint(input->pts[inputS],
+                                     input->getID()+QString::number(i),0,true);
+
+            if (temp.length() > seqToDraw)
+            {
+                break;
+            }
+        }
+    }
+    else
+    {
+        double minRes = (ui->searchTable_common_point->item(0,3)->text()).toDouble();
+        for(int i =  0; i < rowcount - 1; i++)
+        {
+            QString id = ui->searchTable_common_point->item(i,0)->text();
+            QString idn = ui->searchTable_common_point->item(i+1, 0)->text();
+            double res = (ui->searchTable_common_point->item(i,3)->text()).toDouble();
+            if(res > minRes)
+            {
+                break;
+            }
+            if (id != idn)
+            {
+                temp.append(id_seq_map[id]);
+            }
+
+            QString index1 = ui->searchTable_common_point->item(i,1)->text();
+            QString index2 = ui->searchTable_common_point->item(i,2)->text();
+
+            int S = index1.toInt();
+            ui->searchMap->drawPoint(id_seq_map[id].pts[S],"p"+
+                                     id_seq_map[id].getID()+QString::number(i),6,true);
+
+            int inputS = index2.toInt();
+            ui->searchMap->drawPoint(input->pts[inputS],
+                                     input->getID()+QString::number(i),0,true);
+
+            if (temp.length() > seqToDraw)
+            {
+                break;
+            }
+        }
+    }
+
+    ui->searchMap->setCentralPoint(getCenterPoint(temp), getZoom(temp));
+    ui->searchMap->drawSequences(temp, coincide);
+    ui->searchMap->reload();
+
+
+}
+
+
 void SearchWin::searchPoint()
 {
     QVector<PointCompare> pVec;
@@ -674,6 +712,7 @@ void SearchWin::rankPartOfSeq()
 
     if (partFlag)
     {
+        drawPart();
         return;
     }
 
@@ -706,6 +745,7 @@ void SearchWin::rankSeqClicked()
     }
     if (input->getNum() == 0)
     {
+        drawSeq();
         return;
     }
     if (time)
@@ -767,7 +807,8 @@ void SearchWin::rankSeqPointClicked()
     ui->searchStackedWidget_time->setCurrentIndex(1);
 
     if (pointFlag)
-    {
+    {\
+        drawPoints();
         return;
     }
     rowcount = 0;
@@ -786,6 +827,7 @@ void SearchWin::rankSeqPointClicked()
     }
     searchPoint();
     sortPointTable();
+    drawPoints();
     showPartofSeq();
 
     pointFlag = true;

@@ -67,6 +67,7 @@ public:
     void reload();
 
     void drawPoint(Point *p_a, QString pid, int color, bool big = false);
+    void drawPoint(Point p_a, QString pid, int color, bool big = false);
     void drawPoint(Point *p_a, QString pid, int color, int num, bool big = false);
     void drawPoints(QVector<Point> points_a, int color, bool big = false);
     void showPoints(bool sp_a);

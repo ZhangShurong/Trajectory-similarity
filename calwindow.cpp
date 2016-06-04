@@ -62,8 +62,8 @@ void CalWindow::calPoint()
     {
         Point m =  p->pts[pc[i].index1];
         ui->mapWidget->drawPoint(&m,"p"+QString::number(i),6,true);
-        Point n =  p->pts[pc[i].index2];
-        ui->mapWidget->drawPoint(&n,"q"+QString::number(i),6,true);
+        Point n =  q->pts[pc[i].index2];
+        ui->mapWidget->drawPoint(&n,"q"+QString::number(i),3,true);
     }
 }
 

@@ -232,7 +232,6 @@ void MapWindow::initColor()
                << "yellow.png"
                << "pink.png"
                << "green.png"
-               << "red.png"
                << "4EFEB3.png";
 }
 
@@ -349,6 +348,11 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color, bool big)
             <<");\n";
     }
     out.flush();
+}
+
+void MapWindow::drawPoint(Point p_a, QString pid, int color, bool big)
+{
+   drawPoint(&p_a,pid,color,big);
 }
 
 void MapWindow::drawPoint(Point *p_a, QString pid, int color, int num, bool big)

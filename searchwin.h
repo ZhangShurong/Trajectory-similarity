@@ -64,7 +64,7 @@ private:
     void initSeqPartTable(QTableWidget *table);
     void initPointTable(QTableWidget *table);
     void showPartofSeq();
-    void drawPoints();
+
 
     //void search();
     void searchSeq();
@@ -78,6 +78,7 @@ private:
 
     void drawSeq();
     void drawPart();
+    void drawPoints();
 
     void searchPoint();
     void loadIntoMem();
