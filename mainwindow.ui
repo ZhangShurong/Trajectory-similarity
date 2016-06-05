@@ -184,7 +184,7 @@ color:white;
           <string notr="true">color:white;</string>
          </property>
          <property name="text">
-          <string>Kryptonite</string>
+          <string>武汉大学—Kryptonite团队-赛题7：针对以经纬度或经纬度带时间定义的不同轨迹</string>
          </property>
         </widget>
        </item>
@@ -413,32 +413,6 @@ color:white;
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="opToolButton">
-          <property name="text">
-           <string>设置</string>
-          </property>
-          <property name="icon">
-           <iconset resource="res.qrc">
-            <normaloff>:/images/ico_SpeedupOpt.png</normaloff>:/images/ico_SpeedupOpt.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>48</width>
-            <height>48</height>
-           </size>
-          </property>
-          <property name="toolButtonStyle">
-           <enum>Qt::ToolButtonTextUnderIcon</enum>
-          </property>
-          <property name="autoRaise">
-           <bool>true</bool>
-          </property>
-          <property name="arrowType">
-           <enum>Qt::NoArrow</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QToolButton" name="aboutBtn">
           <property name="text">
            <string>关于</string>
@@ -493,7 +467,7 @@ color:white;
         <item>
          <widget class="QToolButton" name="gjToolButton">
           <property name="text">
-           <string>待定</string>
+           <string>简易轨迹段匹配</string>
           </property>
           <property name="icon">
            <iconset resource="res.qrc">
@@ -1709,6 +1683,38 @@ color:white;
            </property>
           </widget>
          </widget>
+         <widget class="QToolButton" name="opToolButton">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>120</y>
+            <width>55</width>
+            <height>75</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>设置</string>
+          </property>
+          <property name="icon">
+           <iconset resource="res.qrc">
+            <normaloff>:/images/ico_SpeedupOpt.png</normaloff>:/images/ico_SpeedupOpt.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>48</width>
+            <height>48</height>
+           </size>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonTextUnderIcon</enum>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+          <property name="arrowType">
+           <enum>Qt::NoArrow</enum>
+          </property>
+         </widget>
         </widget>
         <widget class="QWidget" name="tab_4">
          <attribute name="title">
@@ -1764,25 +1770,6 @@ color:white;
        </widget>
       </widget>
       <widget class="QWidget" name="page_6">
-       <widget class="QLabel" name="label_11">
-        <property name="geometry">
-         <rect>
-          <x>300</x>
-          <y>190</y>
-          <width>171</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(0, 170, 127)</string>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;关于&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
        <widget class="QGroupBox" name="groupBox_4">
         <property name="geometry">
          <rect>
@@ -1794,19 +1781,6 @@ color:white;
         </property>
         <property name="title">
          <string>团队信息</string>
-        </property>
-       </widget>
-       <widget class="QGroupBox" name="groupBox_5">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>220</y>
-          <width>351</width>
-          <height>131</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>项目主页</string>
         </property>
        </widget>
        <widget class="QGroupBox" name="groupBox_6">

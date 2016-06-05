@@ -42,7 +42,7 @@ void mergeChange(int gap,QVector<SecCompare>&q1,QVector<SecCompare>&q2,double li
 Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres);
 Point getCenterPoint(Sequence *se_a, int num);
 Point getCenterPoint(QVector<Sequence> seqV);
-Time &loadToStruct(QString time);
+Time loadToStruct(QString time);
 bool timeCompare(Point*p1,Point*p2);
 double calTimeDistance(Point &a,Point &b);
 double calCoef();

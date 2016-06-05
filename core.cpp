@@ -128,7 +128,7 @@ getSquFromFile(Csv *csv, Sequence *se)
 }
 
 
-Time& loadToStruct(QString time){
+Time loadToStruct(QString time){
     QString re = "\\d{8}[\\s]+[\\d]+:[\\d]+:[\\d]+";
     QRegExp rx(re);
     bool match = rx.exactMatch(time);
@@ -182,6 +182,7 @@ bool timeCompare(Point*p1,Point*p2){
     }else if(t1.year>t2.year){
          return false;
     }
+    return false;
 }
 
 void initMemSpace(Sequence *p, Sequence *q)
@@ -227,8 +228,8 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
       q = se_b;
        int totalNum=p->pointsNum+q->pointsNum;
 
-       int gap;
-       int h;
+       int gap = 1;
+       int h = 1;
        double limit=computeDiscreteFrechet(p,q);
 
       if(totalNum<=200&&totalNum>=0){
