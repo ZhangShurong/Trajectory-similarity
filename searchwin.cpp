@@ -75,7 +75,7 @@ void SearchWin::initSeqPartTable(QTableWidget *table)
     header << tr("轨迹段所在轨迹")
            << tr("起点-终点")
            << tr("对应起点-终点")
-           << tr("相似度");
+           << tr("相似系数（越小越相似）");
     table->setHorizontalHeaderLabels(header);
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
@@ -600,10 +600,10 @@ void SearchWin::refreshTable()
     ui->searchTable_common->clearContents();
     ui->searchTable_time->clearContents();
     QStringList header;
-    header << tr("ID")
-           << tr("PointNumber")
+    header << tr("轨迹ID")
+           << tr("点个数")
            << tr("Frechet Distance")
-           << tr("Similarity");
+           << tr("相似度");
     ui->searchTable_common->setHorizontalHeaderLabels(header);
     ui->searchTable_time->setHorizontalHeaderLabels(header);
     if (tracs->length() == 0)
@@ -785,6 +785,7 @@ void SearchWin::rankSeqClicked()
     ui->searchStackedWidget_time->setCurrentIndex(0);
     if (seqFlag)
     {
+        drawSeq();
         return;
     }
 

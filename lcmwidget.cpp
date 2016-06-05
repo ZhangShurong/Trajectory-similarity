@@ -43,9 +43,12 @@ void lcmWidget::setupUi()
     }
 
     map = new MapWindow;
-
     map->setHtml("./html/lcm.html");
     map->setJs("./html/lcm.js");
+    map->initJS();
+    map->setDefaultCentralPt();
+    map->reload();
+
     thresholdSlider = new QSlider;
     QHBoxLayout *mapLayout = new QHBoxLayout;
     mapLayout->addWidget(map);

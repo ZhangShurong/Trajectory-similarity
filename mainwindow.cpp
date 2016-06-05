@@ -568,13 +568,13 @@ void MainWindow::exportSlot()
 
 void MainWindow::initAction()
 {
-    deleteAct = new QAction(tr("Delete"), this);
+    deleteAct = new QAction(tr("删除"), this);
     connect(deleteAct, SIGNAL(triggered()), this, SLOT(deleteOneAct()));
-    searchAct = new QAction(tr("Search"),this);
+    searchAct = new QAction(tr("搜索"),this);
     connect(searchAct, SIGNAL(triggered()), this, SLOT(searchSlot_R()));
-    showInMapAct = new QAction(tr("ShowInMap"),this);
+    showInMapAct = new QAction(tr("在地图中显示"),this);
     connect(showInMapAct, SIGNAL(triggered()), this, SLOT(showInMapSlot_R()));
-    detailAct = new QAction(tr("Detail"),this);
+    detailAct = new QAction(tr("详情"),this);
     connect(detailAct, SIGNAL(triggered()), this, SLOT(detailSlot_R()));
 }
 

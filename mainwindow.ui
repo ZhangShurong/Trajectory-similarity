@@ -180,11 +180,16 @@ color:white;
       <layout class="QHBoxLayout" name="horizontalLayout_16">
        <item>
         <widget class="QLabel" name="label_2">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="styleSheet">
           <string notr="true">color:white;</string>
          </property>
          <property name="text">
-          <string>武汉大学—Kryptonite团队-赛题7：针对以经纬度或经纬度带时间定义的不同轨迹</string>
+          <string>武汉大学—Kryptonite团队-基于“弗雷歇距离”的轨迹相似度分析软件-赛题7：针对以经纬度或经纬度带时间定义的不同轨迹</string>
          </property>
         </widget>
        </item>
@@ -1568,16 +1573,23 @@ color:white;
                    </widget>
                   </item>
                   <item>
+                   <widget class="QLabel" name="ResLabel">
+                    <property name="text">
+                     <string>相似系数(越小越相似):</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_3">
                     <item>
-                     <widget class="QLabel" name="ResLabel">
-                      <property name="text">
-                       <string>相似系数(越小越相似)</string>
+                     <widget class="QLineEdit" name="Result">
+                      <property name="minimumSize">
+                       <size>
+                        <width>100</width>
+                        <height>0</height>
+                       </size>
                       </property>
                      </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="Result"/>
                     </item>
                     <item>
                      <widget class="QPushButton" name="startBtn">

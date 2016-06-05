@@ -87,7 +87,7 @@ void NetStatIndicator::alertProperly()
         this->netspeedLabel->setText(tr("0 B/s"));
         this->netStatLabel->setText(tr("网络断开"));
         QMessageBox::warning(this, tr("网络连接中断"),
-                             tr("请检查网络连接, 然后重试"), QMessageBox::Yes);
+                             tr("网络状态差，地图可能无法正确绘制！"), QMessageBox::Yes);
         alerted = true;
     }
 }
