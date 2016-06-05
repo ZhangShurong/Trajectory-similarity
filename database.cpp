@@ -110,7 +110,7 @@ string DataBase::insertData(Csv *csv, string tbName)
             continue;
         }
         const char *t = line.c_str();
-        if (!(t[0]>=0 && t[0]<=127))
+        if (Csv::notStdAscii(t[0]))
             continue;
         insert = "insert into " + tableName +
                 " values ('','POINT(";

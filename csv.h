@@ -19,6 +19,7 @@ class Csv { // read and parse comma-separated values
     int getline(string&);
     string getfield(int n);
     int getnfield() const { return nfield; }
+    static bool notStdAscii(char c) { return c >> (8 * sizeof(c) - 1); }
 
   private:
     istream& fin;           // input file pointer

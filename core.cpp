@@ -1,7 +1,7 @@
 #include "core.h"
 #include <QDebug>
 #include <QtAlgorithms>
-#include<time.h>
+#include <time.h>
 #include <calwindow.h>
 
 using namespace std;
@@ -90,7 +90,7 @@ getSquFromFile(Csv *csv, Sequence *se)
         QVector<Point*> tContainer;
         while (csv->getline(line) != 0) {
             const char *t = line.c_str();
-            if (!(t[0]>=0 && t[0]<=127))
+            if (Csv::notStdAscii(t[0]))
                 continue;
             xStr = QString::fromStdString(csv->getfield(0));
             yStr = QString::fromStdString(csv->getfield(1));
