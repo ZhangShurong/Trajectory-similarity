@@ -45,8 +45,11 @@ public:
     explicit MapWindow(QWidget *parent = 0);
     MapWindow(QString js, QString html, QWidget *parent = 0);
     ~MapWindow();
-    void clearVarList();
 
+    void setJs(QString js);
+    void setHtml(QString html);
+
+    void clearVarList();
     void editJs();
     void initJS();
     void closeJS();

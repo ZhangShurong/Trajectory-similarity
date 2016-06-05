@@ -76,7 +76,11 @@ void lcmWidget::openFile(int i)
 {
     QString fileName = QFileDialog::getOpenFileName(NULL,tr("Open File"),
                                                     "", "CSV Files(*.csv)", 0);
-    fileNameLabel[i]->setText(fileName);
+
+    QFileInfo fi =   QFileInfo(fileName);
+    QString name = fi.fileName();
+    fileNameLabel[i]->setText(name);
+
     ifstream in(fileName.toLocal8Bit().data());
     Csv csv(in);
     if (raw_seq[i] != NULL) {

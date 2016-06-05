@@ -84,16 +84,16 @@ string DataBase::insertData(Csv *csv, string tbName)
     QString insert;
     QString tableName = QString::fromStdString(tbName);
     string line;
-    //createTable(tbName);
-    //暂时注释，因为判断表是否存在的函数有误
+
+
     if (!isTableExist(tbName))
     {
         createTable(tbName);
-        //qDebug() << "No such a table";
     }
     QSqlQuery query;
     QString start;
     QString end;
+
     if (getRecordNum(tableName.toStdString()) == 0)
     {
         query.exec("insert into " + tableName
@@ -163,10 +163,14 @@ string DataBase::insertData(Csv *csv, string tbName)
 
 void DataBase::getSequenceByID(string tableName, Sequence *squ, string ID)
 {
-    int start,end;
 
+    int start,end;
     decodeID(ID, &start, &end);
     int l = end - start;
+    if (l == 0)
+    {
+        return;
+    }
     Point *temp = new Point[l];
     QSqlQuery query;
     query.exec("SELECT pt, time, id from "

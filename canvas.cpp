@@ -58,9 +58,12 @@ void Canvas::changeRES(int width, int height)
 
 void Canvas::drawSeq(Sequence *se_a)
 {
+    if(se_a->getNum() == 0)
+    {
+        return;
+    }
     getRange();
     QVector<QPoint> points;
-
     pen->setColor(Qt::gray);
     pen->setWidth(3);
     pen->setJoinStyle(Qt::MiterJoin);

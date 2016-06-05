@@ -73,64 +73,70 @@ double calCoef(){
 void
 getSquFromFile(Csv *csv, Sequence *se)
 {
-    if (se->getNum() != 0)
-    {
-        delete se;
-        Sequence *t = new Sequence();
-        se = t;
-    }
-    se->setID("Input");
-    string line;
-    bool ok;
-    QString xStr;
-    QString yStr;
-    double x;
-    double y;
-  //  QTextStream cout(stdout,  QIODevice::WriteOnly);
-    QVector<Point*> tContainer;
-    while (csv->getline(line) != 0) {
-        const char *t = line.c_str();
-        if (!(t[0]>=0 && t[0]<=127))
-            continue;
-        xStr = QString::fromStdString(csv->getfield(0));
-        yStr = QString::fromStdString(csv->getfield(1));
-        x = xStr.toDouble(&ok);
-        if (ok)
+        if (se->getNum() != 0)
         {
-            y = yStr.toDouble(&ok);
-            if(ok)
+            delete se;
+            Sequence *t = new Sequence();
+            se = t;
+        }
+        se->setID("Input");
+        string line;
+        bool ok;
+        QString xStr;
+        QString yStr;
+        double x;
+        double y;
+
+        QVector<Point*> tContainer;
+        while (csv->getline(line) != 0) {
+            const char *t = line.c_str();
+            if (!(t[0]>=0 && t[0]<=127))
+                continue;
+            xStr = QString::fromStdString(csv->getfield(0));
+            yStr = QString::fromStdString(csv->getfield(1));
+            x = xStr.toDouble(&ok);
+            if (ok)
             {
-                int j =csv->getnfield();
-                if ( j== 2)
+                y = yStr.toDouble(&ok);
+                if(ok)
                 {
-                       Point *temp = new Point(x,y);
-                       se->appendPt(temp);
-                }
-                else if (j == 3) {
-                    Point *temp = new Point(x,y,QString::fromStdString(csv->getfield(2)));
-                    temp->t=loadToStruct(temp->time);
-                  //  se->appendPt(temp);
-                    tContainer.append(temp);
-                }
-                else {
-                    fprintf(stderr, "Wrong\n");
-                    return;
+                    int j =csv->getnfield();
+                    if ( j== 2)
+                    {
+                           Point *temp = new Point(x,y);
+                           se->appendPt(temp);
+                    }
+                    else if (j == 3) {
+                        Point *temp = new Point(x,y,QString::fromStdString(csv->getfield(2)));
+                        temp->t=loadToStruct(temp->time);
+                        tContainer.append(temp);
+                    }
+                    else {
+                        fprintf(stderr, "Wrong\n");
+                        return;
+                    }
                 }
             }
         }
-    }
-    if(!tContainer.isEmpty()){
-        sort(tContainer.begin(),tContainer.end(),timeCompare);
-        for(int i=0;i<tContainer.size();i++){
-            se->appendPt(tContainer[i]);
-       //     cout<<"beign "<<tContainer[i]->time<<endl;
+        if(!tContainer.isEmpty()){
+            sort(tContainer.begin(),tContainer.end(),timeCompare);
+            for(int i=0;i<tContainer.size();i++){
+                se->appendPt(tContainer[i]);
+            }
         }
-    }
-       tContainer.clear();
+        tContainer.clear();
 }
 
 
 Time& loadToStruct(QString time){
+    QString re = "\\d{8}[\\s]+[\\d]+:[\\d]+:[\\d]+";
+    QRegExp rx(re);
+    bool match = rx.exactMatch(time);
+    if(!match)
+    {
+        throw 0;
+    }
+
     Time t;
     QStringList tl=time.split(QRegExp(QRegExp("[\\s]+")));
     t.year=tl[0].mid(0,4).toInt();

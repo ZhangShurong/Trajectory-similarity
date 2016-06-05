@@ -7,6 +7,8 @@
 #include <QCloseEvent>
 #include <string>
 #include "core.h"
+#include "partdetail.h"
+#include "pointdetail.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,8 +25,13 @@ private:
     Ui::MainWindow *ui;
     Sequence *p;
     Sequence *q;
+    QString namep;
+    QString nameq;
+    partDetail pd;
+    PointDetail pointDetail;
     void calSeq();
     void calPoint();
+
 
 protected:
 
@@ -32,6 +39,8 @@ public slots:
     void openFile1();
     void openFile2();
     void startSlot();
+    void showPartDetail();
+    void showPointDetail();
 };
 
 #endif // CALWINDOW_H

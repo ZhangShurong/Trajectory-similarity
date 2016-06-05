@@ -24,7 +24,9 @@ SOURCES += main.cpp \
     searchwin.cpp \
     settingwin.cpp \
     lcmwidget.cpp \
-    netstatindicator.cpp
+    netstatindicator.cpp \
+    partdetail.cpp \
+    pointdetail.cpp
 
 HEADERS += \
     csv.h \
@@ -40,7 +42,9 @@ HEADERS += \
     searchwin.h \
     settingwin.h \
     lcmwidget.h \
-    netstatindicator.h
+    netstatindicator.h \
+    partdetail.h \
+    pointdetail.h
 
 RESOURCES += \
     res.qrc \
@@ -48,7 +52,9 @@ RESOURCES += \
 
 FORMS += \
     detailwin.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    partdetail.ui \
+    pointdetail.ui
 
 DISTFILES += \
     safe.rc \

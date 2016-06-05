@@ -51,7 +51,7 @@ protected:
      * 窗体拖动
      */
     void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    //void mouseMoveEvent(QMouseEvent *event);
 
 private slots:
     void on_closeToolButton_clicked();

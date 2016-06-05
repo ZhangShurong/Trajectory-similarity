@@ -786,6 +786,13 @@ color:white;
               </widget>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="modeLabel">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
@@ -1368,7 +1375,7 @@ color:white;
                        </widget>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="pushButton_2">
+                       <widget class="QPushButton" name="partDetailBtn">
                         <property name="text">
                          <string>详细信息</string>
                         </property>
@@ -1576,7 +1583,7 @@ color:white;
                        </widget>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="pushButton">
+                       <widget class="QPushButton" name="pointDeatilBtn">
                         <property name="text">
                          <string>详细信息</string>
                         </property>
@@ -1591,7 +1598,7 @@ color:white;
                     <item>
                      <widget class="QLabel" name="ResLabel">
                       <property name="text">
-                       <string>相似度：</string>
+                       <string>相似系数(越小越相似)</string>
                       </property>
                      </widget>
                     </item>

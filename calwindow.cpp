@@ -12,6 +12,8 @@ CalWindow::CalWindow(Ui::MainWindow *ui)
     connect(ui->file1Btn, SIGNAL(clicked()), this, SLOT(openFile1()));
     connect(ui->file2Btn, SIGNAL(clicked()), this, SLOT(openFile2()));
     connect(ui->startBtn, SIGNAL(clicked()), this, SLOT(startSlot()));
+    connect(ui->partDetailBtn, SIGNAL(clicked()), this, SLOT(showPartDetail()));
+    connect(ui->pointDeatilBtn, SIGNAL(clicked()), this, SLOT(showPointDetail()));
    // ui->mapWidget->editJs();
     ui->mapWidget->initJS();
     ui->mapWidget->reload();
@@ -25,12 +27,17 @@ CalWindow::~CalWindow()
 void CalWindow::calSeq()
 {
     double res = computeDiscreteFrechet(p,q);
+    if(res == 0)
+    {
+         QMessageBox::information(NULL, "提示", "输入轨迹完全重合", QMessageBox::Yes, QMessageBox::Yes);
+    }
     ui->Result->setText(QString::number(res));
 }
 
 void CalWindow::calPoint()
 {
     QVector<PointCompare> pc=getNearestPoint(p,q);
+    pointDetail.setPointInfo(pc, p, q, namep, nameq);
     PointCompare pc1=pc[0];
     ui->bianhao1->setText(QString::number(1));
     ui->bianhao2->setText(QString::number(2));
@@ -86,11 +93,28 @@ void CalWindow::openFile1()
         else{
             return;
     }
+
+    QFileInfo fi =   QFileInfo(file_name);
+    namep = fi.fileName();
+
+
     ui->file1Path->setText(file_name);
     string fileName = file_name.toLocal8Bit().data();
     ifstream fin(fileName.c_str());
     Csv csv(fin);
-    getSquFromFile(&csv,p);
+    try
+    {
+        getSquFromFile(&csv,p);
+    }
+    catch(int i)
+    {
+         QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
+         delete p;
+         p = new Sequence();
+         ui->file1Path->clear();
+         fin.close();
+         return;
+    }
     p->setID("p");
     fin.close();
 }
@@ -114,11 +138,27 @@ void CalWindow::openFile2()
         else{
             return;
     }
+
+    QFileInfo fi =   QFileInfo(file_name);
+    nameq = fi.fileName();
+
     ui->file2Path->setText(file_name);
     string fileName = file_name.toLocal8Bit().data();
     ifstream fin(fileName.c_str());
     Csv csv(fin);
-    getSquFromFile(&csv,q);
+    try
+    {
+        getSquFromFile(&csv,q);
+    }
+    catch(int i)
+    {
+         QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
+         delete q;
+         q = new Sequence();
+         ui->file2Path->clear();
+         fin.close();
+         return;
+    }
     q->setID("q");
     fin.close();
 }
@@ -185,4 +225,33 @@ void CalWindow::startSlot()
             qc.clear();
             ui->mapWidget->reload();
         }
+}
+
+void CalWindow::showPartDetail()
+{
+    if(p->pointsNum == 0)
+    {
+        return;
+    }
+    if(q->pointsNum == 0)
+    {
+        return;
+    }
+    pd.setWindowModality(Qt::ApplicationModal);
+    pd.setPartInfo(p,q,namep,nameq);
+    pd.show();
+}
+
+void CalWindow::showPointDetail()
+{
+    if(p->pointsNum == 0)
+    {
+        return;
+    }
+    if(q->pointsNum == 0)
+    {
+        return;
+    }
+    pointDetail.setWindowModality(Qt::ApplicationModal);
+    pointDetail.show();
 }

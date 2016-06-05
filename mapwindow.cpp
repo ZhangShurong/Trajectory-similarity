@@ -53,6 +53,7 @@ void MapWindow::initJS()
 void MapWindow::closeJS()
 {
     jsFile->close();
+    qDebug() << "Closed" << jsFilePath;
 }
 
 void MapWindow::drawSequences(Sequence *se_a, int num)
@@ -560,16 +561,17 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
         }
         else
         {
+            QString path = "pointico/10pix/";
             out << "var "
                 << "icon"+se_a->getID() + "start"    //icon1_40start
                 << "= new BMap.Icon(\"./"
-                << pointColor[c]
+                << path+  pointColor[c]
                 <<"\", new BMap.Size(10,10));\n";
             out.flush();
             out << "var "
                 << "icon"+se_a->getID() + "end"    //icon1_40end
                 << "= new BMap.Icon(\"./"
-                << pointColor[c]
+                << path + pointColor[c]
                 <<"\", new BMap.Size(10,10));\n";
             out.flush();
         }
@@ -580,6 +582,8 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
 void MapWindow::createFunc()
 {
     QTextStream out(jsFile);
+    out << "hideOver();\n";
+    out.flush();
     /*
     function showOver(){
         markerp4761_109.show(); polyline.show(); circle.show();
@@ -634,8 +638,8 @@ MapWindow::MapWindow(QWidget *parent):QWidget(parent)
 {
     initColor();
     initWidget();
-    htmlFilePath = "./demo.html";
-    jsFilePath = "./main.js";
+    htmlFilePath = "./html/main.html";
+    jsFilePath = "./html/main.js";
     se_draw = new Sequence();
     showPoint = false;
     showTime = false;
@@ -665,6 +669,7 @@ MapWindow::MapWindow(QString js, QString html, QWidget *parent):QWidget(parent)
 void MapWindow::draw()
 {
     view->load(QUrl::fromLocalFile(QFileInfo(htmlFilePath).absoluteFilePath()));
+    qDebug() << QFileInfo(htmlFilePath).absoluteFilePath();
     //view->load(QUrl::fromLocalFile(QFileInfo(":/webmap/webmap/demo.html").absoluteFilePath()));
     //view->load(QUrl("qrc:/webmap/webmap/demo.html"));
 }
@@ -676,6 +681,20 @@ MapWindow::~MapWindow()
     delete view;
     delete jsFile;
     delete se_draw;
+}
+
+void MapWindow::setJs(QString js)
+{
+    closeJS();
+    jsFilePath = js;
+    delete jsFile;
+    editJs();
+}
+
+void MapWindow::setHtml(QString html)
+{
+    htmlFilePath = html;
+    draw();
 }
 
 void MapWindow::clearVarList()

@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 #include <QProgressDialog>
+#include "core.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,6 +19,15 @@ MainWindow::MainWindow(QWidget *parent) :
     cal = new CalWindow(ui);
     searchWin = new SearchWin(ui, db);
     settingWin = new SettingWin(ui);
+
+    ui->mapWidget->setHtml("./html/cal.html");
+    ui->mapWidget->setJs("./html/cal.js");
+    ui->mapWin->setHtml("./html/map.html");
+    ui->mapWin->setJs("./html/map.js");
+    ui->searchMap->setHtml("./html/search.html");
+    ui->searchMap->setJs("./html/search.js");
+
+
     initMap();
     initAction();
     initTable();
@@ -85,15 +95,18 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         else if(  event->button() == Qt::RightButton )
         shakeWindow();
 }
-
+/*
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
+
     if ( event->buttons() == Qt::LeftButton )
         {
             endPos = event->globalPos() - startPos;
             this->move(endPos);
     }
+
 }
+*/
 
 
 void MainWindow::shakeWindow()
@@ -217,7 +230,8 @@ void MainWindow::openFile()
             return;
     }
     string fileName = file_name.toLocal8Bit().data();
-    fprintf(stderr,"%s\n", fileName.c_str());
+
+
     string trcID;
     ifstream fin(fileName.c_str());
 
@@ -272,6 +286,7 @@ void MainWindow::about()
 
 void MainWindow::searchInDB()
 {
+    QMessageBox::information(NULL, "提示", "本页面为简易搜索，获得详细信息请转到搜素界面", QMessageBox::Yes, QMessageBox::Yes);
     QString file_name = QFileDialog::getOpenFileName(this,
             tr("Open File"),
             "",
@@ -289,6 +304,11 @@ void MainWindow::searchInDB()
     Csv csv(fin);
     Sequence inputSe;
     getSquFromFile(&csv,&inputSe);
+    if (inputSe.getNum() == 0)
+    {
+        QMessageBox::information(NULL, "Error", "格式错误", QMessageBox::Yes, QMessageBox::Yes);
+        return;
+    }
     search(inputSe);
 }
 
@@ -340,8 +360,32 @@ void MainWindow::openFilesSlot()
         string fileName = fileNames[i].toLocal8Bit().data();
         string trcID;
         ifstream fin(fileName.c_str());
+
+        try
+        {
+            ifstream fin2(fileName.c_str());
+            Csv format(fin2);
+            Sequence *t = new Sequence();
+            getSquFromFile(&format, t);
+        }
+        catch(int i)
+        {
+            QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
+            break;
+        }
+
         Csv csv(fin);
         trcID = db->insertData(&csv, tName);
+
+        /*
+        try{
+            trcID = db->insertData(&csv, tName);
+            throw "Error";
+        }
+        catch(QString e){
+            QMessageBox::information(NULL, e, "格式错误", QMessageBox::Yes, QMessageBox::Yes);
+        }
+        */
         if (progress.wasCanceled()) {
             break;
         }
@@ -367,25 +411,6 @@ void MainWindow::clickTBSlot(const QModelIndex index)
             p[1] = input;
             ui->canvasWidget->setSequences(p,2);
 
-            /*
-             * 效率不够
-            QVector<QString>qst;
-            int beginMin1,beginMin2;
-            QVector<SecCompare> qs1=findBest(temp,&input,beginMin1,beginMin2);
-
-            if (qs1.length() != 0)
-             {
-                 for (int i = 0; i < qs1.length(); i++)
-                 {
-                     QString s =   QString::number(qs1[i].beginIndex1)+" "
-                                 + QString::number(qs1[i].endIndex1)+" "
-                                 + QString::number(qs1[i].beginIndex2)+" "
-                                 + QString::number(qs1[i].endIndex2);
-                    if(!qst.contains(s))
-                      qst.append(s);
-                 }
-             }
-             */
         }
         else
         {
@@ -458,6 +483,7 @@ void MainWindow::detailSlot_R()
     {
         return;
     }
+    detWin->setWindowModality(Qt::ApplicationModal);
     detWin->showSeq(selectedSeqS[0]);
     detWin->show();
 }
@@ -655,6 +681,10 @@ void MainWindow::initSearchWin()
 void MainWindow::search(Sequence input)
 {
     this->input = input;
+    if(input.getNum() == 0)
+    {
+        return;
+    }
     refreshTable();
     searchMode(true);
     string tb = tName;
@@ -717,27 +747,37 @@ void MainWindow::searchMode(bool inSearch)
     search_mode = inSearch;
     if (inSearch)
     {
+        ui->modeLabel->setText("进入搜索模式，点击返回回到正常模式");
         //ui->stackedWidget_2->setCurrentIndex(1);
     }
     else {
+        ui->modeLabel->setText("正常模式");
         ui->stackedWidget_2->setCurrentIndex(0);
     }
 }
 
 void MainWindow::getDetail(Sequence *se_a)
 {
+    if(se_a->getNum() == 0)
+    {
         ui->idPtLabel->setText(se_a->getID());
-        ui->startPtLabel->setText(QString::number(se_a->pts[0].longitude)
-                                  + " "
-                                  + QString::number(se_a->pts[0].latitude));
-        ui->endPtLabel->setText(QString::number(se_a->pts[se_a->getNum() - 1].longitude)
-                                + " "
-                                + QString::number(se_a->pts[se_a->getNum() - 1].latitude));
+        ui->startPtLabel->setText("-1 -1");
+        ui->endPtLabel->setText("-1 -1 ");
+        ui->timePtLabel->setText(tr("No"));
+    }
+    ui->idPtLabel->setText(se_a->getID());
+    ui->startPtLabel->setText(QString::number(se_a->pts[0].longitude)
+                              + " "
+                              + QString::number(se_a->pts[0].latitude));
+    ui->endPtLabel->setText(QString::number(se_a->pts[se_a->getNum() - 1].longitude)
+                            + " "
+                            + QString::number(se_a->pts[se_a->getNum() - 1].latitude));
 
-        if (se_a->pts[0].time == "")
-            ui->timePtLabel->setText(tr("No"));
-        else {
-            ui->timePtLabel->setText(tr("Yes"));
-        }
+    if (se_a->pts[0].time == "")
+        ui->timePtLabel->setText(tr("No"));
+    else {
+        ui->timePtLabel->setText(tr("Yes"));
+    }
+
 }
 

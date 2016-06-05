@@ -1,5 +1,6 @@
 #include "searchwin.h"
 #include "ui_mainwindow.h"
+#include <QProgressDialog>
 SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
 {
     this->ui = ui;
@@ -107,9 +108,14 @@ void SearchWin::searchSeq()
     int c = 0;
     int t = 0;
 
+    QProgressDialog progress(tr("正在计算轨迹数据，请稍候..."),
+                             tr("取消"),
+                             0, tracs->length());
+    progress.setWindowModality(Qt::WindowModal);
+    //progress.show();
+
     for (int i = 0;i < tracs->length();i++)
     {
-
         Sequence sf;
         sf = id_seq_map[tracs->at(i)];
         QTableWidgetItem *tItem = new QTableWidgetItem();
@@ -136,7 +142,12 @@ void SearchWin::searchSeq()
         {
             maxDis = dfDis;
         }
+        progress.setValue(i);
+        if (progress.wasCanceled()) {
+            break;
+        }
     }
+    progress.setValue(tracs->length());
 
 
     if ( c != 0)
@@ -293,6 +304,12 @@ void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partIn
 
 void SearchWin::calSecPart()
 {
+
+    QProgressDialog progress(tr("正在计算轨迹数据，请稍候..."),
+                             tr("取消"),
+                             0, tracs->length());
+    progress.setWindowModality(Qt::WindowModal);
+
     for (int i = 0;i < tracs->length();i++)
     {
         QVector<QVector<int> >qc;
@@ -310,7 +327,12 @@ void SearchWin::calSecPart()
             fillPartTable(ui->searchTable_common_part,
                       qc, &sf);
         }
+        progress.setValue(i);
+        if (progress.wasCanceled()) {
+            break;
+        }
     }
+    progress.setValue(tracs->length());
 }
 
 void SearchWin::drawSeq()
@@ -674,7 +696,10 @@ void SearchWin::openFile()
     ifstream fin(fileName.c_str());
     Csv csv(fin);
     getSquFromFile(&csv,input);
-
+    if(input->getNum() == 0)
+    {
+        return;
+    }
     ui->searchPathEdit->setText(file_name);
     init();
     if (input->hasTime())
@@ -778,6 +803,10 @@ void SearchWin::rankSeqClicked()
         sortSeqTable();
     }
     drawSeq();
+    if (coincide.length() != 0)
+    {
+         QMessageBox::information(NULL, "提示", "发现与输入轨迹完全重合的轨迹，这些轨迹将不会绘制在地图中", QMessageBox::Yes, QMessageBox::Yes);
+    }
     showPartofSeq();
     seqFlag = true;
 
