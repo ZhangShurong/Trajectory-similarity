@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>images/auto_run.png</file>
         <file>images/check_hover.png</file>
         <file>images/check_normal.png</file>
         <file>images/check_pressed.png</file>

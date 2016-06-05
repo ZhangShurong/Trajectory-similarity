@@ -179,11 +179,15 @@ void lcmWidget::drawSequences()
     map->setDefaultCentralPt();
     map->showPoints(true);
     map->setCentralPoint(centralPoint.first, centralPoint.second, 10);
-    for (size_t i = 0; i < sizeof(seqs) / sizeof(seqs[0]); ++i) {
-        if (seqs[i] == NULL)
-            continue;
-        map->drawSequence(*seqs[i], i);
-    }
+
+//    for (size_t i = 0; i < sizeof(seqs) / sizeof(seqs[0]); ++i) {
+//        if (seqs[i] == NULL)
+//            continue;
+//        map->drawSequence(*seqs[i], i);
+//    }
+
+    Sequence tmp[] = {*raw_seq[0], *raw_seq[1]};
+    map->drawSequences(tmp,2);
 }
 
 void lcmWidget::onLowerLimChanged(int value)

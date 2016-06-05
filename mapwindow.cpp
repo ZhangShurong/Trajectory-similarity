@@ -66,7 +66,7 @@ void MapWindow::drawSequences(Sequence *se_a, int num)
 
     for (int i = 0; i < num; i++)
     {
-        drawSqu(&se_draw[i]);
+        drawSqu(&se_draw[i], i);
     }
     createFunc();
 }
