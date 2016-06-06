@@ -3,11 +3,14 @@
 NetStatIndicator::NetStatIndicator(QWidget *parent) :
     QWidget(parent), alerted(false), timer(this)
 {
+    QString styleStr = tr("QLabel { color : white; }");
     /** Ui part **/
     this->netspeedLabel = new QLabel;
+    this->netspeedLabel->setStyleSheet(styleStr);
     this->netspeedLabel->setText(tr("N/A"));
 
     this->netStatLabel = new QLabel;
+    this->netStatLabel->setStyleSheet(styleStr);
     this->netspeedLabel->setAlignment(Qt::AlignRight);
     this->netspeedLabel->setText(tr("Unknown network status"));
 

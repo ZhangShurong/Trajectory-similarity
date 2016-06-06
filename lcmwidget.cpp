@@ -28,6 +28,7 @@ void lcmWidget::setupUi()
     adjustBarLayout->addWidget(upperLimLabel);
     adjustBarLayout->addWidget(upperLimBox);
     adjustBarLayout->addWidget(thresholdLabel);
+    adjustBarLayout->addSpacing(10);
     adjustBarLayout->addWidget(refreshButton);
 
     QHBoxLayout *fileBarLayout = new QHBoxLayout;
@@ -40,6 +41,10 @@ void lcmWidget::setupUi()
 
         fileBarLayout->addWidget(fileNameLabel[i]);
         fileBarLayout->addWidget(fileOpenButtion[i]);
+
+        if (i == 0) {
+            fileBarLayout->addSpacing(0);
+        }
     }
 
     map = new MapWindow;
@@ -50,9 +55,11 @@ void lcmWidget::setupUi()
     map->reload();
 
     thresholdSlider = new QSlider;
+    thresholdSlider->setValue(10);
     QHBoxLayout *mapLayout = new QHBoxLayout;
     mapLayout->addWidget(map);
     mapLayout->addWidget(thresholdSlider);
+    updateThreshold();
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addLayout(fileBarLayout);
@@ -155,39 +162,33 @@ void lcmWidget::calcLcmSequence()
 void lcmWidget::drawSequences()
 {
     QPair<double, double> centralPoint(0.0, 0.0);
-    int noneNullCount = 0;
     Sequence *seqs[] = {raw_seq[0], raw_seq[1]/*, common_seq[0], common_seq[1]*/};
+    QVector<Sequence> seq_vec;
+
     for (size_t i = 0; i < sizeof(seqs) / sizeof(seqs[0]); ++i) {
-        if (seqs[i] == NULL)
-            continue;
-        ++noneNullCount;
+        if (seqs[i] != NULL) {
+            seq_vec.push_back(*seqs[i]);
+        }
     }
-    if (noneNullCount == 0) {
-        //cerr << "No sequence to draw!" << endl;
+
+    if (seq_vec.isEmpty()) {
         return;
     }
-    for (size_t i = 0; i < sizeof(seqs) / sizeof(seqs[0]); ++i) {
-        if (seqs[i] == NULL)
-            continue;
-        centralPoint.first  += seqs[i]->getCentralPoint().longitude;
-        centralPoint.second += seqs[i]->getCentralPoint().latitude;
+
+    for (int i = 0; i < seq_vec.size(); ++i) {
+        centralPoint.first  += seq_vec[i].getCentralPoint().longitude;
+        centralPoint.second += seq_vec[i].getCentralPoint().latitude;
     }
-    centralPoint.first  /= noneNullCount;
-    centralPoint.second /= noneNullCount;
+
+    centralPoint.first  /= seq_vec.size();
+    centralPoint.second /= seq_vec.size();
 
     map->initJS();
     map->setDefaultCentralPt();
     map->showPoints(true);
-    map->setCentralPoint(centralPoint.first, centralPoint.second, 10);
+    map->setCentralPoint(centralPoint.first, centralPoint.second, 5);
 
-//    for (size_t i = 0; i < sizeof(seqs) / sizeof(seqs[0]); ++i) {
-//        if (seqs[i] == NULL)
-//            continue;
-//        map->drawSequence(*seqs[i], i);
-//    }
-
-    Sequence tmp[] = {*raw_seq[0], *raw_seq[1]};
-    map->drawSequences(tmp,2);
+    map->drawSequences(seq_vec);
 }
 
 void lcmWidget::onLowerLimChanged(int value)
