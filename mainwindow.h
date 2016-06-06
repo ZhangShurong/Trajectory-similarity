@@ -14,6 +14,8 @@
 
 #define ROW_NUM 100
 
+#define ANIMATE_DURATION 400
+
 class MapWindow;
 class CalWindow;
 class SearchWin;

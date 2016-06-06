@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initMap();
     initAction();
     initTable();
-   // initCSS();
+    // initCSS();
     initSig();
     initCan();
 
@@ -50,16 +50,13 @@ QVector<Sequence> MainWindow::getCurrentSeqs()
 {
     QVector<Sequence> tempSeq;
     QModelIndexList indexes = ui->mainTable->selectionModel()->selectedIndexes();
-    if (indexes.length() != 0)
-    {
-        for (int i = 0; i < indexes.length();i=i+4)
-        {
+    if (indexes.length() != 0) {
+        for (int i = 0; i < indexes.length(); i=i+4) {
             Sequence *temp = new Sequence();
             int curRow = indexes[i].row();
             QModelIndex indextemp = ui->mainTable->model()->index(curRow,0);
             string id = indextemp.data().toString().toStdString();
-            if (id != "")
-            {
+            if (id != "") {
                 db->getSequenceByID(tName,temp,id);
                 tempSeq.append(*temp);
             }
@@ -86,13 +83,11 @@ void MainWindow::on_minToolButton_clicked()
 /*窗口拖动*/
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
-    if ( event->button() == Qt::LeftButton )
-        {
-            startPos = event->globalPos() - this->frameGeometry().topLeft();
-        }
-        else if ( event->button() == Qt::MiddleButton)
-            closeWindowAnimation();
-        else if(  event->button() == Qt::RightButton )
+    if ( event->button() == Qt::LeftButton ) {
+        startPos = event->globalPos() - this->frameGeometry().topLeft();
+    } else if ( event->button() == Qt::MiddleButton)
+        closeWindowAnimation();
+    else if(  event->button() == Qt::RightButton )
         shakeWindow();
 }
 /*
@@ -136,7 +131,7 @@ void MainWindow::setStackCurrentPage(quint8 index)
 void MainWindow::closeWindowAnimation()
 {
     QPropertyAnimation *animation = new QPropertyAnimation(this,"windowOpacity");
-    animation->setDuration(1000);
+    animation->setDuration(ANIMATE_DURATION);
     animation->setStartValue(1);
     animation->setEndValue(0);
     animation->start();
@@ -148,7 +143,7 @@ void MainWindow::closeWindowAnimation()
 void MainWindow::startAnimation()
 {
     QPropertyAnimation *animation = new QPropertyAnimation(this,"windowOpacity");
-    animation->setDuration(1000);
+    animation->setDuration(ANIMATE_DURATION);
     animation->setStartValue(0);
     animation->setEndValue(1);
     animation->start();
@@ -158,8 +153,7 @@ void MainWindow::on_searchToolButton_clicked()
 {
     searchWin->clearInput();
     refreshTable();
-    if (ui->stackedWidget->currentIndex() !=1 )
-    {
+    if (ui->stackedWidget->currentIndex() !=1 ) {
         initSearchWin();
     }
     this->setStackCurrentPage(1);
@@ -175,8 +169,7 @@ void MainWindow::on_checkToolButton_2_clicked()
 
 void MainWindow::on_calToolButton_clicked()
 {
-    if (ui->stackedWidget->currentIndex() !=2 )
-    {
+    if (ui->stackedWidget->currentIndex() !=2 ) {
         this->ui->mapWidget->initJS();
         this->ui->mapWidget->setDefaultCentralPt();
         this->ui->mapWidget->reload();
@@ -186,8 +179,7 @@ void MainWindow::on_calToolButton_clicked()
 
 void MainWindow::on_mapToolButton_clicked()
 {
-    if (ui->stackedWidget->currentIndex() !=3 )
-    {
+    if (ui->stackedWidget->currentIndex() !=3 ) {
         this->ui->mapWin->initJS();
         this->ui->mapWin->setDefaultCentralPt();
         this->ui->mapWin->reload();
@@ -218,16 +210,14 @@ void MainWindow::on_gjToolButton_clicked()
 void MainWindow::openFile()
 {
     QString file_name = QFileDialog::getOpenFileName(this,
-            tr("Open File"),
-            "",
-            "CSV Files(*.csv)",
-            0);
-    if (!file_name.isNull())
-        {
-            qDebug()<<file_name;
-        }
-        else{
-            return;
+                        tr("Open File"),
+                        "",
+                        "CSV Files(*.csv)",
+                        0);
+    if (!file_name.isNull()) {
+        qDebug()<<file_name;
+    } else {
+        return;
     }
     string fileName = file_name.toLocal8Bit().data();
 
@@ -257,18 +247,16 @@ void MainWindow::showMap()
     ui->stackedWidget->setCurrentIndex(3);
 
     //QStringList *allTascID = db->getAllTracID(tName);
-   // int num = allTascID->length();
-     int num = tracs->length();
+    // int num = allTascID->length();
+    int num = tracs->length();
     Sequence temp;
     QVector<Sequence> all;
     string id;
 
-    for (int i = 0;i<num;i++)
-    {
+    for (int i = 0; i<num; i++) {
         id = QString((*tracs)[i]).toStdString();
         db->getSequenceByID(tName,&temp,id);
-        if (i == 0)
-        {
+        if (i == 0) {
             Point t = temp.getCentralPoint();
             ui->mapWin->setCentralPoint(t.longitude,t.latitude,10);
         }
@@ -288,24 +276,21 @@ void MainWindow::searchInDB()
 {
     QMessageBox::information(NULL, "提示", "本页面为简易搜索，获得详细信息请转到搜素界面", QMessageBox::Yes, QMessageBox::Yes);
     QString file_name = QFileDialog::getOpenFileName(this,
-            tr("Open File"),
-            "",
-            "CSV Files(*.csv)",
-            0);
-    if (!file_name.isNull())
-        {
-            qDebug()<<file_name;
-        }
-        else{
-            return;
+                        tr("Open File"),
+                        "",
+                        "CSV Files(*.csv)",
+                        0);
+    if (!file_name.isNull()) {
+        qDebug()<<file_name;
+    } else {
+        return;
     }
     string fileName = file_name.toLocal8Bit().data();
     ifstream fin(fileName.c_str());
     Csv csv(fin);
     Sequence inputSe;
     getSquFromFile(&csv,&inputSe);
-    if (inputSe.getNum() == 0)
-    {
+    if (inputSe.getNum() == 0) {
         QMessageBox::information(NULL, "Error", "格式错误", QMessageBox::Yes, QMessageBox::Yes);
         return;
     }
@@ -315,14 +300,13 @@ void MainWindow::searchInDB()
 void MainWindow::paint()
 {
     can = new Canvas();
-   // QStringList *allTascID = db->getAllTracID(tName);
+    // QStringList *allTascID = db->getAllTracID(tName);
     //int num = allTascID->length();
     int num = tracs->length();
     Sequence *all = new Sequence[num];
 
     string id;
-    for (int i = 0;i<num;i++)
-    {
+    for (int i = 0; i<num; i++) {
         id = QString((*tracs)[i]).toStdString();
         db->getSequenceByID(tName,&all[i],id);
     }
@@ -340,12 +324,11 @@ void MainWindow::clearDB()
 void MainWindow::openFilesSlot()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this,
-                                                         tr("Open File"),
-                                                         "",
-                                                         "CSV Files(*.csv)",
-                                                         0);
-    if (fileNames.length() == 0)
-    {
+                            tr("Open File"),
+                            "",
+                            "CSV Files(*.csv)",
+                            0);
+    if (fileNames.length() == 0) {
         return;
     }
     QProgressDialog progress(tr("正在导入轨迹数据，请稍候..."),
@@ -354,22 +337,18 @@ void MainWindow::openFilesSlot()
                              this);
     progress.setWindowModality(Qt::WindowModal);
 
-    for (int i = 0; i < fileNames.length() ; i++)
-    {
+    for (int i = 0; i < fileNames.length() ; i++) {
         progress.setValue(i);
         string fileName = fileNames[i].toLocal8Bit().data();
         string trcID;
         ifstream fin(fileName.c_str());
 
-        try
-        {
+        try {
             ifstream fin2(fileName.c_str());
             Csv format(fin2);
             Sequence *t = new Sequence();
             getSquFromFile(&format, t);
-        }
-        catch(int i)
-        {
+        } catch(int i) {
             QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
             break;
         }
@@ -401,19 +380,15 @@ void MainWindow::clickTBSlot(const QModelIndex index)
     Sequence *temp = new Sequence();
 
     string id = indextemp.data().toString().toStdString();
-    if (id != "")
-    {
+    if (id != "") {
         db->getSequenceByID(tName,temp,id);
-        if (search_mode)
-        {
+        if (search_mode) {
             Sequence *p = new Sequence[2];
             p[0] = *temp;
             p[1] = input;
             ui->canvasWidget->setSequences(p,2);
 
-        }
-        else
-        {
+        } else {
             ui->canvasWidget->setSequences(temp,1);
         }
         getDetail(temp);
@@ -424,8 +399,7 @@ void MainWindow::deleteOneAct()
 {
     searchMode(false);
     selectedSeqS= getCurrentSeqs();
-    if (selectedSeqS.length() == 0)
-    {
+    if (selectedSeqS.length() == 0) {
         return;
     }
     Sequence *t = new Sequence();
@@ -437,8 +411,7 @@ void MainWindow::deleteOneAct()
 void MainWindow::searchSlot_R()
 {
     selectedSeqS= getCurrentSeqs();
-    if (selectedSeqS.length() == 0)
-    {
+    if (selectedSeqS.length() == 0) {
         return;
     }
     Sequence t = selectedSeqS[0];
@@ -452,21 +425,17 @@ void MainWindow::showInMapSlot_R()
     ui->mapWin->showPoints(true);
     ui->mapWin->showTimes(true);
     selectedSeqS= getCurrentSeqs();
-    if (selectedSeqS.length() == 0)
-    {
+    if (selectedSeqS.length() == 0) {
         return;
     }
-    if (search_mode)
-    {
+    if (search_mode) {
         QVector<Sequence> se_draw;
         se_draw.append(input);
         se_draw.append(selectedSeqS[0]);
         Point center = getCenterPoint(se_draw);
         ui->mapWin->setCentralPoint(center,getZoom(se_draw));
         ui->mapWin->drawSequences(se_draw);
-    }
-    else
-    {
+    } else {
         Point center = getCenterPoint(selectedSeqS);
         ui->mapWin->setCentralPoint(center,getZoom(selectedSeqS));
         ui->mapWin->drawSequences(selectedSeqS);
@@ -479,8 +448,7 @@ void MainWindow::showInMapSlot_R()
 void MainWindow::detailSlot_R()
 {
     selectedSeqS= getCurrentSeqs();
-    if (selectedSeqS.length() == 0)
-    {
+    if (selectedSeqS.length() == 0) {
         return;
     }
     detWin->setWindowModality(Qt::ApplicationModal);
@@ -490,8 +458,7 @@ void MainWindow::detailSlot_R()
 
 void MainWindow::goBackSlot()
 {
-    if (search_mode)
-    {
+    if (search_mode) {
         searchMode(false);
     }
     refreshTable();
@@ -526,35 +493,27 @@ void MainWindow::exportSlot()
 {
     qDebug() << "exportBtn clicked";
     QString filename = QFileDialog::getSaveFileName(this,
-        tr("Export Sequence"),
-        "",
-        tr("*.csv;")); //选择路径
-    if(filename.isEmpty())
-    {
+                       tr("Export Sequence"),
+                       "",
+                       tr("*.csv;")); //选择路径
+    if(filename.isEmpty()) {
         return;
-    }
-    else
-    {
+    } else {
         qDebug() << filename;
         filename += ".csv";
         QFile file(filename);
-        if (!file.open(QIODevice::WriteOnly))
-        {
+        if (!file.open(QIODevice::WriteOnly)) {
             qDebug() << "Failed!";
             return;
         }
         QTextStream out(&file);
         selectedSeqS= getCurrentSeqs();
-        if (selectedSeqS.length() == 0)
-        {
+        if (selectedSeqS.length() == 0) {
             qDebug() << "Nothing selected!";
             return;
-        }
-        else {
-            for (int i = 0; i< selectedSeqS.length(); i++)
-            {
-                for (int j = 0; j < selectedSeqS[i].getNum(); j++)
-                {
+        } else {
+            for (int i = 0; i< selectedSeqS.length(); i++) {
+                for (int j = 0; j < selectedSeqS[i].getNum(); j++) {
                     out << selectedSeqS[i].pts[j].longitude
                         << ","
                         << selectedSeqS[i].pts[j].latitude
@@ -618,24 +577,20 @@ void MainWindow::refreshTable()
     if (tracs->length() == 0)
         ui->mainTable->clear();
     else {
-        if (tracs->length() > ROW_NUM)
-        {
+        if (tracs->length() > ROW_NUM) {
             ui->mainTable->setRowCount(tracs->length() + 10);
-        }
-        else
-        {
+        } else {
             ui->mainTable->setRowCount(ROW_NUM + 10);
         }
-        for(int i = 0; i < tracs->length();i++)
-        {
+        for(int i = 0; i < tracs->length(); i++) {
             QString temp = (*tracs)[i];
             ui->mainTable->setItem(i,0, new QTableWidgetItem(temp));
             ui->mainTable->setItem(i,1,
-                               new QTableWidgetItem(QString::number(db->getPointNumByID(temp.toStdString()))));
+                                   new QTableWidgetItem(QString::number(db->getPointNumByID(temp.toStdString()))));
         }
     }
     searchWin->setTracs(tracs);
-   // delete tracs;
+    // delete tracs;
 }
 
 void MainWindow::initSig()
@@ -661,8 +616,7 @@ void MainWindow::initCan()
     Sequence *temp = new Sequence();
     QModelIndex indextemp = ui->mainTable->model()->index(row,0);
     string id = indextemp.data().toString().toStdString();
-    if (id != "")
-    {
+    if (id != "") {
         db->getSequenceByID(tName,temp,id);
         ui->canvasWidget->setSequences(temp,1);
     }
@@ -681,8 +635,7 @@ void MainWindow::initSearchWin()
 void MainWindow::search(Sequence input)
 {
     this->input = input;
-    if(input.getNum() == 0)
-    {
+    if(input.getNum() == 0) {
         return;
     }
     refreshTable();
@@ -698,8 +651,7 @@ void MainWindow::search(Sequence input)
     int beginMin2=0;
     */
 
-    for (int i = 0;i < tracs->length();i++)
-    {
+    for (int i = 0; i < tracs->length(); i++) {
         QTableWidgetItem *tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
         dfDis = computeDiscreteFrechet(&input,&sf);
@@ -712,19 +664,15 @@ void MainWindow::search(Sequence input)
             maxDis = dfDis;
     }
     //填充百分数
-    for (int i = 0;i < tracs->length();i++)
-    {
+    for (int i = 0; i < tracs->length(); i++) {
         QString temp = ui->mainTable->item(i,2)->text();
         dfDis = temp.toDouble();
         double percent = ((maxDis - dfDis)/maxDis)*100;
 
         QTableWidgetItem *tItem = new QTableWidgetItem();
-        if (percent < 0)
-        {
+        if (percent < 0) {
             tItem->setData(Qt::DisplayRole,"0%");
-        }
-        else
-        {
+        } else {
             tItem->setData(Qt::DisplayRole,
                            QString::number(percent) + "%");
         }
@@ -745,12 +693,10 @@ void MainWindow::initMap()
 void MainWindow::searchMode(bool inSearch)
 {
     search_mode = inSearch;
-    if (inSearch)
-    {
+    if (inSearch) {
         ui->modeLabel->setText("进入搜索模式，点击返回回到正常模式");
         //ui->stackedWidget_2->setCurrentIndex(1);
-    }
-    else {
+    } else {
         ui->modeLabel->setText("正常模式");
         ui->stackedWidget_2->setCurrentIndex(0);
     }
@@ -758,8 +704,7 @@ void MainWindow::searchMode(bool inSearch)
 
 void MainWindow::getDetail(Sequence *se_a)
 {
-    if(se_a->getNum() == 0)
-    {
+    if(se_a->getNum() == 0) {
         ui->idPtLabel->setText(se_a->getID());
         ui->startPtLabel->setText("-1 -1");
         ui->endPtLabel->setText("-1 -1 ");
