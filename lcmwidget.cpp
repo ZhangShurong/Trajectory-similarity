@@ -87,10 +87,12 @@ void lcmWidget::setupActions()
 
 void lcmWidget::openFile(int i)
 {
-    QString fileName = QFileDialog::getOpenFileName(NULL,tr("Open File"),
+    QString fileName = QFileDialog::getOpenFileName(NULL,tr("打开文件"),
                                                     "", "CSV Files(*.csv)", 0);
-
-    QFileInfo fi =   QFileInfo(fileName);
+    if (fileName.isNull() || fileName.isEmpty()) {
+        return;
+    }
+    QFileInfo fi(fileName);
     QString name = fi.fileName();
     fileNameLabel[i]->setText(name);
 
