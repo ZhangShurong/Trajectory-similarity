@@ -320,6 +320,7 @@ void MainWindow::clearDB()
     refreshTable();
 }
 
+#include <QtConcurrent/QtConcurrent>
 
 void MainWindow::openFilesSlot()
 {
@@ -328,49 +329,11 @@ void MainWindow::openFilesSlot()
                             "",
                             "CSV Files(*.csv)",
                             0);
-    if (fileNames.length() == 0) {
-        return;
-    }
-    QProgressDialog progress(tr("正在导入轨迹数据，请稍候..."),
-                             tr("取消"),
-                             0, fileNames.length(), // Range
-                             this);
-    progress.setWindowModality(Qt::WindowModal);
-
-    for (int i = 0; i < fileNames.length() ; i++) {
-        progress.setValue(i);
-        string fileName = fileNames[i].toLocal8Bit().data();
-        string trcID;
-        ifstream fin(fileName.c_str());
-
-        try {
-            ifstream fin2(fileName.c_str());
-            Csv format(fin2);
-            Sequence *t = new Sequence();
-            getSquFromFile(&format, t);
-        } catch(int i) {
-            QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
-            break;
-        }
-
-        Csv csv(fin);
-        trcID = db->insertData(&csv, tName);
-
-        /*
-        try{
-            trcID = db->insertData(&csv, tName);
-            throw "Error";
-        }
-        catch(QString e){
-            QMessageBox::information(NULL, e, "格式错误", QMessageBox::Yes, QMessageBox::Yes);
-        }
-        */
-        if (progress.wasCanceled()) {
-            break;
-        }
-    }
-    progress.setValue(fileNames.length());
-    refreshTable();
+    ImportFilesRunnable *importInstance = new ImportFilesRunnable(this, *db, tName, fileNames);
+    QThreadPool::globalInstance()->start(importInstance);
+    QMessageBox::information(this, tr("导入提示"),
+                             QString::number(fileNames.size()) +
+                             tr(" 个文件已经开始在后台导入。\n数据导入花费时间可能较长，您可以先进行其他操作。"));
 }
 
 void MainWindow::clickTBSlot(const QModelIndex index)
