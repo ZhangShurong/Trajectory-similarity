@@ -20,6 +20,45 @@ class MapWindow;
 class CalWindow;
 class SearchWin;
 
+class ImportThread : public QThread {
+    Q_OBJECT
+private:
+    DataBase *&database;
+    const std::string &tName;
+
+public:
+    QStringList fileList;
+
+    ImportThread(DataBase *&db, const std::string &t, const QStringList &ls)
+            : QThread(), database(db), tName(t), fileList(ls) {}
+
+    void run() {
+        int n_ok = 0;
+        foreach (const QString eachFile, fileList) {
+            string fileName = eachFile.toLocal8Bit().data();
+            ifstream fin(fileName.c_str());
+            try {
+                ifstream fin2(fileName.c_str());
+                Csv format(fin2);
+                Sequence *t = new Sequence();
+                getSquFromFile(&format, t);
+            } catch (int i) {
+                emit importFileErrorSignal(i);
+                break;
+            }
+            Csv csv(fin);
+            database->insertData(&csv, tName);
+            emit importedOneFileSignal();
+            ++n_ok;
+        }
+        emit importFinishedSignal(n_ok, fileList.size() - n_ok);
+    }
+signals:
+    void importFinishedSignal(int, int);
+    void importedOneFileSignal(void);
+    void importFileErrorSignal(int);
+};
+
 namespace Ui {
 class MainWindow;
 }
@@ -82,12 +121,14 @@ private slots:
     void showInMap();
     void setSlot();
     void exportSlot();
+    void refreshTable();
+    void importFileErrorSlot(int code);
+    void importFinished(int ok, int bad);
 
 private:
     Ui::MainWindow *ui;
     friend class CalWindow;
     friend class SearchWin;
-    friend class ImportFilesRunnable;
     SettingWin *settingWin;
     /*
      * 记录窗口位置
@@ -95,10 +136,13 @@ private:
     QPoint startPos;
     QPoint endPos;
 
+    // Database
     string tName;
     bool search_mode;
     DataBase *db;
     Canvas *can;
+    // Thread for import file
+    ImportThread importThread;
     //CSS
     QFile *cssFile;
     QString *strCSS;
@@ -121,7 +165,6 @@ private:
     void initAction();
     void initCSS();
     void initTable();
-    void refreshTable();
     void initSig();
     void initCan();
     void initSearchWin();
@@ -131,41 +174,5 @@ private:
     void getDetail(Sequence *se_a);
 };
 
-class ImportFilesRunnable : public QRunnable {
-private:
-    DataBase &database;
-    const std::string tName;
-    const QStringList fileList;
-    MainWindow *const win;
-public:
-    ImportFilesRunnable(MainWindow *w, DataBase &db, const std::string &t,
-                        const QStringList &ls)
-            : QRunnable(), database(db), tName(t), fileList(ls), win(w) {}
-
-    void run() {
-        foreach (const QString eachFile, fileList) {
-            string fileName = eachFile.toLocal8Bit().data();
-            string trcID;
-            ifstream fin(fileName.c_str());
-            try {
-                ifstream fin2(fileName.c_str());
-                Csv format(fin2);
-                Sequence *t = new Sequence();
-                getSquFromFile(&format, t);
-            } catch(int i) {
-                QMessageBox::information(NULL, "Error 错误代码" + QString::number(i),
-                                         "时间格式错误,格式类似20160601 13:00:11",
-                                         QMessageBox::Yes, QMessageBox::Yes);
-                break;
-            }
-            Csv csv(fin);
-            trcID = database.insertData(&csv, tName);
-            win->refreshTable();
-        }
-        QMessageBox::information(win, QObject::tr("完成"),
-                                 QObject::tr("您导入的") + QString::number(fileList.size()) +
-                                 QObject::tr("个文件处理完毕。"));
-    }
-};
 
 #endif // MAINWINDOW_H

@@ -7,13 +7,12 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), tName("importtest"), importThread(db, tName, QStringList())
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->startAnimation();
 
-    tName = "importtest";
     tracs = new QStringList();
     detWin = new detailWin();
     cal = new CalWindow(ui);
@@ -34,8 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // initCSS();
     initSig();
     initCan();
-
-
 
 //    searchWin->setDB(db);
     searchMode(false);
@@ -320,20 +317,30 @@ void MainWindow::clearDB()
     refreshTable();
 }
 
-#include <QtConcurrent/QtConcurrent>
-
 void MainWindow::openFilesSlot()
 {
+    if (importThread.isRunning()) {
+        QMessageBox::information(this, tr("提示"),
+                                 tr("当前有导入任务仍在处理中，请等当前任务结束后再导入。"));
+        return;
+    }
+
     QStringList fileNames = QFileDialog::getOpenFileNames(this,
                             tr("Open File"),
                             "",
                             "CSV Files(*.csv)",
                             0);
-    ImportFilesRunnable *importInstance = new ImportFilesRunnable(this, *db, tName, fileNames);
-    QThreadPool::globalInstance()->start(importInstance);
+    if (fileNames.isEmpty()) {
+        return;
+    }
+    importThread.fileList = fileNames;
     QMessageBox::information(this, tr("导入提示"),
                              QString::number(fileNames.size()) +
-                             tr(" 个文件已经开始在后台导入。\n数据导入花费时间可能较长，您可以先进行其他操作。"));
+                             tr(" 个文件即将开始后台导入。\n") +
+                             tr(fileNames.size() > 2 ?
+                                    "数据导入花费时间可能较长，您可以先进行其他操作。"
+                                  : ":-)"));
+    importThread.start();
 }
 
 void MainWindow::clickTBSlot(const QModelIndex index)
@@ -499,6 +506,8 @@ void MainWindow::initAction()
     connect(showInMapAct, SIGNAL(triggered()), this, SLOT(showInMapSlot_R()));
     detailAct = new QAction(tr("详情"),this);
     connect(detailAct, SIGNAL(triggered()), this, SLOT(detailSlot_R()));
+    connect(&importThread, SIGNAL(importedOneFileSignal()), this, SLOT(refreshTable()));
+    connect(&importThread, SIGNAL(importFinishedSignal(int,int)), this, SLOT(importFinished(int,int)));
 }
 
 void MainWindow::initCSS()
@@ -555,6 +564,19 @@ void MainWindow::refreshTable()
     }
     searchWin->setTracs(tracs);
     // delete tracs;
+}
+
+void MainWindow::importFileErrorSlot(int code)
+{
+    QMessageBox::information(NULL, tr("导入文件出现错误！ 代码") + QString::number(code),
+                             "时间格式错误,格式类似 20160601 13:00:11");
+}
+
+void MainWindow::importFinished(int ok, int bad)
+{
+    QMessageBox::information(this, tr("导入文件结束"),
+                             QString::number(ok) + tr(" 个文件导入成功，\n") +
+                             QString::number(bad) + tr(" 个文件导入失败。"));
 }
 
 void MainWindow::initSig()
