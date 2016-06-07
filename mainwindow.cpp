@@ -194,12 +194,12 @@ void MainWindow::on_opToolButton_clicked()
 
 void MainWindow::on_exToolButton_clicked()
 {
-    this->setStackCurrentPage(5);
+    this->setStackCurrentPage(6);
 }
 
 void MainWindow::aboutButton_clicked()
 {
-    this->setStackCurrentPage(6);
+    this->setStackCurrentPage(5);
 }
 
 void MainWindow::on_gjToolButton_clicked()
@@ -387,6 +387,7 @@ void MainWindow::showInMapSlot_R()
     ui->mapWin->setDefaultCentralPt();
     ui->mapWin->showPoints(true);
     ui->mapWin->showTimes(true);
+    ui->mapWin->showEndPoints(true);
     selectedSeqS= getCurrentSeqs();
     if (selectedSeqS.length() == 0) {
         return;
