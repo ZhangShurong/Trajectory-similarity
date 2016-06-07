@@ -15,15 +15,15 @@ void detailWin::showSeq(Sequence se)
     if (se.getNum() == 0)
         return;
     else {
-        for(int i = 0; i < se.getNum();i++)
+        for(int i = 0; i < se.getNum(); i++)
         {
             ui->mainTable->setItem(i,0, new QTableWidgetItem(se[i].id));
             ui->mainTable->setItem(i,1,
-                               new QTableWidgetItem(QString::number(se[i].longitude)));
+                                   new QTableWidgetItem(QString::number(se[i].longitude)));
             ui->mainTable->setItem(i,2,
-                               new QTableWidgetItem(QString::number(se[i].latitude)));
+                                   new QTableWidgetItem(QString::number(se[i].latitude)));
             ui->mainTable->setItem(i,3,
-                               new QTableWidgetItem(se[i].time));
+                                   new QTableWidgetItem(se[i].time));
         }
     }
 }

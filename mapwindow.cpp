@@ -82,7 +82,7 @@ void MapWindow::drawSequences(QVector<Sequence> se_draw_a)
     }
     for (int i = 0; i< num; i++)
     {
-            drawSqu(&(se_draw_a[i]), i);
+        drawSqu(&(se_draw_a[i]), i);
     }
     createFunc();
 }
@@ -135,12 +135,12 @@ void MapWindow::drawSequencePair(Sequence *se_a, Sequence *se_b, int c)
     {
         out << "var cm" << i <<  "=new BMap.Polyline(["
             << "new BMap.Point(" << QString::number(se_a->pts[i].longitude)
-                << "," << QString::number(se_a->pts[i].latitude) << "),"
+            << "," << QString::number(se_a->pts[i].latitude) << "),"
             << "new BMap.Point(" << QString::number(se_b->pts[i].longitude)
-                << "," << QString::number(se_b->pts[i].latitude) << ")],"
+            << "," << QString::number(se_b->pts[i].latitude) << ")],"
             << "{strokeColor:\"" + color[c] + "\", strokeWeight:1,strokeOpacity:0.5});\n"
             << "map.addOverlay(cm" << i << ");";
-            out.flush();
+        out.flush();
     }
 }
 
@@ -196,7 +196,7 @@ void MapWindow::drawPoints(Point *ps_a, int num, QString sqeID)
             qDebug() << ps_a[i].time;
         }
         if (((ps_a[i]).time != "") && showTime)//三维数据且显示时间为真
-        //if (!(ps_a[i].time.isNull()) && showTime)//三维数据且显示时间为真
+            //if (!(ps_a[i].time.isNull()) && showTime)//三维数据且显示时间为真
         {
             labelList << "label"+pid;
             //var label = new BMap.Label("2016/12/12-24:00:00",{offset:new BMap.Size(-50,-20)});
@@ -225,7 +225,7 @@ void MapWindow::initColor()
           <<"yellow"
           <<"pink"
           <<"green"
-         << "#4EFEB3";
+          << "#4EFEB3";
     pointColor << "red.png"
                << "skyblue.png"
                << "6C3365.png"
@@ -247,19 +247,19 @@ void MapWindow::initWidget()
 
 void MapWindow::setCentralPoint(double x, double y, int zoom)
 {
-     QTextStream out(jsFile);
+    QTextStream out(jsFile);
 //     QString str = "var point = new BMap.Point(" + QString::number(x) + ","+QString::number(y)+");\n"
 //             + "map.centerAndZoom(point," + zoom + ");\n";
 
-     out <<"var point = new BMap.Point("
-         <<QString::number(x)
-         <<","+QString::number(y)+");"
-         <<"map.centerAndZoom(point,"
-         << zoom
-         <<");";
+    out <<"var point = new BMap.Point("
+        <<QString::number(x)
+        <<","+QString::number(y)+");"
+        <<"map.centerAndZoom(point,"
+        << zoom
+        <<");";
 
-     //out << str;
-     out.flush();
+    //out << str;
+    out.flush();
 }
 
 void MapWindow::setCentralPoint(Point pt, int zoom)
@@ -343,7 +343,7 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color, bool big)
             << pid
             << ",{icon:"
             <<"icon"+pid
-             << "});"
+            << "});"
             <<"map.addOverlay("
             << "marker"+pid
             <<");\n";
@@ -353,7 +353,7 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color, bool big)
 
 void MapWindow::drawPoint(Point p_a, QString pid, int color, bool big)
 {
-   drawPoint(&p_a,pid,color,big);
+    drawPoint(&p_a,pid,color,big);
 }
 
 void MapWindow::drawPoint(Point *p_a, QString pid, int color, int num, bool big)
@@ -414,7 +414,7 @@ void MapWindow::drawPoint(Point *p_a, QString pid, int color, int num, bool big)
             << pid
             << ",{icon:"
             <<"icon"+pid
-             << "});"
+            << "});"
             <<"map.addOverlay("
             << "marker"+pid
             <<");\n";
@@ -454,24 +454,24 @@ void MapWindow::highLightPart(Sequence *se_a, int start, int end, int c, int lWe
 {
     QString ID = "t" + se_a->getID();
     QString str = "var "+ ID + " = new BMap.Polyline([";
-    for (int i = start;i <= end;i++)
+    for (int i = start; i <= end; i++)
     {
         str = str + "new BMap.Point("
-                  + QString::number(se_a->pts[i].longitude)
-                  + ", "
-                  + QString::number(se_a->pts[i].latitude)
-                  + "),";
+              + QString::number(se_a->pts[i].longitude)
+              + ", "
+              + QString::number(se_a->pts[i].latitude)
+              + "),";
     }
     c = c%7;
     str = str + "], {strokeColor:\""
-              + color[c]
-              + "\","
-              +" strokeWeight:"
-              + QString::number(lWeight)
-              + ", strokeOpacity:0.5});\n";
+          + color[c]
+          + "\","
+          +" strokeWeight:"
+          + QString::number(lWeight)
+          + ", strokeOpacity:0.5});\n";
     str = str + "map.addOverlay("
-              + ID
-              + ");";
+          + ID
+          + ");";
     QTextStream out(jsFile);
     out << str;
     out.flush();
@@ -487,7 +487,7 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
     }
     if (filterStatus == 0)
     {
-        if (se_a->hasTime()){
+        if (se_a->hasTime()) {
             return;
         }
     }
@@ -501,25 +501,25 @@ void MapWindow::drawSqu(Sequence *se_a, int c, int lWeight)
 
     QString ID = "t" + se_a->getID();//如t1_40
     QString str = "var "+ ID + " = new BMap.Polyline([";
-    for (int i = 0;i<se_a->getNum();i++)
+    for (int i = 0; i<se_a->getNum(); i++)
     {
         str = str + "new BMap.Point("
-                  + QString::number(se_a->pts[i].longitude)
-                  + ", "
-                  + QString::number(se_a->pts[i].latitude)
-                  + "),";
+              + QString::number(se_a->pts[i].longitude)
+              + ", "
+              + QString::number(se_a->pts[i].latitude)
+              + "),";
     }
     c = c % color.length();//防止颜色超界
 
     str = str + "], {strokeColor:\""
-              + color[c]
-              + "\","
-              +" strokeWeight:"
-              + QString::number(lWeight)
-              + ", strokeOpacity:0.5});\n";
+          + color[c]
+          + "\","
+          +" strokeWeight:"
+          + QString::number(lWeight)
+          + ", strokeOpacity:0.5});\n";
     str = str + "map.addOverlay("
-              + ID
-              + ");";
+          + ID
+          + ");";
     QTextStream out(jsFile);
     out << str;
     out.flush();

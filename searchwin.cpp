@@ -56,14 +56,14 @@ SearchWin::~SearchWin()
 
 void SearchWin::initTable(QTableWidget *table)
 {
-        //table->horizontalHeader()->setStretchLastSection(true);
-        table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        table->verticalHeader()->hide();
-        table->setContextMenuPolicy(Qt::ActionsContextMenu);
-        table->setSelectionBehavior(QAbstractItemView::SelectRows);
-        table->setColumnCount(4);
-        table->setRowCount(ROW_NUM);
-        table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //table->horizontalHeader()->setStretchLastSection(true);
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    table->verticalHeader()->hide();
+    table->setContextMenuPolicy(Qt::ActionsContextMenu);
+    table->setSelectionBehavior(QAbstractItemView::SelectRows);
+    table->setColumnCount(4);
+    table->setRowCount(ROW_NUM);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void SearchWin::initSeqPartTable(QTableWidget *table)
@@ -81,7 +81,7 @@ void SearchWin::initSeqPartTable(QTableWidget *table)
 }
 
 void SearchWin::initPointTable(QTableWidget *table)
-{    
+{
     table->setColumnCount(4);
     table->setRowCount(ROW_NUM);
     table->clearContents();
@@ -114,7 +114,7 @@ void SearchWin::searchSeq()
     progress.setWindowModality(Qt::WindowModal);
     //progress.show();
 
-    for (int i = 0;i < tracs->length();i++)
+    for (int i = 0; i < tracs->length(); i++)
     {
         Sequence sf;
         sf = id_seq_map[tracs->at(i)];
@@ -217,8 +217,8 @@ void SearchWin::initSig()
 
 void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> pointsV, Sequence *se)
 {
-   // qDebug() << "rowcount = "
-     //        << QString::number(rowcount);
+    // qDebug() << "rowcount = "
+    //        << QString::number(rowcount);
     if (distinct)
     {
         if (coincide.contains(se->getID()))
@@ -240,12 +240,12 @@ void SearchWin::fillPointTable(QTableWidget *table, QVector<PointCompare> points
     {
         table->setItem(x,0, new QTableWidgetItem(se->getID()));
         table->setItem(x,1, new QTableWidgetItem(
-                                                QString::number(pointsV[x - start].index2)));
+                           QString::number(pointsV[x - start].index2)));
 
         table->setItem(x,3, new QTableWidgetItem(
-                                                QString::number(pointsV[x - start].distance)));
+                           QString::number(pointsV[x - start].distance)));
         table->setItem(x,2, new QTableWidgetItem(
-                                                QString::number(pointsV[x - start].index1)));
+                           QString::number(pointsV[x - start].index1)));
     }
     rowcount = end;
 }
@@ -279,7 +279,7 @@ void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partIn
     QString str;
     initP_Q(input, se);
     initMemSpace(input, se);
-    for(int i=0; i<pv.size() - 1; i=i+2){
+    for(int i=0; i<pv.size() - 1; i=i+2) {
         int begin1=pv[i];
         int end1=pv[i+1];
         int begin2=qv[i];
@@ -310,7 +310,7 @@ void SearchWin::calSecPart()
                              0, tracs->length());
     progress.setWindowModality(Qt::WindowModal);
 
-    for (int i = 0;i < tracs->length();i++)
+    for (int i = 0; i < tracs->length(); i++)
     {
         QVector<QVector<int> >qc;
         Sequence sf;
@@ -320,12 +320,12 @@ void SearchWin::calSecPart()
         if (sf.hasTime() && input->hasTime())
         {
             fillPartTable(ui->searchTable_time_part,
-                      qc, &sf);
+                          qc, &sf);
         }
         else if (!sf.hasTime() && !input->hasTime())
         {
             fillPartTable(ui->searchTable_common_part,
-                      qc, &sf);
+                          qc, &sf);
         }
         progress.setValue(i);
         if (progress.wasCanceled()) {
@@ -558,7 +558,7 @@ void SearchWin::drawPoints()
 void SearchWin::searchPoint()
 {
     QVector<PointCompare> pVec;
-    for (int i = 0;i < tracs->length();i++)
+    for (int i = 0; i < tracs->length(); i++)
     {
         Sequence sf;
         sf = id_seq_map[tracs->at(i)];
@@ -581,7 +581,7 @@ void SearchWin::loadIntoMem()
     seqs.append(*input);
     id_seq_map.insert(input->getID(), *input);
 
-    for (int i = 0;i < tracs->length();i++)
+    for (int i = 0; i < tracs->length(); i++)
     {
         //将轨迹存入内存，便于后期使用
         Sequence sf;
@@ -624,21 +624,21 @@ void SearchWin::refreshTable()
             ui->searchTable_common->setRowCount(ROW_NUM);
             ui->searchTable_time->setRowCount(ROW_NUM);
         }
-        for(int i = 0; i < tracs->length();i++)
+        for(int i = 0; i < tracs->length(); i++)
         {
             QString temp = (*tracs)[i];
             if (db->hasTime(temp.toStdString(),"importtest"))
             {
                 ui->searchTable_time->setItem(pos_t,0, new QTableWidgetItem(temp));
                 ui->searchTable_time->setItem(pos_t,1,
-                                   new QTableWidgetItem(QString::number(db->getPointNumByID(temp.toStdString()))));
+                                              new QTableWidgetItem(QString::number(db->getPointNumByID(temp.toStdString()))));
                 pos_t ++;
             }
             else
             {
                 ui->searchTable_common->setItem(pos_c,0, new QTableWidgetItem(temp));
                 ui->searchTable_common->setItem(pos_c,1,
-                                   new QTableWidgetItem(QString::number(db->getPointNumByID(temp.toStdString()))));
+                                                new QTableWidgetItem(QString::number(db->getPointNumByID(temp.toStdString()))));
                 pos_c ++;
             }
         }
@@ -681,16 +681,16 @@ void SearchWin::openFile()
 
     clearInput();
     QString file_name = QFileDialog::getOpenFileName(NULL,
-            tr("Open File"),
-            "",
-            "CSV Files(*.csv)",
-            0);
+                        tr("Open File"),
+                        "",
+                        "CSV Files(*.csv)",
+                        0);
     if (!file_name.isNull())
-        {
-            qDebug()<<file_name;
-        }
-        else{
-            return;
+    {
+        qDebug()<<file_name;
+    }
+    else {
+        return;
     }
     string fileName = file_name.toLocal8Bit().data();
     ifstream fin(fileName.c_str());
@@ -806,7 +806,7 @@ void SearchWin::rankSeqClicked()
     drawSeq();
     if (coincide.length() != 0)
     {
-         QMessageBox::information(NULL, "提示", "发现与输入轨迹完全重合的轨迹，这些轨迹将不会绘制在地图中", QMessageBox::Yes, QMessageBox::Yes);
+        QMessageBox::information(NULL, "提示", "发现与输入轨迹完全重合的轨迹，这些轨迹将不会绘制在地图中", QMessageBox::Yes, QMessageBox::Yes);
     }
     showPartofSeq();
     seqFlag = true;
@@ -837,7 +837,7 @@ void SearchWin::rankSeqPointClicked()
     ui->searchStackedWidget_time->setCurrentIndex(1);
 
     if (pointFlag)
-    {\
+    {   \
         drawPoints();
         return;
     }

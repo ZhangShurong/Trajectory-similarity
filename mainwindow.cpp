@@ -338,8 +338,8 @@ void MainWindow::openFilesSlot()
                              QString::number(fileNames.size()) +
                              tr(" 个文件即将开始后台导入。\n") +
                              tr(fileNames.size() > 2 ?
-                                    "数据导入花费时间可能较长，您可以先进行其他操作。"
-                                  : ":-)"));
+                                "数据导入花费时间可能较长，您可以先进行其他操作。"
+                                : ":-)"));
     importThread.start();
 }
 

@@ -88,7 +88,7 @@ void lcmWidget::setupActions()
 void lcmWidget::openFile(int i)
 {
     QString fileName = QFileDialog::getOpenFileName(NULL,tr("打开文件"),
-                                                    "", "CSV Files(*.csv)", 0);
+                       "", "CSV Files(*.csv)", 0);
     if (fileName.isNull() || fileName.isEmpty()) {
         return;
     }
@@ -227,6 +227,6 @@ void lcmWidget::updateThreshold()
 {
     double rangeLength = upperLimBox->value() - lowerLimBox->value();
     threshold = lowerLimBox->value() + rangeLength *
-            thresholdSlider->value() / (double)thresholdSlider->maximum();
+                thresholdSlider->value() / (double)thresholdSlider->maximum();
     thresholdLabel->setText(tr("当前阈值: ") + QString::number(threshold));
 }

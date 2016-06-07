@@ -14,7 +14,7 @@ CalWindow::CalWindow(Ui::MainWindow *ui)
     connect(ui->startBtn, SIGNAL(clicked()), this, SLOT(startSlot()));
     connect(ui->partDetailBtn, SIGNAL(clicked()), this, SLOT(showPartDetail()));
     connect(ui->pointDeatilBtn, SIGNAL(clicked()), this, SLOT(showPointDetail()));
-   // ui->mapWidget->editJs();
+    // ui->mapWidget->editJs();
     ui->mapWidget->initJS();
     ui->mapWidget->reload();
 }
@@ -29,7 +29,7 @@ void CalWindow::calSeq()
     double res = computeDiscreteFrechet(p,q);
     if(res == 0)
     {
-         QMessageBox::information(NULL, "提示", "输入轨迹完全重合", QMessageBox::Yes, QMessageBox::Yes);
+        QMessageBox::information(NULL, "提示", "输入轨迹完全重合", QMessageBox::Yes, QMessageBox::Yes);
     }
     ui->Result->setText(QString::number(res));
 }
@@ -55,10 +55,10 @@ void CalWindow::calPoint()
     ui->longitude2->setText(QString::number(longiti2));
     ui->color1->setText("绿色");
     ui->color2->setText("绿色");
-    if(!p->pts[pc1.index1].time.isEmpty()){
+    if(!p->pts[pc1.index1].time.isEmpty()) {
         ui->time1->setText(p->pts[pc1.index1].time);
         ui->time2->setText(q->pts[pc1.index2].time);
-    }else{
+    } else {
         ui->time1->setText("不含时间");
         ui->time2->setText("不含时间");
     }
@@ -82,16 +82,16 @@ void CalWindow::openFile1()
         p = new Sequence();
     }
     QString file_name = QFileDialog::getOpenFileName(NULL,
-            tr("Open File"),
-            "",
-            "CSV Files(*.csv)",
-            0);
+                        tr("Open File"),
+                        "",
+                        "CSV Files(*.csv)",
+                        0);
     if (!file_name.isNull())
-        {
-            qDebug()<<file_name;
-        }
-        else{
-            return;
+    {
+        qDebug()<<file_name;
+    }
+    else {
+        return;
     }
 
     QFileInfo fi =   QFileInfo(file_name);
@@ -108,12 +108,12 @@ void CalWindow::openFile1()
     }
     catch(int i)
     {
-         QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
-         delete p;
-         p = new Sequence();
-         ui->file1Path->clear();
-         fin.close();
-         return;
+        QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
+        delete p;
+        p = new Sequence();
+        ui->file1Path->clear();
+        fin.close();
+        return;
     }
     p->setID("p");
     fin.close();
@@ -127,16 +127,16 @@ void CalWindow::openFile2()
         q = new Sequence();
     }
     QString file_name = QFileDialog::getOpenFileName(NULL,
-            tr("Open File"),
-            "",
-            "CSV Files(*.csv)",
-            0);
+                        tr("Open File"),
+                        "",
+                        "CSV Files(*.csv)",
+                        0);
     if (!file_name.isNull())
-        {
-            qDebug()<<file_name;
-        }
-        else{
-            return;
+    {
+        qDebug()<<file_name;
+    }
+    else {
+        return;
     }
 
     QFileInfo fi =   QFileInfo(file_name);
@@ -152,12 +152,12 @@ void CalWindow::openFile2()
     }
     catch(int i)
     {
-         QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
-         delete q;
-         q = new Sequence();
-         ui->file2Path->clear();
-         fin.close();
-         return;
+        QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
+        delete q;
+        q = new Sequence();
+        ui->file2Path->clear();
+        fin.close();
+        return;
     }
     q->setID("q");
     fin.close();
@@ -167,64 +167,64 @@ void CalWindow::openFile2()
 
 void CalWindow::startSlot()
 {
-   // QTextStream cout(stdout,  QIODevice::WriteOnly);
+    // QTextStream cout(stdout,  QIODevice::WriteOnly);
 
-        if (p->getNum()*q->getNum() == 0)
-        {
-            ui->mapWidget->initJS();
-            ui->mapWidget->setDefaultCentralPt();
-            ui->mapWidget->showPoints(true);
-            ui->mapWidget->showTimes(true);
-            ui->mapWidget->showEndPoints(true);
-            return;
+    if (p->getNum()*q->getNum() == 0)
+    {
+        ui->mapWidget->initJS();
+        ui->mapWidget->setDefaultCentralPt();
+        ui->mapWidget->showPoints(true);
+        ui->mapWidget->showTimes(true);
+        ui->mapWidget->showEndPoints(true);
+        return;
+    }
+    else
+    {
+        ui->mapWidget->initJS();
+        ui->mapWidget->showPoints(true);
+        ui->mapWidget->showTimes(true);
+        ui->mapWidget->showEndPoints(true);
+        //轨迹段计算部分
+        QVector<Sequence> t;
+        t.append(*p);
+        t.append(*q);
+        //设定地图中心点
+        double x = (p->getCentralPoint().longitude + q->getCentralPoint().longitude)/2;
+        double y = (p->getCentralPoint().latitude + q->getCentralPoint().latitude)/2;
+        ui->mapWidget->setCentralPoint(x, y, getZoom(t));
+        ui->mapWidget->drawSequences(t);
+        //开始计算
+
+        //整条轨迹计算部分
+        calSeq();
+
+        //轨迹点计算部分
+        calPoint();
+
+
+
+        // int beginMin1,beginMin2;
+        QVector<QVector<int> >qc=getSimplify(p,q);
+        QVector<int>pv=qc[0];
+        QVector<int>qv=qc[1];
+
+        ui->start1->setText(QString::number(pv[0]));
+        ui->end1->setText(QString::number(pv[1]));
+        ui->start2->setText(QString::number(qv[0]));
+        ui->end2->setText(QString::number(qv[1]));
+        ui->g_bianhao1->setText("1");
+        ui->g_bianhao2->setText("2");
+        for(int i=0; i+1<pv.size(); i=i+2) {
+            int begin1=pv[i];
+            int end1=pv[i+1];
+            int begin2=qv[i];
+            int end2=qv[i+1];
+            ui->mapWidget->highLightPart(p, begin1, end1, 3, 10);
+            ui->mapWidget->highLightPart(q, begin2, end2, 3, 10);
         }
-        else
-        {
-            ui->mapWidget->initJS();
-            ui->mapWidget->showPoints(true);
-            ui->mapWidget->showTimes(true);
-            ui->mapWidget->showEndPoints(true);
-            //轨迹段计算部分
-            QVector<Sequence> t;
-            t.append(*p);
-            t.append(*q);
-            //设定地图中心点
-            double x = (p->getCentralPoint().longitude + q->getCentralPoint().longitude)/2;
-            double y = (p->getCentralPoint().latitude + q->getCentralPoint().latitude)/2;
-            ui->mapWidget->setCentralPoint(x, y, getZoom(t));
-            ui->mapWidget->drawSequences(t);
-             //开始计算
-
-            //整条轨迹计算部分
-            calSeq();
-
-            //轨迹点计算部分
-            calPoint();
-
-
-
-           // int beginMin1,beginMin2;
-            QVector<QVector<int> >qc=getSimplify(p,q);
-            QVector<int>pv=qc[0];
-            QVector<int>qv=qc[1];
-
-            ui->start1->setText(QString::number(pv[0]));
-            ui->end1->setText(QString::number(pv[1]));
-            ui->start2->setText(QString::number(qv[0]));
-            ui->end2->setText(QString::number(qv[1]));
-            ui->g_bianhao1->setText("1");
-            ui->g_bianhao2->setText("2");
-            for(int i=0;i+1<pv.size();i=i+2){
-                int begin1=pv[i];
-                int end1=pv[i+1];
-                int begin2=qv[i];
-                int end2=qv[i+1];
-                ui->mapWidget->highLightPart(p, begin1, end1, 3, 10);
-                ui->mapWidget->highLightPart(q, begin2, end2, 3, 10);
-            }
-            qc.clear();
-            ui->mapWidget->reload();
-        }
+        qc.clear();
+        ui->mapWidget->reload();
+    }
 }
 
 void CalWindow::showPartDetail()

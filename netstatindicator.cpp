@@ -48,7 +48,7 @@ QString NetStatIndicator::toDescription(double speed)
 
     if (speed < ok_threshold) {
         return tr("网络状况差");
-    } else if (speed < good_threshold){
+    } else if (speed < good_threshold) {
         return tr("网络状况良");
     } else {
         return tr("网络状况优");
@@ -64,16 +64,16 @@ void NetStatIndicator::updateNetStat()
     socket.connectToHost(url.host(), 80);
     if (socket.waitForConnected(NetStatIndicator::timeout)) {
         socket.write("HEAD " + url.path().toUtf8() + " HTTP/1.1\r\n"
-                      "Host: " + url.host().toUtf8() + "\r\n\r\n");
-         if (socket.waitForReadyRead()) {
+                     "Host: " + url.host().toUtf8() + "\r\n\r\n");
+        if (socket.waitForReadyRead()) {
             QByteArray bytes = socket.readAll();
-             //if (bytes.contains("200 OK")) {
+            //if (bytes.contains("200 OK")) {
             this->netspeed = bytes.size() * 1000.0 / timer.elapsed();
             this->alerted = false;
             this->updateUi();
             return;
-             //}
-         }
+            //}
+        }
     }
     this->alertProperly();
 }

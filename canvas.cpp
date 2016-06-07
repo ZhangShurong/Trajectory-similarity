@@ -70,16 +70,16 @@ void Canvas::drawSeq(Sequence *se_a)
     pen->setStyle(Qt::SolidLine);
     painter->setPen(*pen);
 
-    for (int i = 0;i<se_a->getNum();i ++ )
+    for (int i = 0; i<se_a->getNum(); i ++ )
     {
         QPoint temp =  translateCo(se_a->pts[i].longitude, se_a->pts[i].latitude);
         points.append(temp);
     }
-    for (int i = 0;i<se_a->getNum() - 1; i++)
+    for (int i = 0; i<se_a->getNum() - 1; i++)
     {
         painter->drawLine(points[i], points[i+1]);
     }
-    for (int i = 0;i<se_a->getNum();i ++ )
+    for (int i = 0; i<se_a->getNum(); i ++ )
     {
         pen->setColor(Qt::black);
         pen->setWidth(3);
@@ -147,7 +147,7 @@ void Canvas::getRange()
     {
         return;
     }
-    for (int i = 1;i<se_num;i++)
+    for (int i = 1; i<se_num; i++)
     {
         maxX = se_draw[i].getMaxX() > maxX?se_draw[i].getMaxX(): maxX;
         maxY = se_draw[i].getMaxY() > maxY?se_draw[i].getMaxY(): maxY;
@@ -181,7 +181,7 @@ void Canvas::drawAxies()
     int h = height/yresolution;
 
 
-    for (int i = 0;i<yresolution;i++)
+    for (int i = 0; i<yresolution; i++)
     {
         start.setX(PADDING);
         start.setY(i*h);
@@ -189,7 +189,7 @@ void Canvas::drawAxies()
         end.setY(i*h);
         painter->drawLine(start,end);
     }
-    for (int j = 0;j<xresolution;j++)
+    for (int j = 0; j<xresolution; j++)
     {
         start.setX(j*w);
         start.setY(PADDING);
@@ -230,7 +230,7 @@ void Canvas::paintEvent(QPaintEvent *)
     painter->setPen(*pen);
 
     drawGrid();
-    for (int i = 0;i<se_num;i++)
+    for (int i = 0; i<se_num; i++)
     {
         drawSeq(&se_draw[i]);
     }

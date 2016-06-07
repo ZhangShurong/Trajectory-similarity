@@ -112,7 +112,7 @@ Point Sequence::getCentralPoint()
     double maxY = pts[0].latitude;
     double minX = maxX;
     double minY = maxY;
-    for (int i = 0;i < pointsNum; i++)
+    for (int i = 0; i < pointsNum; i++)
     {
         if (pts[i].longitude > maxX)
             maxX = pts[i].longitude;
@@ -134,7 +134,7 @@ double Sequence::getMaxX()
     if (pointsNum == 0)
         return 0;
     double res = pts[0].longitude;
-    for (int i = 0; i< pointsNum;i++)
+    for (int i = 0; i< pointsNum; i++)
     {
         res = pts[i].longitude > res?pts[i].longitude:res;
     }
@@ -147,7 +147,7 @@ double Sequence::getMaxY()
     if (pointsNum == 0)
         return 0;
     double res = pts[0].latitude;
-    for (int i = 0; i< pointsNum;i++)
+    for (int i = 0; i< pointsNum; i++)
     {
         res = pts[i].latitude > res?pts[i].latitude:res;
     }
@@ -159,7 +159,7 @@ double Sequence::getMinX()
     if (pointsNum == 0)
         return 0;
     double res = pts[0].longitude;
-    for (int i = 0; i< pointsNum;i++)
+    for (int i = 0; i< pointsNum; i++)
     {
         res = pts[i].longitude < res?pts[i].longitude:res;
     }
@@ -171,7 +171,7 @@ double Sequence::getMinY()
     if (pointsNum == 0)
         return 0;
     double res = pts[0].latitude;
-    for (int i = 0; i< pointsNum;i++)
+    for (int i = 0; i< pointsNum; i++)
     {
         res = pts[i].latitude < res?pts[i].latitude:res;
     }

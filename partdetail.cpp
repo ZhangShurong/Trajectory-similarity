@@ -26,14 +26,15 @@ void partDetail::setPartInfo(Sequence *p, Sequence *q, QString namep, QString na
     initP_Q(p, q);
     initMemSpace(p, q);
 
-    for(int i=0;i+1<pv.size();i=i+2){
+    for(int i=0; i+1<pv.size(); i=i+2) {
         int begin1=pv[i];
         int end1=pv[i+1];
         int begin2=qv[i];
         int end2=qv[i+1];
         ui->mainTable->setItem(i,0, new QTableWidgetItem(namep));
         ui->mainTable->setItem(i,3, new QTableWidgetItem(nameq));
-        ui->mainTable->setItem(i,1, new QTableWidgetItem(QString::number(begin1)));\
+        ui->mainTable->setItem(i,1, new QTableWidgetItem(QString::number(begin1)));
+        \
         ui->mainTable->setItem(i,2, new QTableWidgetItem(QString::number(end1)));
         ui->mainTable->setItem(i,4, new QTableWidgetItem(QString::number(begin2)));
         ui->mainTable->setItem(i,5, new QTableWidgetItem(QString::number(end2)));
