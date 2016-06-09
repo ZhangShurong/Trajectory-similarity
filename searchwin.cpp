@@ -118,9 +118,17 @@ void SearchWin::searchSeq()
     {
         Sequence sf;
         sf = id_seq_map[tracs->at(i)];
+
         QTableWidgetItem *tItem = new QTableWidgetItem();
 
-        dfDis = computeDiscreteFrechet(input,&sf);
+        if(input->hasTime() && sf.hasTime())
+            dfDis = computeDiscreteFrechet(input,&sf);
+        else if((!input->hasTime()) && (!sf.hasTime())) {
+            dfDis = computeDiscreteFrechet(input,&sf);
+        }
+        else {
+            continue;
+        }
 
         if (dfDis == 0)
         {
@@ -305,7 +313,7 @@ void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partIn
 void SearchWin::calSecPart()
 {
 
-    QProgressDialog progress(tr("正在计算轨迹数据，请稍候..."),
+    QProgressDialog progress(tr("正在计算轨迹段数据，请稍候..."),
                              tr("取消"),
                              0, tracs->length());
     progress.setWindowModality(Qt::WindowModal);
@@ -315,15 +323,17 @@ void SearchWin::calSecPart()
         QVector<QVector<int> >qc;
         Sequence sf;
         sf = id_seq_map[tracs->at(i)];
-        qc = getSimplify(input,&sf);
+
 
         if (sf.hasTime() && input->hasTime())
         {
+            qc = getSimplify(input,&sf);
             fillPartTable(ui->searchTable_time_part,
                           qc, &sf);
         }
         else if (!sf.hasTime() && !input->hasTime())
         {
+            qc = getSimplify(input,&sf);
             fillPartTable(ui->searchTable_common_part,
                           qc, &sf);
         }
