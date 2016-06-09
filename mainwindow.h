@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QProgressDialog>
 #include "header.h"
 #include "csv.h"
 #include "database.h"
@@ -34,9 +35,12 @@ public:
 
     void run() {
         int n_ok = 0;
+        int total = 0;
         foreach (const QString eachFile, fileList) {
             string fileName = eachFile.toLocal8Bit().data();
             ifstream fin(fileName.c_str());
+            emit importHandledSignal(total++);
+
             try {
                 ifstream fin2(fileName.c_str());
                 Csv format(fin2);
@@ -57,6 +61,7 @@ signals:
     void importFinishedSignal(int, int);
     void importedOneFileSignal(void);
     void importFileErrorSignal(int);
+    void importHandledSignal(int);
 };
 
 namespace Ui {
@@ -143,6 +148,7 @@ private:
     Canvas *can;
     // Thread for import file
     ImportThread importThread;
+    QProgressDialog *importProgressDialog;
     //CSS
     QFile *cssFile;
     QString *strCSS;

@@ -7,7 +7,10 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), tName("importtest"), importThread(db, tName, QStringList())
+    ui(new Ui::MainWindow),
+    tName("importtest"),
+    importThread(db, tName, QStringList()),
+    importProgressDialog(NULL)
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
@@ -320,26 +323,40 @@ void MainWindow::clearDB()
 void MainWindow::openFilesSlot()
 {
     if (importThread.isRunning()) {
-        QMessageBox::information(this, tr("提示"),
-                                 tr("当前有导入任务仍在处理中，请等当前任务结束后再导入。"));
+        QMessageBox::warning(this, tr("提示"),
+                             tr("当前有导入任务仍在处理中，请等当前任务结束后再导入。"));
         return;
     }
 
-    QStringList fileNames = QFileDialog::getOpenFileNames(this,
-                            tr("Open File"),
-                            "",
-                            "CSV Files(*.csv)",
-                            0);
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
+                            "", "CSV Files(*.csv)", 0);
     if (fileNames.isEmpty()) {
         return;
     }
+
+    if (importProgressDialog == NULL) {
+        importProgressDialog = new QProgressDialog(tr("正在导入轨迹文件，请稍等..."), tr("abort"),
+                                                   0, fileNames.size(), this);
+        importProgressDialog->setCancelButton(NULL);
+        connect(&importThread, SIGNAL(finished()), importProgressDialog, SLOT(hide()));
+        connect(&importThread, SIGNAL(importHandledSignal(int)),
+                importProgressDialog, SLOT(setValue(int)));
+        connect(importProgressDialog, SIGNAL(canceled()),
+                &importThread, SLOT(quit()));
+    } else {
+        importProgressDialog->setMaximum(fileNames.size());
+        importProgressDialog->reset();
+        importProgressDialog->show();
+    }
+
     importThread.fileList = fileNames;
-    QMessageBox::information(this, tr("导入提示"),
+    /* QMessageBox::information(this, tr("导入提示"),
                              QString::number(fileNames.size()) +
                              tr(" 个文件即将开始后台导入。\n") +
                              tr(fileNames.size() > 2 ?
                                 "数据导入花费时间可能较长，您可以先进行其他操作。"
                                 : ":-)"));
+                                */
     importThread.start();
 }
 
