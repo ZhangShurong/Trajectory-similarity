@@ -37,6 +37,7 @@ public:
         int n_ok = 0;
         int total = 0;
         foreach (const QString eachFile, fileList) {
+
             string fileName = eachFile.toLocal8Bit().data();
             ifstream fin(fileName.c_str());
             emit importHandledSignal(total++);
@@ -48,6 +49,7 @@ public:
                 getSquFromFile(&format, t);
             } catch (int i) {
                 emit importFileErrorSignal(i);
+                emit importHandledSignal(fileList.size());
                 break;
             }
             Csv csv(fin);

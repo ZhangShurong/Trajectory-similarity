@@ -338,6 +338,7 @@ void MainWindow::openFilesSlot()
         importProgressDialog = new QProgressDialog(tr("正在导入轨迹文件，请稍等..."), tr("abort"),
                                                    0, fileNames.size(), this);
         importProgressDialog->setCancelButton(NULL);
+        importProgressDialog->setWindowModality(Qt::WindowModal);
         connect(&importThread, SIGNAL(finished()), importProgressDialog, SLOT(hide()));
         connect(&importThread, SIGNAL(importHandledSignal(int)),
                 importProgressDialog, SLOT(setValue(int)));
@@ -525,6 +526,7 @@ void MainWindow::initAction()
     connect(detailAct, SIGNAL(triggered()), this, SLOT(detailSlot_R()));
     connect(&importThread, SIGNAL(importedOneFileSignal()), this, SLOT(refreshTable()));
     connect(&importThread, SIGNAL(importFinishedSignal(int,int)), this, SLOT(importFinished(int,int)));
+    connect(&importThread, SIGNAL(importFileErrorSignal(int)), this,SLOT(importFileErrorSlot(int)));
 }
 
 void MainWindow::initCSS()
@@ -539,7 +541,6 @@ void MainWindow::initCSS()
 void MainWindow::initTable()
 {
     ui->mainTable->horizontalHeader()->setStretchLastSection(true);
-    ui->mainTable->verticalHeader()->hide();
     ui->mainTable->setContextMenuPolicy(Qt::ActionsContextMenu);
     ui->mainTable->addAction(deleteAct);
     ui->mainTable->addAction(searchAct);
