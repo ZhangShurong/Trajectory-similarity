@@ -1,3 +1,14 @@
+/*
+ @header     detailwin.h
+
+ @author     张树荣
+
+ @abstract   显示轨迹详细信息
+
+ @discussion 传入轨迹数据，其详细信息会以表格形式显示
+
+*/
+
 #ifndef DETAILWIN_H
 #define DETAILWIN_H
 

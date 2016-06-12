@@ -1,3 +1,13 @@
+/*
+ @header     canvas.h
+
+ @author     柯磊
+
+ @abstract   主要算法部分
+
+ @discussion   算法处理模块
+*/
+
 #ifndef CORE_H
 #define CORE_H
 

@@ -1,3 +1,12 @@
+/*
+ @header     canvas.h
+
+ @author     张树荣
+
+ @abstract   轨迹数据结构定义
+
+*/
+
 #ifndef SEQUENCE_H
 #define SEQUENCE_H
 

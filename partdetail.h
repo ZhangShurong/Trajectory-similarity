@@ -1,3 +1,12 @@
+/*
+ @header     canvas.h
+
+ @author     张树荣
+
+ @abstract   轨迹段信息
+*/
+
+
 #ifndef PARTDETAIL_H
 #define PARTDETAIL_H
 

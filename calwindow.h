@@ -1,3 +1,14 @@
+/*
+ @header     canvas.h
+
+ @author     柯磊
+
+ @abstract   用于处理计算模块，ui作为参数从mainwindow传入
+*/
+
+
+
+
 #ifndef CALWINDOW_H
 #define CALWINDOW_H
 #include <QMainWindow>

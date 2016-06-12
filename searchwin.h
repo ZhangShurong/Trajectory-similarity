@@ -1,3 +1,13 @@
+/*
+ @header     canvas.h
+
+ @author     张树荣
+
+ @abstract   处理搜索页面
+
+ @discussion   QMap<QString, Sequence> id_seq_map;用于存储轨迹ID以及轨迹,为了加速计算
+*/
+
 #ifndef SEARCHWIN_H
 #define SEARCHWIN_H
 #include <QObject>

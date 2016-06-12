@@ -1,3 +1,11 @@
+/*
+ @header     canvas.h
+
+ @author     张树荣
+
+ @abstract   轨迹段点信息
+*/
+
 #ifndef POINTDETAIL_H
 #define POINTDETAIL_H
 

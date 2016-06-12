@@ -1,3 +1,13 @@
+/*
+ @header     header.h
+
+ @author     王旭东
+
+ @abstract   简易轨迹段匹配
+
+
+*/
+
 #ifndef LCMWIDGET_H
 #define LCMWIDGET_H
 

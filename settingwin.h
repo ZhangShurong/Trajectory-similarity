@@ -1,3 +1,12 @@
+/*
+ @header     canvas.h
+
+ @author     张树荣
+
+ @abstract   配置文件处理
+
+*/
+
 #ifndef SETTINGWIN_H
 #define SETTINGWIN_H
 

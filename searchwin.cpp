@@ -705,7 +705,20 @@ void SearchWin::openFile()
     string fileName = file_name.toLocal8Bit().data();
     ifstream fin(fileName.c_str());
     Csv csv(fin);
-    getSquFromFile(&csv,input);
+    try
+    {
+        getSquFromFile(&csv,input);
+    }
+    catch(int i)
+    {
+        QMessageBox::information(NULL, "Error 错误代码" + QString::number(i), "时间格式错误,格式类似20160601 13:00:11", QMessageBox::Yes, QMessageBox::Yes);
+        delete input;
+        input = new Sequence();
+        ui->searchPathEdit->clear();
+        fin.close();
+        return;
+    }
+
     if(input->getNum() == 0)
     {
         return;

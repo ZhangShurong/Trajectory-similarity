@@ -1,3 +1,18 @@
+/*
+ @header     DataBase.h
+
+ @author     张树荣
+
+ @abstract   提供数据库基本操作
+
+ @discussion 调用构造函数时会初始化数据库连接；
+             注意：
+                该类提供两种插入数据的方式
+                string insertData(Csv *csv, string tbName);
+                string insertData(Sequence *seq_a, string tbName);
+
+*/
+
 #ifndef DATABASE_H
 #define DATABASE_H
 #include "csv.h"

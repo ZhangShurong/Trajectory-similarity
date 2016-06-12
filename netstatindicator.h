@@ -1,3 +1,12 @@
+/*
+ @header     canvas.h
+
+ @author     王旭东
+
+ @abstract   网络状态条
+*/
+
+
 #ifndef NETSTATINDICATOR_H
 #define NETSTATINDICATOR_H
 

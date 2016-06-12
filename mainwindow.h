@@ -1,3 +1,13 @@
+/*
+ @header     canvas.h
+
+ @author     Kriptonite
+
+ @abstract   主要ui都在此处理，分发
+
+*/
+
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 

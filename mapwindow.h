@@ -1,3 +1,12 @@
+/*
+ @header     canvas.h
+
+ @author     Kriptonite
+
+ @abstract   用于绘制地图
+*/
+
+
 #ifndef MAPWINDOW_H
 #define MAPWINDOW_H
 #include "mainwindow.h"
