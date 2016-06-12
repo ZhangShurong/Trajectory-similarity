@@ -21,6 +21,7 @@ public:
     void setDBName(string databaseName);
     bool isTableExist(string tableName);
     string insertData(Csv *csv, string tbName);
+    string insertData(Sequence *seq_a, string tbName);
     void getSequenceByID(string tableName, Sequence *squ, string ID);
     int getPointNumByID(string ID);
     QStringList* getAllTracID(string tableName);

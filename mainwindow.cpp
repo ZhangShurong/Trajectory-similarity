@@ -595,6 +595,7 @@ void MainWindow::importFinished(int ok, int bad)
     QMessageBox::information(this, tr("导入文件结束"),
                              QString::number(ok) + tr(" 个文件导入成功，\n") +
                              QString::number(bad) + tr(" 个文件导入失败。"));
+    importProgressDialog->hide();
 }
 
 void MainWindow::initSig()

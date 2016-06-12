@@ -42,18 +42,22 @@ public:
             ifstream fin(fileName.c_str());
             emit importHandledSignal(total++);
 
+            ifstream fin2(fileName.c_str());
+            Csv format(fin2);
+            Sequence *t = new Sequence();
             try {
-                ifstream fin2(fileName.c_str());
-                Csv format(fin2);
-                Sequence *t = new Sequence();
+
                 getSquFromFile(&format, t);
             } catch (int i) {
                 emit importFileErrorSignal(i);
-                emit importHandledSignal(fileList.size());
                 break;
             }
+            database->insertData(t, tName);
+            delete t;
+            /*
             Csv csv(fin);
             database->insertData(&csv, tName);
+            */
             emit importedOneFileSignal();
             ++n_ok;
         }
