@@ -1,11 +1,10 @@
-/*
- @header     canvas.h
-
- @author     Kriptonite
-
- @abstract   用于绘制地图
-*/
-
+/**
+  *   赛题：第五届“中国软件杯”大学生软件设计大赛——针对以经纬度或经纬度带时间定义的不同轨迹
+  *   软件名称：基于“弗雷歇距离”的轨迹相似度分析软件
+  *   开发团队：Kryptonite
+  *   开发时间：2016年4至6月
+  *   文件功能概述：百度地图调用
+  */
 
 #ifndef MAPWINDOW_H
 #define MAPWINDOW_H

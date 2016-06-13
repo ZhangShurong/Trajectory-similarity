@@ -1,17 +1,15 @@
-/*
- @header     DataBase.h
-
- @author     张树荣
-
- @abstract   提供数据库基本操作
-
- @discussion 调用构造函数时会初始化数据库连接；
-             注意：
-                该类提供两种插入数据的方式
-                string insertData(Csv *csv, string tbName);
-                string insertData(Sequence *seq_a, string tbName);
-
-*/
+/**
+  *   赛题：第五届“中国软件杯”大学生软件设计大赛——针对以经纬度或经纬度带时间定义的不同轨迹
+  *   软件名称：基于“弗雷歇距离”的轨迹相似度分析软件
+  *   开发团队：Kryptonite
+  *   开发时间：2016年4至6月
+  *   文件功能概述：数据库的操作文件
+  *                         调用构造函数时会初始化数据库连接；
+  *             注意：
+  *              该类提供两种插入数据的方式
+  *             string insertData(Csv *csv, string tbName);
+  *              string insertData(Sequence *seq_a, string tbName);
+  */
 
 #ifndef DATABASE_H
 #define DATABASE_H
