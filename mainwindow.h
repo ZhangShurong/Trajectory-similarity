@@ -50,11 +50,11 @@ public:
             ifstream fin(fileName.c_str());
             emit importHandledSignal(total++);
 
+
             ifstream fin2(fileName.c_str());
             Csv format(fin2);
             Sequence *t = new Sequence();
             try {
-
                 getSquFromFile(&format, t);
             } catch (int i) {
                 emit importFileErrorSignal(i);
@@ -66,14 +66,14 @@ public:
             Csv csv(fin);
             database->insertData(&csv, tName);
             */
-            emit importedOneFileSignal();
+            emit importedOneFileSignal(n_ok);
             ++n_ok;
         }
         emit importFinishedSignal(n_ok, fileList.size() - n_ok);
     }
 signals:
     void importFinishedSignal(int, int);
-    void importedOneFileSignal(void);
+    void importedOneFileSignal(int);
     void importFileErrorSignal(int);
     void importHandledSignal(int);
 };
@@ -141,8 +141,10 @@ private slots:
     void setSlot();
     void exportSlot();
     void refreshTable();
+    void refreshValue(int n);
     void importFileErrorSlot(int code);
     void importFinished(int ok, int bad);
+  //  void transferImportNumber(int n);
 
 private:
     Ui::MainWindow *ui;

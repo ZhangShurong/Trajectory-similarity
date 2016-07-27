@@ -227,6 +227,7 @@ void MainWindow::openFile()
 
     Csv csv(fin);
     Sequence se;
+
     trcID = db->insertData(&csv, tName);
     db->getSequenceByID(tName,&se,trcID);
     se.outputTrac();
@@ -339,11 +340,7 @@ void MainWindow::openFilesSlot()
                                                    0, fileNames.size(), this);
         importProgressDialog->setCancelButton(NULL);
         importProgressDialog->setWindowModality(Qt::WindowModal);
-        connect(&importThread, SIGNAL(finished()), importProgressDialog, SLOT(hide()));
-        connect(&importThread, SIGNAL(importHandledSignal(int)),
-                importProgressDialog, SLOT(setValue(int)));
-        connect(importProgressDialog, SIGNAL(canceled()),
-                &importThread, SLOT(quit()));
+
     } else {
         importProgressDialog->setMaximum(fileNames.size());
         importProgressDialog->reset();
@@ -524,9 +521,10 @@ void MainWindow::initAction()
     connect(showInMapAct, SIGNAL(triggered()), this, SLOT(showInMapSlot_R()));
     detailAct = new QAction(tr("详情"),this);
     connect(detailAct, SIGNAL(triggered()), this, SLOT(detailSlot_R()));
-    connect(&importThread, SIGNAL(importedOneFileSignal()), this, SLOT(refreshTable()));
+    connect(&importThread, SIGNAL(importedOneFileSignal(int)), this, SLOT(refreshTable()));
     connect(&importThread, SIGNAL(importFinishedSignal(int,int)), this, SLOT(importFinished(int,int)));
     connect(&importThread, SIGNAL(importFileErrorSignal(int)), this,SLOT(importFileErrorSlot(int)));
+    connect(&importThread, SIGNAL(importedOneFileSignal(int)), this, SLOT(refreshValue(int)));
 }
 
 void MainWindow::initCSS()
@@ -556,6 +554,7 @@ void MainWindow::initTable()
 
 void MainWindow::refreshTable()
 {
+
     ui->mainTable->clearContents();
     QStringList header;
     header << "轨迹ID"
@@ -581,7 +580,16 @@ void MainWindow::refreshTable()
         }
     }
     searchWin->setTracs(tracs);
+
     // delete tracs;
+}
+
+void MainWindow::refreshValue(int n){
+
+       importProgressDialog->setValue(n);
+//       if ( importProgressDialog->wasCanceled()) {
+//                   break;
+//           }
 }
 
 void MainWindow::importFileErrorSlot(int code)
@@ -613,6 +621,12 @@ void MainWindow::initSig()
     connect(ui->deleteBtn, SIGNAL(clicked()), this, SLOT(deleteOneAct()));
     connect(ui->searchToolButton, SIGNAL(clicked()), this, SLOT(on_searchToolButton_clicked()));
     connect(ui->calToolButton, SIGNAL(clicked()), this, SLOT(on_calToolButton_clicked()));
+
+    connect(&importThread, SIGNAL(finished()), importProgressDialog, SLOT(hide()));
+    connect(&importThread, SIGNAL(importHandledSignal(int)),
+            importProgressDialog, SLOT(setValue(int)));
+    connect(importProgressDialog, SIGNAL(canceled()),
+            &importThread, SLOT(quit()));
 }
 
 void MainWindow::initCan()
