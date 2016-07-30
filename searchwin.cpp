@@ -121,9 +121,7 @@ void SearchWin::searchSeq()
 
         QTableWidgetItem *tItem = new QTableWidgetItem();
 
-        if(input->hasTime() && sf.hasTime())
-            dfDis = computeDiscreteFrechet(input,&sf);
-        else if((!input->hasTime()) && (!sf.hasTime())) {
+        if((input->hasTime() && sf.hasTime())||((!input->hasTime()) && (!sf.hasTime()))){
             dfDis = computeDiscreteFrechet(input,&sf);
         }
         else {
@@ -793,7 +791,7 @@ void SearchWin::rankSeqClicked()
     }
     if (input->getNum() == 0)
     {
-        drawSeq();
+   //     drawSeq();
         return;
     }
     if (time)

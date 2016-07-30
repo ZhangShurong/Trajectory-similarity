@@ -17,10 +17,13 @@ double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
 {
     p = sa;
     q = sb;
-    coef=calCoef();
+    if(sa->hasTime()){
+        coef=calCoef();
+    }
     initMemSpace(sa, sb);
     return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
 }
+
 double euclideanDistance(Point a, Point b)
 {
     double dis = 0;
@@ -342,7 +345,6 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q) {
     pv.clear();
     qv.clear();
     return qb;
-
 }
 
 
@@ -355,7 +357,6 @@ QVector<SecCompare> findBest(Sequence*p,Sequence*q) {
 bool compare(SecCompare s1,SecCompare s2) {
     return s1.simliarity<s2.simliarity;
 }
-
 
 double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
 {
