@@ -185,10 +185,10 @@ string DataBase::insertData(Sequence *seq_a, string tbName)
     if(query.next()) {
         start = query.value(0).toString();
     }
-    QVector<Point> t;
+   // QVector<Point> t;
     for(int i = 0; i < seq_a->getNum();i++)
     {
-        t.append(seq_a->pts[i]);
+   //     t.append(seq_a->pts[i]);
         if(seq_a->hasTime())
         {
             insert = "insert into " + tableName

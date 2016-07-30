@@ -47,21 +47,22 @@ public:
         foreach (const QString eachFile, fileList) {
 
             string fileName = eachFile.toLocal8Bit().data();
-            ifstream fin(fileName.c_str());
+      //   ifstream fin(fileName.c_str());
             emit importHandledSignal(total++);
 
 
             ifstream fin2(fileName.c_str());
             Csv format(fin2);
-            Sequence *t = new Sequence();
+      //      Sequence *t = new Sequence();
             try {
-                getSquFromFile(&format, t);
+       //     getSquFromFile(&format, t);
+               database->insertData(&format, tName);
             } catch (int i) {
                 emit importFileErrorSignal(i);
                 break;
             }
-            database->insertData(t, tName);
-            delete t;
+
+   //         delete t;
             /*
             Csv csv(fin);
             database->insertData(&csv, tName);
