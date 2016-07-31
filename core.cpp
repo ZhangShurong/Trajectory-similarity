@@ -1,4 +1,5 @@
 #include "core.h"
+//#include "omp.h"
 #include <QDebug>
 #include <QtAlgorithms>
 #include <time.h>
@@ -39,10 +40,6 @@ double euclideanDistance(Point a, Point b)
 }
 
 double calTimeDistance(Point &a,Point &b) {
-
-//     Time t1=loadToStruct(a.time);
-//     Time t2=loadToStruct(b.time);
-
     double hourGap;
 
     if((a.t.year!=b.t.year)||(a.t.month!=b.t.month)) {
@@ -225,7 +222,6 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
 {
     QVector<SecCompare> q1;
     QVector<SecCompare> q2;
-    QVector<SecCompare> q3;
 
     p = se_a;
     q = se_b;
@@ -242,32 +238,28 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
         gap=5;
         h=gap;
     }
+
+//#pragma omp parallel for
     for(int i=gap; i<gap+6; i++) {
         calculateSec(i,h,q1);
     }
 
+//#pragma omp parallel for
     for(int j=gap; j<gap+5; j++) {
         mergeChange(j,q1,q2,limit);
     }
     sort(q2.begin(),q2.end(),compare);
+
+  #pragma omp parallel for
+  //  clock_t t1 = clock();
     for(int i=0; i<q2.size(); i++)
     {
         q1.append(q2[i]);
-//            if(i>100)
-//                break;
     }
+//    clock_t t2 = clock();
+//    std::cout<<"time: "<<t2-t1<<std::endl;
     sort(q1.begin(),q1.end(),compare);
 
-//        if(q1.size()>1000){
-//            for(int i=0;i<1000;i++){
-//                q3.append(q1[i]);
-//            }
-//        }else{
-//            for(int i=0;i<q1.size();i++){
-//                q3.append(q1[i]);
-//            }
-//        }
-//        q1.clear();
     q2.clear();
     return q1;
 }
@@ -283,6 +275,7 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q) {
 
     if (qs1.length() != 0)
     {
+     //   std::cout<<"time: "<<qs1.length()<<std::endl;
         for (int i = 0; i < qs1.length(); i++)
         {
             QString s =   QString::number(qs1[i].beginIndex1)+" "
@@ -386,47 +379,82 @@ double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
     return mem[i][j];
 }
 
+//void calculateSec(int gap, int h, QVector<SecCompare> &q1)
+//{
+//      SecCompare s;
+//      double result;
+//    // int t=0;
+//     clock_t t1 = clock();
+//    #pragma omp parallel for
+//    for(int i=0; i<p->pointsNum-gap; i=i+h) {
+//        for(int j=0; j<q->pointsNum-gap;  j=j+h) {
+//      #pragma omp critical
+//            {
+//            s.beginIndex1=i;
+//            s.endIndex1=i+gap;
+//            s.beginIndex2=j;
+//            s.endIndex2=j+gap;
+//            result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
+//            s.simliarity=result;
+//            q1.append(s);
+//            }
+//        }
+
+//    }
+//      clock_t t2 = clock();
+//      std::cout<<"time: "<<t2-t1<<std::endl;
+//}
+
 void calculateSec(int gap, int h, QVector<SecCompare> &q1)
 {
+    SecCompare s;
+    double result;
     // int t=0;
+//     clock_t t1 = clock();
+//   #pragma omp parallel for
     for(int i=0; i<p->pointsNum-gap; i=i+h) {
         for(int j=0; j<q->pointsNum-gap;  j=j+h) {
-            SecCompare s;
             s.beginIndex1=i;
             s.endIndex1=i+gap;
             s.beginIndex2=j;
             s.endIndex2=j+gap;
-            double result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
+            result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
             s.simliarity=result;
             q1.append(s);
-            //t++;
+
         }
-//        if(t>1000)
-//            break;
+
     }
+//    clock_t t2 = clock();
+//    std::cout<<"time: "<<t2-t1<<std::endl;
 }
 
 void mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2,double limit)
 {
-//   double res = computeDiscreteFrechet(p,q);
-    // double limit = 0.8;
     limit=limit*0.1;
+    SecCompare s;
+    double result;
+//     clock_t t1 = clock();
+// #pragma omp parallel for
     for(int i=0; i<q1.size(); i++) {
         if(q1[i].simliarity<=limit) {
+//            #pragma omp parallel for
             for(int j=0; j<q1.size(); j++) {
                 if(q1[j].simliarity<=limit&&q1[j].beginIndex1==q1[i].beginIndex1+gap&&q1[j].beginIndex2==q1[i].beginIndex2+gap) {
-                    SecCompare s;
+
                     s.beginIndex1=q1[i].beginIndex1;
                     s.endIndex1=q1[j].endIndex1;
                     s.beginIndex2=q1[i].beginIndex2;
                     s.endIndex2=q1[j].endIndex2;
-                    double result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
+                    result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
                     s.simliarity=result;
                     q2.append(s);
                 }
             }
         }
     }
+//       clock_t t2 = clock();
+//       std::cout<<"time: "<<t2-t1<<std::endl;
 }
 
 Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres)

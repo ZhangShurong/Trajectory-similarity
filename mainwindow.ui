@@ -620,14 +620,14 @@ color:white;
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
-             <widget class="QToolButton" name="clearDataBtn">
+            <item row="0" column="1">
+             <widget class="QToolButton" name="exportBtn">
               <property name="text">
-               <string>清空数据</string>
+               <string>导出数据</string>
               </property>
               <property name="icon">
                <iconset resource="res.qrc">
-                <normaloff>:/images/game_box.png</normaloff>:/images/game_box.png</iconset>
+                <normaloff>:/images/mobile.png</normaloff>:/images/mobile.png</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -646,14 +646,14 @@ color:white;
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QToolButton" name="exportBtn">
+            <item row="2" column="1">
+             <widget class="QToolButton" name="clearDataBtn">
               <property name="text">
-               <string>导出数据</string>
+               <string>清空数据</string>
               </property>
               <property name="icon">
                <iconset resource="res.qrc">
-                <normaloff>:/images/mobile.png</normaloff>:/images/mobile.png</iconset>
+                <normaloff>:/images/game_box.png</normaloff>:/images/game_box.png</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -1797,6 +1797,9 @@ color:white;
              <property name="autoFillBackground">
               <bool>false</bool>
              </property>
+             <property name="lineWrapMode">
+              <enum>QTextEdit::WidgetWidth</enum>
+             </property>
              <property name="html">
               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -1977,9 +1980,6 @@ p, li { white-space: pre-wrap; }
           <layout class="QHBoxLayout" name="horizontalLayout_53">
            <item>
             <widget class="QTextEdit" name="textEdit_6">
-             <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
-             </property>
              <property name="html">
               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;

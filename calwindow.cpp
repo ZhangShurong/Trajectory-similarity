@@ -24,14 +24,16 @@ CalWindow::~CalWindow()
 
 }
 
-void CalWindow::calSeq()
+int CalWindow::calSeq()
 {
     double res = computeDiscreteFrechet(p,q);
     if(res == 0)
     {
         QMessageBox::information(NULL, "提示", "输入轨迹完全重合", QMessageBox::Yes, QMessageBox::Yes);
+        return -1;
     }
     ui->Result->setText(QString::number(res));
+    return 1;
 }
 
 void CalWindow::calPoint()
@@ -196,12 +198,12 @@ void CalWindow::startSlot()
         //开始计算
 
         //整条轨迹计算部分
-        calSeq();
-
+        int m=calSeq();
+       if(m==-1){
+         return;
+       }
         //轨迹点计算部分
         calPoint();
-
-
 
         // int beginMin1,beginMin2;
         QVector<QVector<int> >qc=getSimplify(p,q);

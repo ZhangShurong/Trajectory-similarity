@@ -10,6 +10,9 @@ TARGET = importData
 
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -fopenmp
+
+LIBS += -lgomp -lpthread
 
 SOURCES += main.cpp \
     csv.cpp \

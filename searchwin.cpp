@@ -315,7 +315,6 @@ void SearchWin::calSecPart()
                              tr("取消"),
                              0, tracs->length());
     progress.setWindowModality(Qt::WindowModal);
-
     for (int i = 0; i < tracs->length(); i++)
     {
         QVector<QVector<int> >qc;
@@ -357,6 +356,10 @@ void SearchWin::drawSeq()
         double minRes = (ui->searchTable_time->item(0,2)->text()).toDouble();
         for(int i =  0; i < tracs->length(); i++)
         {
+            if(!(ui->searchTable_time->item(i,0)))
+            {
+                break;
+            }
             QString id = ui->searchTable_time->item(i,0)->text();
             double res = (ui->searchTable_time->item(i,2)->text()).toDouble();
             if(res > minRes)
@@ -375,6 +378,10 @@ void SearchWin::drawSeq()
         double minRes = (ui->searchTable_common->item(0,2)->text()).toDouble();
         for(int i =  0; i < tracs->length(); i++)
         {
+            if(!(ui->searchTable_common->item(i,0)))
+            {
+                break;
+            }
             QString id = ui->searchTable_common->item(i,0)->text();
             double res = (ui->searchTable_common->item(i,2)->text()).toDouble();
             if(res > minRes)

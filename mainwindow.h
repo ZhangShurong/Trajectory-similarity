@@ -12,6 +12,7 @@
 #include <QMainWindow>
 #include <QProgressDialog>
 #include "header.h"
+#include "omp.h"
 #include "csv.h"
 #include "database.h"
 #include "mapwindow.h"
@@ -44,6 +45,7 @@ public:
     void run() {
         int n_ok = 0;
         int total = 0;
+
         foreach (const QString eachFile, fileList) {
 
             string fileName = eachFile.toLocal8Bit().data();

@@ -25,7 +25,7 @@ void partDetail::setPartInfo(Sequence *p, Sequence *q, QString namep, QString na
 
     initP_Q(p, q);
     initMemSpace(p, q);
-
+   // std::cout<<"time: "<<pv.size()<<std::endl;
     for(int i=0; i+1<pv.size(); i=i+2) {
         int begin1=pv[i];
         int end1=pv[i+1];

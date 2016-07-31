@@ -37,7 +37,7 @@ private:
     QString nameq;
     partDetail pd;
     PointDetail pointDetail;
-    void calSeq();
+    int calSeq();
     void calPoint();
 
 
