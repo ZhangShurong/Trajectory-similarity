@@ -25,27 +25,52 @@ double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
     return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
 }
 
-double euclideanDistance(Point a, Point b)
+//double euclideanDistance(Point a, Point b)
+//{
+//    double dis = 0;
+//    if(a.time.isEmpty()) {
+//        dis = (a.longitude - b.longitude)*(a.longitude - b.longitude)
+//              + (a.latitude - b.latitude)*(a.latitude - b.latitude);
+//    } else {
+//        dis = (a.longitude - b.longitude)*(a.longitude - b.longitude)
+//              + (a.latitude - b.latitude)*(a.latitude - b.latitude)+calTimeDistance(a,b)*coef;
+//    }
+//    dis = sqrt(dis);
+//    return dis;
+//}
+
+double euclideanDistance(Point* a, Point* b)
 {
     double dis = 0;
-    if(a.time.isEmpty()) {
-        dis = (a.longitude - b.longitude)*(a.longitude - b.longitude)
-              + (a.latitude - b.latitude)*(a.latitude - b.latitude);
+    if(a->time.isEmpty()) {
+        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
+              + (a->latitude - b->latitude)*(a->latitude - b->latitude);
     } else {
-        dis = (a.longitude - b.longitude)*(a.longitude - b.longitude)
-              + (a.latitude - b.latitude)*(a.latitude - b.latitude)+calTimeDistance(a,b)*coef;
+        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
+              + (a->latitude - b->latitude)*(a->latitude - b->latitude)+calTimeDistance(a,b)*coef;
     }
     dis = sqrt(dis);
     return dis;
 }
 
-double calTimeDistance(Point &a,Point &b) {
+//double calTimeDistance(Point &a,Point &b) {
+//    double hourGap;
+
+//    if((a.t.year!=b.t.year)||(a.t.month!=b.t.month)) {
+//        hourGap=720;
+//    } else {
+//        hourGap=qAbs((a.t.day*24+a.t.hour+a.t.minute*0.016+a.t.second*0.0002)-(b.t.day*24+b.t.hour+b.t.minute*0.016+b.t.second*0.0002));
+//    }
+//    return hourGap;
+//}
+
+double calTimeDistance(Point *a,Point *b) {
     double hourGap;
 
-    if((a.t.year!=b.t.year)||(a.t.month!=b.t.month)) {
+    if((a->t.year!=b->t.year)||(a->t.month!=b->t.month)) {
         hourGap=720;
     } else {
-        hourGap=qAbs((a.t.day*24+a.t.hour+a.t.minute*0.016+a.t.second*0.0002)-(b.t.day*24+b.t.hour+b.t.minute*0.016+b.t.second*0.0002));
+        hourGap=qAbs((a->t.day*24+a->t.hour+a->t.minute*0.016+a->t.second*0.0002)-(b->t.day*24+b->t.hour+b->t.minute*0.016+b->t.second*0.0002));
     }
     return hourGap;
 }
@@ -61,8 +86,8 @@ double calCoef() {
 
     double avgSqr=0.5*(sqr1+sqr2);
 
-    double timeGap1=calTimeDistance(p->pts[p->getNum()-1],p->pts[0]);
-    double timeGap2=calTimeDistance(q->pts[q->getNum()-1],q->pts[0]);
+    double timeGap1=calTimeDistance(&p->pts[p->getNum()-1],&p->pts[0]);
+    double timeGap2=calTimeDistance(&q->pts[q->getNum()-1],&q->pts[0]);
 
     double timeGapAvg=0.5*(timeGap1+timeGap2);
 
@@ -225,6 +250,7 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
 
     p = se_a;
     q = se_b;
+//    initMemSpace(p, q);
     int totalNum=p->pointsNum+q->pointsNum;
 
     int gap = 1;
@@ -250,7 +276,7 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
     }
     sort(q2.begin(),q2.end(),compare);
 
-  #pragma omp parallel for
+//  #pragma omp parallel for
   //  clock_t t1 = clock();
     for(int i=0; i<q2.size(); i++)
     {
@@ -351,24 +377,52 @@ bool compare(SecCompare s1,SecCompare s2) {
     return s1.simliarity<s2.simliarity;
 }
 
+//double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
+//{
+//    if (mem[i][j] > -1)
+//        return mem[i][j];
+//    // if top left column, just compute the distance
+//    else if (i == 0 && j == 0)
+//        mem[i][j] = euclideanDistance(p_a->pts[i], q_a->pts[j]);
+//    // can either be the actual distance or distance pulled from above
+//    else if (i > 0 && j == 0)
+//        mem[i][j] = max(computeDFD(i - 1, 0,p_a,q_a), euclideanDistance(p_a->pts[i], q_a->pts[j]));
+//    // can either be the distance pulled from the left or the actual
+//    // distance
+//    else if (i == 0 && j > 0)
+//        mem[i][j] = max(computeDFD(0, j - 1,p_a,q_a), euclideanDistance(p_a->pts[i], q_a->pts[j]));
+//    // can be the actual distance, or distance from above or from the left
+//    else if (i > 0 && j > 0) {
+//        double temp = min(min(computeDFD(i - 1, j,p_a,q_a), computeDFD(i - 1, j - 1,p_a,q_a)), computeDFD(i, j - 1,p_a,q_a));
+//        mem[i][j] = max(temp, euclideanDistance(p_a->pts[i], q_a->pts[j]));
+//    }
+//    // infinite
+//    else
+//        mem[i][j] = 10000;
+
+//    // printMemory();
+//    // return the DFD
+//    return mem[i][j];
+//}
+
 double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
 {
     if (mem[i][j] > -1)
         return mem[i][j];
     // if top left column, just compute the distance
     else if (i == 0 && j == 0)
-        mem[i][j] = euclideanDistance(p_a->pts[i], q_a->pts[j]);
+        mem[i][j] = euclideanDistance(&p_a->pts[i], &q_a->pts[j]);
     // can either be the actual distance or distance pulled from above
     else if (i > 0 && j == 0)
-        mem[i][j] = max(computeDFD(i - 1, 0,p_a,q_a), euclideanDistance(p_a->pts[i], q_a->pts[j]));
+        mem[i][j] = max(computeDFD(i - 1, 0,p_a,q_a), euclideanDistance(&p_a->pts[i], &q_a->pts[j]));
     // can either be the distance pulled from the left or the actual
     // distance
     else if (i == 0 && j > 0)
-        mem[i][j] = max(computeDFD(0, j - 1,p_a,q_a), euclideanDistance(p_a->pts[i], q_a->pts[j]));
+        mem[i][j] = max(computeDFD(0, j - 1,p_a,q_a), euclideanDistance(&p_a->pts[i], &q_a->pts[j]));
     // can be the actual distance, or distance from above or from the left
     else if (i > 0 && j > 0) {
         double temp = min(min(computeDFD(i - 1, j,p_a,q_a), computeDFD(i - 1, j - 1,p_a,q_a)), computeDFD(i, j - 1,p_a,q_a));
-        mem[i][j] = max(temp, euclideanDistance(p_a->pts[i], q_a->pts[j]));
+        mem[i][j] = max(temp, euclideanDistance(&p_a->pts[i], &q_a->pts[j]));
     }
     // infinite
     else
@@ -411,7 +465,7 @@ void calculateSec(int gap, int h, QVector<SecCompare> &q1)
     double result;
     // int t=0;
 //     clock_t t1 = clock();
-//   #pragma omp parallel for
+
     for(int i=0; i<p->pointsNum-gap; i=i+h) {
         for(int j=0; j<q->pointsNum-gap;  j=j+h) {
             s.beginIndex1=i;
@@ -421,7 +475,6 @@ void calculateSec(int gap, int h, QVector<SecCompare> &q1)
             result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
             s.simliarity=result;
             q1.append(s);
-
         }
 
     }
@@ -469,7 +522,7 @@ Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres)
 
     for (int i = 1; i <= p.pointsNum; ++i) {
         for (int j = 1; j <= p.pointsNum; ++j) {
-            if (euclideanDistance(p[i - 1], q[j - 1]) <= thres) {
+            if (euclideanDistance(&p[i - 1], &q[j - 1]) <= thres) {
                 m[i][j].first = m[i - 1][j - 1].first + 1;
                 m[i][j].second = '\\';
             } else if (m[i][j - 1].first > m[i - 1][j].first) {
@@ -584,7 +637,7 @@ QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b) {
     for(int i=0; i<se_a->getNum(); i++) {
         for(int j=0; j<se_b->getNum(); j++) {
             PointCompare p;
-            p.distance=euclideanDistance(se_a->pts[i],se_b->pts[j]);
+            p.distance=euclideanDistance(&se_a->pts[i],&se_b->pts[j]);
             p.index1=i;
             p.index2=j;
             q1.append(p);
@@ -625,24 +678,52 @@ void out2DArray(double **arr, int x, int y)
 }
 
 
+//double computeDFD_new(int startx, int endx, int starty, int endy)
+//{
+//    if (mem[endx][endy] > -1)
+//        return mem[endx][endy];
+//    // if top left column, just compute the distance
+//    else if (endx == startx && endy == starty)
+//        mem[endx][endy] = euclideanDistance(p->pts[endx], q->pts[endy]);
+//    // can either be the actual distance or distance pulled from above
+//    else if (endx > startx && endy == starty)
+//        mem[endx][endy] = max(computeDFD_new(startx, endx - 1, starty, endy), euclideanDistance(p->pts[endx], q->pts[endy]));
+//    // can either be the distance pulled from the left or the actual
+//    // distance
+//    else if (endx == startx && endy > starty)
+//        mem[endx][endy] = max(computeDFD_new(startx, endx, starty ,endy - 1), euclideanDistance(p->pts[endx], q->pts[endy]));
+//    // can be the actual distance, or distance from above or from the left
+//    else if (endx > startx && endy > starty) {
+//        double temp = min(min(computeDFD_new(startx, endx - 1, starty ,endy), computeDFD_new(startx, endx - 1,starty,  endy - 1)), computeDFD_new(startx, endx, starty, endy - 1));
+//        mem[endx][endy] = max(temp, euclideanDistance(p->pts[endx], q->pts[endy]));
+//    }
+//    // infinite
+//    else
+//        mem[endx][endy] = 10000;
+
+//    // printMemory();
+//    // return the DFD
+//    return mem[endx][endy];
+//}
+
 double computeDFD_new(int startx, int endx, int starty, int endy)
 {
     if (mem[endx][endy] > -1)
         return mem[endx][endy];
     // if top left column, just compute the distance
     else if (endx == startx && endy == starty)
-        mem[endx][endy] = euclideanDistance(p->pts[endx], q->pts[endy]);
+        mem[endx][endy] = euclideanDistance(&p->pts[endx],&q->pts[endy]);
     // can either be the actual distance or distance pulled from above
     else if (endx > startx && endy == starty)
-        mem[endx][endy] = max(computeDFD_new(startx, endx - 1, starty, endy), euclideanDistance(p->pts[endx], q->pts[endy]));
+        mem[endx][endy] = max(computeDFD_new(startx, endx - 1, starty, endy), euclideanDistance(&p->pts[endx], &q->pts[endy]));
     // can either be the distance pulled from the left or the actual
     // distance
     else if (endx == startx && endy > starty)
-        mem[endx][endy] = max(computeDFD_new(startx, endx, starty ,endy - 1), euclideanDistance(p->pts[endx], q->pts[endy]));
+        mem[endx][endy] = max(computeDFD_new(startx, endx, starty ,endy - 1), euclideanDistance(&p->pts[endx], &q->pts[endy]));
     // can be the actual distance, or distance from above or from the left
     else if (endx > startx && endy > starty) {
         double temp = min(min(computeDFD_new(startx, endx - 1, starty ,endy), computeDFD_new(startx, endx - 1,starty,  endy - 1)), computeDFD_new(startx, endx, starty, endy - 1));
-        mem[endx][endy] = max(temp, euclideanDistance(p->pts[endx], q->pts[endy]));
+        mem[endx][endy] = max(temp, euclideanDistance(&p->pts[endx], &q->pts[endy]));
     }
     // infinite
     else

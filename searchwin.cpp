@@ -315,12 +315,12 @@ void SearchWin::calSecPart()
                              tr("取消"),
                              0, tracs->length());
     progress.setWindowModality(Qt::WindowModal);
+ //  #pragma omp parallel for
+    QVector<QVector<int> >qc;
+    Sequence sf;
     for (int i = 0; i < tracs->length(); i++)
-    {
-        QVector<QVector<int> >qc;
-        Sequence sf;
+    {   
         sf = id_seq_map[tracs->at(i)];
-
 
         if (sf.hasTime() && input->hasTime())
         {
@@ -334,10 +334,11 @@ void SearchWin::calSecPart()
             fillPartTable(ui->searchTable_common_part,
                           qc, &sf);
         }
-        progress.setValue(i);
-        if (progress.wasCanceled()) {
-            break;
-        }
+            progress.setValue(i);
+            if (progress.wasCanceled()) {
+                break;
+            }
+
     }
     progress.setValue(tracs->length());
 }

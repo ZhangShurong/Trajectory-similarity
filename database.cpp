@@ -1,4 +1,4 @@
-
+#include "omp.h"
 #include "database.h"
 
 DataBase::DataBase()
@@ -109,6 +109,7 @@ string DataBase::insertData(Csv *csv, string tbName)
         {
             continue;
         }
+
         const char *t = line.c_str();
         if (Csv::notStdAscii(t[0]))
             continue;
@@ -131,6 +132,11 @@ string DataBase::insertData(Csv *csv, string tbName)
             {
                 insert += QString::fromStdString(csv->getfield(i)) + " ";
             }
+            string s="/";
+            if(strstr(csv->getfield(2).c_str(),s.c_str())){
+                throw -1;
+                return "Error";
+            }
             insert = insert + ")','"
                      + QString::fromStdString(csv->getfield(2))
                      +"',NULL);";
@@ -140,7 +146,7 @@ string DataBase::insertData(Csv *csv, string tbName)
             fprintf(stderr, "Format wrong\n");
             return NULL;
         }
-        q.exec(insert);
+            q.exec(insert);
     }
     query.exec("select max(id) from "+tableName);
     while (query.next()) {

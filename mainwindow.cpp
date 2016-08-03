@@ -8,9 +8,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    tName("importtest"),
-    importThread(db, tName, QStringList()),
-    importProgressDialog(NULL)
+    tName("importtest")
+   // importThread(db, tName, QStringList()),
+    //importProgressDialog(NULL)
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
@@ -323,39 +323,50 @@ void MainWindow::clearDB()
 
 void MainWindow::openFilesSlot()
 {
-    if (importThread.isRunning()) {
-        QMessageBox::warning(this, tr("提示"),
-                             tr("当前有导入任务仍在处理中，请等当前任务结束后再导入。"));
-        return;
-    }
 
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                             "", "CSV Files(*.csv)", 0);
     if (fileNames.isEmpty()) {
         return;
     }
+    int n=fileNames.length();
+    QProgressDialog importProgressDialog(tr("正在导入轨迹段数据，请稍候..."),
+                         tr("取消"),
+                         0, n);
+     importProgressDialog.setWindowModality(Qt::WindowModal);
+//    QProgressDialog* importProgressDialog=new QProgressDialog(this);
+//    importProgressDialog->setWindowModality(Qt::WindowModal);
+     importProgressDialog.setWindowTitle(tr("Please Wait"));   //设置标题的显示时间
+//    importProgressDialog->setLabelText(tr("Copying..."));
+//    importProgressDialog->setCancelButtonText(tr("Cancel"));     //退出按钮名字
+//    importProgressDialog->setRange(0, n);    //设置显示的范围
 
-    if (importProgressDialog == NULL) {
-        importProgressDialog = new QProgressDialog(tr("正在导入轨迹文件，请稍等..."), tr("abort"),
-                                                   0, fileNames.size(), this);
-        importProgressDialog->setCancelButton(NULL);
-        importProgressDialog->setWindowModality(Qt::WindowModal);
 
-    } else {
-        importProgressDialog->setMaximum(fileNames.size());
-        importProgressDialog->reset();
-        importProgressDialog->show();
-    }
+    importProgressDialog.show();
 
-    importThread.fileList = fileNames;
-    /* QMessageBox::information(this, tr("导入提示"),
-                             QString::number(fileNames.size()) +
-                             tr(" 个文件即将开始后台导入。\n") +
-                             tr(fileNames.size() > 2 ?
-                                "数据导入花费时间可能较长，您可以先进行其他操作。"
-                                : ":-)"));
-                                */
-    importThread.start();
+    int c=0;
+   // importProgressDialog.setValue(1);
+    for (int i = 0; i < fileNames.length(); i++)
+        {
+            string fileName = fileNames[i].toLocal8Bit().data();
+            ifstream fin2(fileName.c_str());
+            Csv format(fin2);
+
+           try{
+             db->insertData(&format, tName);
+             c++;
+            }catch(int j){
+             importFileErrorSlot(j);
+             break;
+            }
+            if (importProgressDialog.wasCanceled()) {
+                break;
+            }
+            importProgressDialog.setValue(i);
+            refreshTable();
+        }
+        importProgressDialog.setValue(fileNames.length());
+        importFinished(c,fileNames.length()-c);
 }
 
 void MainWindow::clickTBSlot(const QModelIndex index)
@@ -521,10 +532,10 @@ void MainWindow::initAction()
     connect(showInMapAct, SIGNAL(triggered()), this, SLOT(showInMapSlot_R()));
     detailAct = new QAction(tr("详情"),this);
     connect(detailAct, SIGNAL(triggered()), this, SLOT(detailSlot_R()));
-    connect(&importThread, SIGNAL(importedOneFileSignal(int)), this, SLOT(refreshTable()));
-    connect(&importThread, SIGNAL(importFinishedSignal(int,int)), this, SLOT(importFinished(int,int)));
-    connect(&importThread, SIGNAL(importFileErrorSignal(int)), this,SLOT(importFileErrorSlot(int)));
-    connect(&importThread, SIGNAL(importedOneFileSignal(int)), this, SLOT(refreshValue(int)));
+//    connect(&importThread, SIGNAL(importedOneFileSignal(int)), this, SLOT(refreshTable()));
+//    connect(&importThread, SIGNAL(importFinishedSignal(int,int)), this, SLOT(importFinished(int,int)));
+//    connect(&importThread, SIGNAL(importFileErrorSignal(int)), this,SLOT(importFileErrorSlot(int)));
+//    connect(&importThread, SIGNAL(importedOneFileSignal(int)), this, SLOT(refreshValue(int)));
 }
 
 void MainWindow::initCSS()
@@ -584,13 +595,13 @@ void MainWindow::refreshTable()
     // delete tracs;
 }
 
-void MainWindow::refreshValue(int n){
+//void MainWindow::refreshValue(int n){
 
-       importProgressDialog->setValue(n);
-//       if ( importProgressDialog->wasCanceled()) {
-//                   break;
-//           }
-}
+//       //importProgressDialog->setValue(n);
+////       if ( importProgressDialog->wasCanceled()) {
+////                   break;
+////           }
+//}
 
 void MainWindow::importFileErrorSlot(int code)
 {
@@ -603,7 +614,7 @@ void MainWindow::importFinished(int ok, int bad)
     QMessageBox::information(this, tr("导入文件结束"),
                              QString::number(ok) + tr(" 个文件导入成功，\n") +
                              QString::number(bad) + tr(" 个文件导入失败。"));
-    importProgressDialog->hide();
+    //importProgressDialog->hide();
 }
 
 void MainWindow::initSig()
@@ -622,11 +633,11 @@ void MainWindow::initSig()
     connect(ui->searchToolButton, SIGNAL(clicked()), this, SLOT(on_searchToolButton_clicked()));
     connect(ui->calToolButton, SIGNAL(clicked()), this, SLOT(on_calToolButton_clicked()));
 
-    connect(&importThread, SIGNAL(finished()), importProgressDialog, SLOT(hide()));
-    connect(&importThread, SIGNAL(importHandledSignal(int)),
-            importProgressDialog, SLOT(setValue(int)));
-    connect(importProgressDialog, SIGNAL(canceled()),
-            &importThread, SLOT(quit()));
+//    connect(&importThread, SIGNAL(finished()), importProgressDialog, SLOT(hide()));
+//    connect(&importThread, SIGNAL(importHandledSignal(int)),
+//            importProgressDialog, SLOT(setValue(int)));
+//    connect(importProgressDialog, SIGNAL(canceled()),
+//            &importThread, SLOT(quit()));
 }
 
 void MainWindow::initCan()

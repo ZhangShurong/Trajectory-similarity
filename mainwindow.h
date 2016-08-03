@@ -30,56 +30,56 @@ class MapWindow;
 class CalWindow;
 class SearchWin;
 
-class ImportThread : public QThread {
-    Q_OBJECT
-private:
-    DataBase *&database;
-    const std::string &tName;
+//class ImportThread : public QThread {
+//    Q_OBJECT
+//private:
+//    DataBase *&database;
+//    const std::string &tName;
 
-public:
-    QStringList fileList;
+//public:
+//    QStringList fileList;
 
-    ImportThread(DataBase *&db, const std::string &t, const QStringList &ls)
-            : QThread(), database(db), tName(t), fileList(ls) {}
+//    ImportThread(DataBase *&db, const std::string &t, const QStringList &ls)
+//            : QThread(), database(db), tName(t), fileList(ls) {}
 
-    void run() {
-        int n_ok = 0;
-        int total = 0;
+//    void run() {
+//        int n_ok = 0;
+//        int total = 0;
 
-        foreach (const QString eachFile, fileList) {
+//        foreach (const QString eachFile, fileList) {
 
-            string fileName = eachFile.toLocal8Bit().data();
-      //   ifstream fin(fileName.c_str());
-            emit importHandledSignal(total++);
+//            string fileName = eachFile.toLocal8Bit().data();
+//      //   ifstream fin(fileName.c_str());
+//            emit importHandledSignal(total++);
 
 
-            ifstream fin2(fileName.c_str());
-            Csv format(fin2);
-      //      Sequence *t = new Sequence();
-            try {
-       //     getSquFromFile(&format, t);
-               database->insertData(&format, tName);
-            } catch (int i) {
-                emit importFileErrorSignal(i);
-                break;
-            }
+//            ifstream fin2(fileName.c_str());
+//            Csv format(fin2);
+//      //      Sequence *t = new Sequence();
+//            try {
+//       //     getSquFromFile(&format, t);
+//               database->insertData(&format, tName);
+//            } catch (int i) {
+//                emit importFileErrorSignal(i);
+//                break;
+//            }
 
-   //         delete t;
-            /*
-            Csv csv(fin);
-            database->insertData(&csv, tName);
-            */
-            emit importedOneFileSignal(n_ok);
-            ++n_ok;
-        }
-        emit importFinishedSignal(n_ok, fileList.size() - n_ok);
-    }
-signals:
-    void importFinishedSignal(int, int);
-    void importedOneFileSignal(int);
-    void importFileErrorSignal(int);
-    void importHandledSignal(int);
-};
+//   //         delete t;
+//            /*
+//            Csv csv(fin);
+//            database->insertData(&csv, tName);
+//            */
+//            emit importedOneFileSignal(n_ok);
+//            ++n_ok;
+//        }
+//        emit importFinishedSignal(n_ok, fileList.size() - n_ok);
+//    }
+//signals:
+//    void importFinishedSignal(int, int);
+//    void importedOneFileSignal(int);
+//    void importFileErrorSignal(int);
+//    void importHandledSignal(int);
+//};
 
 namespace Ui {
 class MainWindow;
@@ -144,10 +144,10 @@ private slots:
     void setSlot();
     void exportSlot();
     void refreshTable();
-    void refreshValue(int n);
+//    void refreshValue(int n);
     void importFileErrorSlot(int code);
     void importFinished(int ok, int bad);
-  //  void transferImportNumber(int n);
+ //   void transferImportNumber(int n);
 
 private:
     Ui::MainWindow *ui;
@@ -166,9 +166,10 @@ private:
     DataBase *db;
     Canvas *can;
     // Thread for import file
-    ImportThread importThread;
-    QProgressDialog *importProgressDialog;
+//    ImportThread importThread;
+    //QProgressDialog *importProgressDialog;
     //CSS
+//    QProgressDialog importProgressDialog;
     QFile *cssFile;
     QString *strCSS;
     // calWindow *calWin;

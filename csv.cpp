@@ -1,5 +1,5 @@
 #include "csv.h"
-
+#include <string.h>
 
 // endofline: check for and consume \r, \n, \r\n, or EOF
 int Csv::endofline(char c)
@@ -42,8 +42,18 @@ int Csv::split()
             j = advquoted(line, fld, ++i);  // skip quote
         else
             j = advplain(line, fld, i);
-        if (nfield >= (int)field.size())
-            field.push_back(fld);
+
+//        if(fld.find(0,"\/")){
+////            QMessageBox::information(NULL, tr("导入文件出现错误！ 代码"),
+////                                     "时间格式错误,格式类似 20160601 13:00:11");
+//            return;
+//        }
+//        if(strstr (fld,"\/")){
+//            return;
+//        }
+        if (nfield >= (int)field.size()){
+          field.push_back(fld);
+        }
         else
             field[nfield] = fld;
         nfield++;

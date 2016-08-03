@@ -126,7 +126,7 @@ void lcmWidget::calcLcmSequence()
 
     for (int i = 1; i <= p.pointsNum; ++i) {
         for (int j = 1; j <= p.pointsNum; ++j) {
-            if (euclideanDistance(p[i - 1], q[j - 1]) <= threshold) {
+            if (euclideanDistance(&p[i - 1],&q[j - 1]) <= threshold) {
                 m[i][j].first = m[i - 1][j - 1].first + 1;
                 m[i][j].second = '\\';
             } else if (m[i][j - 1].first > m[i - 1][j].first) {

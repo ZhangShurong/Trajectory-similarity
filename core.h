@@ -42,7 +42,7 @@ void initMemSpace(Sequence *p, Sequence *q);
 void getSquFromFile(Csv *csv, Sequence *se);
 double computeDiscreteFrechet(Sequence *sa,Sequence *sb);
 double computeDFD(int i,int j, Sequence *p_a, Sequence * q_a);
-double euclideanDistance(Point a, Point b);
+double euclideanDistance(Point* a, Point* b);
 double  getSecSim(int i1,int j1,int i2,int j2);
 bool compare(SecCompare s1,SecCompare s2);
 QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b);//调用以计算轨迹段
@@ -53,7 +53,7 @@ Point getCenterPoint(Sequence *se_a, int num);
 Point getCenterPoint(QVector<Sequence> seqV);
 Time loadToStruct(QString time);
 bool timeCompare(Point*p1,Point*p2);
-double calTimeDistance(Point &a,Point &b);
+double calTimeDistance(Point *a,Point *b);
 double calCoef();
 QVector<SecCompare> findBest(Sequence*p,Sequence*q);
 QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q);
