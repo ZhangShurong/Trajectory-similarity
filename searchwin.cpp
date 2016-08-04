@@ -1,6 +1,7 @@
 #include "searchwin.h"
 #include "ui_mainwindow.h"
 #include <QProgressDialog>
+
 SearchWin::SearchWin(Ui::MainWindow *ui,DataBase *db)
 {
     this->ui = ui;

@@ -25,20 +25,6 @@ double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
     return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
 }
 
-//double euclideanDistance(Point a, Point b)
-//{
-//    double dis = 0;
-//    if(a.time.isEmpty()) {
-//        dis = (a.longitude - b.longitude)*(a.longitude - b.longitude)
-//              + (a.latitude - b.latitude)*(a.latitude - b.latitude);
-//    } else {
-//        dis = (a.longitude - b.longitude)*(a.longitude - b.longitude)
-//              + (a.latitude - b.latitude)*(a.latitude - b.latitude)+calTimeDistance(a,b)*coef;
-//    }
-//    dis = sqrt(dis);
-//    return dis;
-//}
-
 double euclideanDistance(Point* a, Point* b)
 {
     double dis = 0;
@@ -52,17 +38,6 @@ double euclideanDistance(Point* a, Point* b)
     dis = sqrt(dis);
     return dis;
 }
-
-//double calTimeDistance(Point &a,Point &b) {
-//    double hourGap;
-
-//    if((a.t.year!=b.t.year)||(a.t.month!=b.t.month)) {
-//        hourGap=720;
-//    } else {
-//        hourGap=qAbs((a.t.day*24+a.t.hour+a.t.minute*0.016+a.t.second*0.0002)-(b.t.day*24+b.t.hour+b.t.minute*0.016+b.t.second*0.0002));
-//    }
-//    return hourGap;
-//}
 
 double calTimeDistance(Point *a,Point *b) {
     double hourGap;
@@ -176,35 +151,35 @@ Time loadToStruct(QString time) {
 }
 
 bool timeCompare(Point*p1,Point*p2) {
-    Time t1=p1->t;
-    Time t2=p2->t;
+    Time* t1=&p1->t;
+    Time* t2=&p2->t;
 
-    if(t1.year<t2.year) {
+    if(t1->year<t2->year) {
         return true;
-    } else if(t1.year==t2.year) {
-        if(t1.month<t2.month) {
+    } else if(t1->year==t2->year) {
+        if(t1->month<t2->month) {
             return true;
-        } else if(t1.month==t2.month) {
+        } else if(t1->month==t2->month) {
 
-            if(t1.day<t2.day) {
+            if(t1->day<t2->day) {
                 return true;
-            } else if(t1.day==t2.day) {
-                int totalSecond1=t1.hour*3600+t1.minute*60+t1.second;
-                int totalSecond2=t2.hour*3600+t2.minute*60+t2.second;
+            } else if(t1->day==t2->day) {
+                int totalSecond1=t1->hour*3600+t1->minute*60+t1->second;
+                int totalSecond2=t2->hour*3600+t2->minute*60+t2->second;
                 if(totalSecond1<=totalSecond2) {
                     return true;
                 } else {
                     return false;
                 }
-            } else if(t1.day>t2.day) {
+            } else if(t1->day>t2->day) {
                 return false;
             }
 
-        } else if(t1.month>t2.month) {
+        } else if(t1->month>t2->month) {
             return false;
         }
 
-    } else if(t1.year>t2.year) {
+    } else if(t1->year>t2->year) {
         return false;
     }
     return false;
@@ -633,10 +608,10 @@ QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b) {
     QVector<PointCompare>q1;
     // PointCollection pc;
     QVector<PointCompare>q2;
-
+//    PointCompare* p=NULL;
+    PointCompare p;
     for(int i=0; i<se_a->getNum(); i++) {
         for(int j=0; j<se_b->getNum(); j++) {
-            PointCompare p;
             p.distance=euclideanDistance(&se_a->pts[i],&se_b->pts[j]);
             p.index1=i;
             p.index2=j;
@@ -662,49 +637,6 @@ QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b) {
 bool compareDis(PointCompare p1,PointCompare p2) {
     return p1.distance<p2.distance;
 }
-
-
-void out2DArray(double **arr, int x, int y)
-{
-    int i;
-    for (i = 0; i < x; i++)
-    {
-        for (int j = 0; j < y; j++)
-        {
-            printf("%4f\t", arr[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-
-//double computeDFD_new(int startx, int endx, int starty, int endy)
-//{
-//    if (mem[endx][endy] > -1)
-//        return mem[endx][endy];
-//    // if top left column, just compute the distance
-//    else if (endx == startx && endy == starty)
-//        mem[endx][endy] = euclideanDistance(p->pts[endx], q->pts[endy]);
-//    // can either be the actual distance or distance pulled from above
-//    else if (endx > startx && endy == starty)
-//        mem[endx][endy] = max(computeDFD_new(startx, endx - 1, starty, endy), euclideanDistance(p->pts[endx], q->pts[endy]));
-//    // can either be the distance pulled from the left or the actual
-//    // distance
-//    else if (endx == startx && endy > starty)
-//        mem[endx][endy] = max(computeDFD_new(startx, endx, starty ,endy - 1), euclideanDistance(p->pts[endx], q->pts[endy]));
-//    // can be the actual distance, or distance from above or from the left
-//    else if (endx > startx && endy > starty) {
-//        double temp = min(min(computeDFD_new(startx, endx - 1, starty ,endy), computeDFD_new(startx, endx - 1,starty,  endy - 1)), computeDFD_new(startx, endx, starty, endy - 1));
-//        mem[endx][endy] = max(temp, euclideanDistance(p->pts[endx], q->pts[endy]));
-//    }
-//    // infinite
-//    else
-//        mem[endx][endy] = 10000;
-
-//    // printMemory();
-//    // return the DFD
-//    return mem[endx][endy];
-//}
 
 double computeDFD_new(int startx, int endx, int starty, int endy)
 {

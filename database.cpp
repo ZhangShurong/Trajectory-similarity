@@ -1,5 +1,7 @@
 #include "omp.h"
 #include "database.h"
+#include <QtCore/QCoreApplication>
+#include <QtSql>
 
 DataBase::DataBase()
 {
@@ -85,6 +87,7 @@ string DataBase::insertData(Csv *csv, string tbName)
     QString tableName = QString::fromStdString(tbName);
     string line;
 
+    db.transaction();
 
     if (!isTableExist(tbName))
     {
@@ -164,6 +167,7 @@ string DataBase::insertData(Csv *csv, string tbName)
 
     //------------------------//
     query.exec(insert);
+    db.commit();
     return tid.toStdString();
 }
 

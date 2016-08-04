@@ -59,7 +59,6 @@ QVector<SecCompare> findBest(Sequence*p,Sequence*q);
 QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q);
 QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b);
 bool compareDis(PointCompare p1,PointCompare p2);
-void out2DArray(double **arr, int x, int y);
 double computeDFD_new(int startx, int endx, int starty, int endy);
 double rad(double d);
 double getDistance(double lng1, double lat1, double lng2, double lat2);
