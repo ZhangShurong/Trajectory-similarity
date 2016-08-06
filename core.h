@@ -64,4 +64,5 @@ double rad(double d);
 double getDistance(double lng1, double lat1, double lng2, double lat2);
 int getZoom(QVector<Sequence> seqV);
 int getZoom(Sequence seq_a);
+int calZoomCoef(double res);
 #endif // CORE_H

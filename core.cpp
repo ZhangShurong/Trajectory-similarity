@@ -70,6 +70,7 @@ double calCoef() {
     return coef;
 }
 
+
 void
 getSquFromFile(Csv *csv, Sequence *se)
 {
@@ -160,29 +161,21 @@ bool timeCompare(Point*p1,Point*p2) {
         if(t1->month<t2->month) {
             return true;
         } else if(t1->month==t2->month) {
-
             if(t1->day<t2->day) {
                 return true;
             } else if(t1->day==t2->day) {
                 int totalSecond1=t1->hour*3600+t1->minute*60+t1->second;
                 int totalSecond2=t2->hour*3600+t2->minute*60+t2->second;
-                if(totalSecond1<=totalSecond2) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else if(t1->day>t2->day) {
+                return totalSecond1<=totalSecond2;
+            }else{
                 return false;
             }
-
-        } else if(t1->month>t2->month) {
+       }else{
             return false;
         }
-
-    } else if(t1->year>t2->year) {
+    }else {
         return false;
     }
-    return false;
 }
 
 void initMemSpace(Sequence *p, Sequence *q)
@@ -249,7 +242,7 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
     for(int j=gap; j<gap+5; j++) {
         mergeChange(j,q1,q2,limit);
     }
-    sort(q2.begin(),q2.end(),compare);
+  //  sort(q2.begin(),q2.end(),compare);
 
 //  #pragma omp parallel for
   //  clock_t t1 = clock();
@@ -713,33 +706,8 @@ int getZoom(QVector<Sequence> seqV)
         }
     }
     double res = getDistance(minLon, minLat, maxLon, maxLat);
-    \
-    int dis = res / 8.0;
-    if ( dis > 100)
-    {
-        return 6;
-    }
-    else if (dis > 25)
-    {
-        return 8;
-    }
-    else if(dis > 5 )
-    {
-        return 11;
-    }
-    else if (dis > 1)
-    {
-        return 13;
-    }
-    else if (dis > 0.2)
-    {
-        return 15;
-    }
-    else if (dis > 0.05)
-    {
-        return 16;
-    }
-    return 6;
+
+    return calZoomCoef(res);
 }
 
 
@@ -748,15 +716,7 @@ double rad(double d)
     return d * PI / 180.0;
 }
 
-
-int getZoom(Sequence seq_a)
-{
-    double maxLon = seq_a.getMaxX();
-    double maxLat = seq_a.getMaxY();
-    double minLon = seq_a.getMinX();
-    double minLat = seq_a.getMinY();
-    double res = getDistance(minLon, minLat, maxLon, maxLat);
-    \
+int calZoomCoef(double res){
     int dis = res / 8.0;
     if ( dis > 100)
     {
@@ -782,5 +742,18 @@ int getZoom(Sequence seq_a)
     {
         return 16;
     }
+
     return 6;
+}
+
+int getZoom(Sequence seq_a)
+{
+    double maxLon = seq_a.getMaxX();
+    double maxLat = seq_a.getMaxY();
+    double minLon = seq_a.getMinX();
+    double minLat = seq_a.getMinY();
+    double res = getDistance(minLon, minLat, maxLon, maxLat);
+
+    return calZoomCoef(res);
+
 }

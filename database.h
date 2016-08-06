@@ -21,12 +21,12 @@
 class DataBase
 {
 private:
-    QSqlDatabase db;
     string dbName;
     bool loadDriver();
     QSqlError initDb();
     void decodeID(string ID, int *start, int *end);
 public:
+    QSqlDatabase db;
     DataBase();
     DataBase(int i);
     DataBase(string databaseName);
@@ -34,7 +34,7 @@ public:
     void setDBName(string databaseName);
     bool isTableExist(string tableName);
     string insertData(Csv *csv, string tbName);
-    string insertData(Sequence *seq_a, string tbName);
+ //   string insertData(Sequence *seq_a, string tbName);
     void getSequenceByID(string tableName, Sequence *squ, string ID);
     int getPointNumByID(string ID);
     QStringList* getAllTracID(string tableName);

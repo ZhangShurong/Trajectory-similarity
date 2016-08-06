@@ -3,7 +3,11 @@
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 #include <QProgressDialog>
+#include "database.h"
+#include <QtCore/QCoreApplication>
+#include <QtSql>
 #include "core.h"
+#include "omp.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -333,19 +337,13 @@ void MainWindow::openFilesSlot()
     QProgressDialog importProgressDialog(tr("正在导入轨迹段数据，请稍候..."),
                          tr("取消"),
                          0, n);
-     importProgressDialog.setWindowModality(Qt::WindowModal);
-//    QProgressDialog* importProgressDialog=new QProgressDialog(this);
-//    importProgressDialog->setWindowModality(Qt::WindowModal);
-     importProgressDialog.setWindowTitle(tr("Please Wait"));   //设置标题的显示时间
-//    importProgressDialog->setLabelText(tr("Copying..."));
-//    importProgressDialog->setCancelButtonText(tr("Cancel"));     //退出按钮名字
-//    importProgressDialog->setRange(0, n);    //设置显示的范围
-
-
+    importProgressDialog.setWindowModality(Qt::WindowModal);
+    importProgressDialog.setWindowTitle(tr("Please Wait"));   //设置标题的显示时间
     importProgressDialog.show();
 
     int c=0;
    // importProgressDialog.setValue(1);
+    db->db.transaction();
     for (int i = 0; i < fileNames.length(); i++)
         {
             string fileName = fileNames[i].toLocal8Bit().data();
@@ -365,6 +363,7 @@ void MainWindow::openFilesSlot()
             importProgressDialog.setValue(i);
             refreshTable();
         }
+        db->db.commit();
         importProgressDialog.setValue(fileNames.length());
         importFinished(c,fileNames.length()-c);
 }
