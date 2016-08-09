@@ -319,21 +319,38 @@ void SearchWin::calSecPart()
  //  #pragma omp parallel for
     QVector<QVector<int> >qc;
     Sequence sf;
+    int count = 0;
     for (int i = 0; i < tracs->length(); i++)
     {   
         sf = id_seq_map[tracs->at(i)];
 
         if (sf.hasTime() && input->hasTime())
         {
-            qc = getSimplify(input,&sf);
-            fillPartTable(ui->searchTable_time_part,
-                          qc, &sf);
+            if(compareType(input->getType(), sf.getType()))
+            {
+                qc = getSimplify(input,&sf);
+                fillPartTable(ui->searchTable_time_part,
+                              qc, &sf);
+            }
+            else
+            {
+                count ++;
+                continue;
+            }
         }
         else if (!sf.hasTime() && !input->hasTime())
         {
-            qc = getSimplify(input,&sf);
-            fillPartTable(ui->searchTable_common_part,
+            if(compareType(input->getType(), sf.getType()))
+            {
+                qc = getSimplify(input,&sf);
+                fillPartTable(ui->searchTable_common_part,
                           qc, &sf);
+            }
+            else
+            {
+                count ++;
+                continue;
+            }
         }
             progress.setValue(i);
             if (progress.wasCanceled()) {
@@ -342,6 +359,35 @@ void SearchWin::calSecPart()
 
     }
     progress.setValue(tracs->length());
+    if(count == tracs->length())
+    {
+        for (int i = 0; i < tracs->length(); i++)
+        {
+            sf = id_seq_map[tracs->at(i)];
+
+            if (sf.hasTime() && input->hasTime())
+            {
+
+                    qc = getSimplify(input,&sf);
+                    fillPartTable(ui->searchTable_time_part,
+                                  qc, &sf);
+            }
+            else if (!sf.hasTime() && !input->hasTime())
+            {
+
+                    qc = getSimplify(input,&sf);
+                    fillPartTable(ui->searchTable_common_part,
+                              qc, &sf);
+
+            }
+                progress.setValue(i);
+                if (progress.wasCanceled()) {
+                    break;
+                }
+
+        }
+        progress.setValue(tracs->length());
+    }
 }
 
 void SearchWin::drawSeq()

@@ -50,6 +50,7 @@ private:
     int getNumByID();
     void buildPrefixSum();
     std::vector<double> prefixSum;
+    QString type;
 public:
     int pointsNum;
     Point *pts;
@@ -77,6 +78,13 @@ public:
     int getIndex(Point pt);
     bool hasTime();
     double getPrefixSum(int i);
-
+    void setType(QString type)
+    {
+        this->type = type;
+    }
+    QString getType()
+    {
+        return type;
+    }
 };
 #endif // SEQUENCE_H
