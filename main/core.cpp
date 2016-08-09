@@ -955,6 +955,204 @@ void clusterAgglomerartive(Sequence *seqs, int len)
      */
 
 }
+double modHausDist(Sequence *sa, Sequence *sb)
+{
+    if(sa == sb)
+    {
+        return 0;
+    }
+    double t1pointsRelPos[sa->pointsNum];
+    double t2pointsRelPos[sb->pointsNum];
+    int i;
+    double distance[sa->pointsNum];
+    for(int n = 0; n < sa->pointsNum ; n++)
+    {
+        distance[n] = 0;
+    }
+    for(i = 0; i < sa->pointsNum; i++)
+    {
+        t1pointsRelPos[i] = sa->getPrefixSum(i)/sa->getPrefixSum(sa->pointsNum - 1);
+    }
+    for(i = 0; i < sb->pointsNum; i++)
+    {
+        t2pointsRelPos[i] = sb->getPrefixSum(i)/sb->getPrefixSum(sb->pointsNum - 1);
+    }
+    for(i = 0; i < sa->pointsNum; i++)
+    {
+        Point pt1 = sa->pts[i];
+        int pt2idx = 0;
+        int j;
+        double temp = 2;//大于1就行
+        for(j = 0; j < sb->pointsNum; j++)
+        {
+            double t = (t1pointsRelPos[i] - t2pointsRelPos[j]);
+            if(t < 0)
+            {
+                t = -t;
+            }
+            if(t < temp)
+            {
+                temp = t;
+                pt2idx = j;
+            }
+        }
+
+        //Get set of points sp2 of sb within neighborhood of point pt2
+        vector<int> neighborhoodIdxs;
+        for(j = 0; j < sb->pointsNum; j++)
+        {
+            //FIXME 常数1需要修改
+            if((fabs(sb->getPrefixSum(j) - sb->getPrefixSum(pt2idx)) - 1) <= 0)
+            {
+                neighborhoodIdxs.push_back(j);
+            }
+        }
+        double dist = 9999;//inf
+        for(j = 0; j < neighborhoodIdxs.size(); j ++)
+        {
+            double newdist = euclideanDistance(&pt1, &(sb->pts[neighborhoodIdxs.at(j)]));
+            if(newdist < dist)
+            {
+                dist = newdist;
+            }
+        }
+        distance[i] = dist;
+    }
+    std::sort(distance, distance+sa->pointsNum);
+    //FIXME 0.88常数
+    return distance[std::min(int(sa->pointsNum * 0.88), sa->pointsNum - 1)];
+}
+
+
+void clusterAgglomerartive(Sequence *seqs, int len)
+{
+    //createDistanceMatrix
+    double distMat[len][len];
+    for(int i = 0; i < len; i++)
+    {
+        for(int j = 0; j < len; j++)
+        {
+            distMat[i][j] = 1;
+            double dist = modHausDist(&seqs[i], &seqs[j]);
+            distMat[i][j] = dist;
+            //std::cout  << distMat[i][j] << "\t";
+        }
+       // std::cout << std::endl;
+    }
+
+    vector<vector<int> > clusters;
+    for(int i = 0;i < len; i++)
+    {
+        vector<int> temp;
+        temp.push_back(i);
+        clusters.push_back(temp);
+    }
+    int size = len;
+    int cn=3;
+    while(size > cn)
+    {
+        double affMat[size][size];
+        //TODO 可以用mp加速
+       for(int x = 0; x < size; x++)
+       {
+           for(int y = 0; y < size; y++)
+           {
+               affMat[x][y] = 0;
+           }
+       }
+        for(int r = 0; r < size - 1; r++)
+        {
+            for(int c = r+1; c < size; c++)
+            {
+                double dist = 0;
+                vector<int> temp1 = clusters.at(r);
+                vector<int> temp2 = clusters.at(c);
+                for(int i = 0; i < temp1.size();i++)
+                {
+                    int t1idx = temp1.at(i);
+                    for(int j = 0; j < temp2.size();j++)
+                    {
+                        int t2idx = temp2.at(j);
+                        dist += 1 / ((distMat[t1idx][t2idx] * distMat[t2idx][t1idx]) + 0.000006);
+                    }
+                }
+                dist *= 1.0 / (temp1.size() * temp2.size());
+                affMat[r][c] = dist;
+            }
+        }
+        double init = -1;
+        int t1idx = -1;
+        int t2idx = -1;
+        for(int i = 0; i < size; i ++)
+        {
+            for(int j = 0; j < size; j++)
+            {
+                if(affMat[i][j] > init)
+                {
+                    init = affMat[i][j];
+                    t1idx = i;
+                    t2idx = j;
+                }
+            }
+        }
+        for (uint i = 0; i < clusters.at(t2idx).size(); i++)
+        {
+            if(t1idx == t2idx)
+                continue;
+            clusters.at(t1idx).push_back(clusters.at(t2idx).at(i));
+        }
+        vector<vector<int> >temp;
+        for (int i = 0; i < clusters.size(); i++)
+        {
+            if(i != t2idx)
+                temp.push_back(clusters.at(i));
+        }
+        clusters = temp;
+        size = clusters.size();
+        //clusters[t1idx].extend(clusters[t2idx]);
+        //clusters = [clusters[i] for i in range(len(clusters)) if i != t2idx];
+
+    }
+    for(int i = 0; i < clusters.size();i++)
+    {
+        qDebug() << "Type "<< i <<":";
+        for(int j = 0; j< clusters.at(i).size(); j++)
+        {
+            qDebug() << clusters.at(i).at(j);
+        }
+    }
+    /*
+     *
+        while len(clusters) > cn:
+            affMat = np.zeros((len(clusters), len(clusters)))
+            for r in range(affMat.shape[0] - 1):
+                for c in range(r + 1, affMat.shape[1]):
+                    ## count inter-cluster average distance
+                    dist = 0
+
+                    for t1idx in clusters[r]:
+                        for t2idx in clusters[c]:
+                            # distance of trajectory t1 (t1 in tA) and trajectory t2 (t2 in tB)
+                            dist += 1 / ((self.distMat[t1idx, t2idx] * self.distMat[t2idx, t1idx]) + 1e-6)
+
+                    dist *= 1.0 / (len(clusters[r]) * len(clusters[c]))
+                    affMat[r, c] = dist
+
+            # Find two closest clusters and merge them
+            # First trajectory is given by row index, second trajectory is given by column index of affinity matrix
+            t1idx = np.argmax(affMat) / affMat.shape[1]
+            t2idx = np.argmax(affMat) % affMat.shape[0]
+
+            clusters[t1idx].extend(clusters[t2idx])
+            clusters = [clusters[i] for i in range(len(clusters)) if i != t2idx]
+
+        # Assign an estimated cluster index to each trajectory
+        for i in range(len(clusters)):
+            for j in clusters[i]:
+                self.trajectories[j].setClusterIdx(i)
+     */
+
+}
 
 //int hardCluster(const Sequence * const q)
 //{
