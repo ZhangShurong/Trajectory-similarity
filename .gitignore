@@ -4,5 +4,5 @@ main.js
 ui_mainwindow.h
 Makefile
 importData
-importData.pro.user
+*.pro.user
 
