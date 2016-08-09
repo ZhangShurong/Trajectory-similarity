@@ -48,6 +48,8 @@ private:
     int initSize;
     int seek;
     int getNumByID();
+    void buildPrefixSum();
+    std::vector<double> prefixSum;
 public:
     int pointsNum;
     Point *pts;
@@ -74,5 +76,7 @@ public:
     }
     int getIndex(Point pt);
     bool hasTime();
+    double getPrefixSum(int i);
+
 };
 #endif // SEQUENCE_H

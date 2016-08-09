@@ -64,5 +64,10 @@ double rad(double d);
 double getDistance(double lng1, double lat1, double lng2, double lat2);
 int getZoom(QVector<Sequence> seqV);
 int getZoom(Sequence seq_a);
+//<<<<<<< HEAD:core.h
 int calZoomCoef(double res);
+//=======
+double modHausDist(Sequence *sa, Sequence *sb);
+void clusterAgglomerartive(Sequence *seqs, int len);
+//>>>>>>> Hausdoff:main/core.h
 #endif // CORE_H

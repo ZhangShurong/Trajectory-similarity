@@ -1,5 +1,5 @@
 #include "sequence.h"
-
+#include "core.h"
 
 int Sequence::getNumByID()
 {
@@ -238,6 +238,29 @@ Point::Point(double x, double y, QString time_a, QString id_a)
     id = id_a;
     painted=false;
 }
+double Sequence::getPrefixSum(int i)
+{
+    if(prefixSum.size() <= pointsNum)
+    {
+        buildPrefixSum();
+    }
+    return prefixSum[i];
+}
+void Sequence::buildPrefixSum()
+{
+    if(pointsNum <= 0)
+    {
+        return;
+    }
+    prefixSum.push_back(0);
+    for(int i = 0; i < pointsNum; i++)
+    {
+        prefixSum.push_back(prefixSum[prefixSum.size() - 1] +
+                euclideanDistance(pts + prefixSum.size() - 1, pts + prefixSum.size()));
+    }
+}
+
+
 /*
 Point::Point(Point &p)
 {
