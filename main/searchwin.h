@@ -1,4 +1,4 @@
-/**
+﻿/**
   *   赛题：第五届“中国软件杯”大学生软件设计大赛——针对以经纬度或经纬度带时间定义的不同轨迹
   *   软件名称：基于“弗雷歇距离”的轨迹相似度分析软件
   *   开发团队：Kryptonite
@@ -40,6 +40,7 @@ public:
     void setNumOfSeqs(int num);
     void init();
     void clearInput();
+    QVector<Sequence> getCurrentSeq();
     ~SearchWin();
 private:
     Ui::MainWindow *ui;
@@ -54,10 +55,17 @@ private:
     int pos_c;
     int pos_t;
 
+    string tName;
+
     bool seqFlag;
     bool partFlag;
     bool pointFlag;
 
+    QVector<Sequence> selectedSeqS;
+
+    QAction *detailAct;
+    QAction *backAct;
+    detailWin *detWin;
 
     QMap<QString, int> seq_index;
     QMap<QString, Sequence> id_seq_map;
@@ -71,7 +79,7 @@ private:
     void initTable(QTableWidget *table);
     void initSeqPartTable(QTableWidget *table);
     void initPointTable(QTableWidget *table);
-    void showPartofSeq();
+    void initNew(QTableWidget *table);
 
 
     //void search();
@@ -87,11 +95,20 @@ private:
     void drawSeq();
     void drawPart();
     void drawPoints();
+    void drawNewSeq();
 
     void searchPoint();
     void loadIntoMem();
 
+    void searchSelectedSeqs();
+
+    int statusPart;
+    int statusSeq;
+    int statusPoint;
+
 public slots:
+    void showDetail();
+    void back();
     void openFile();
     void rankPartOfSeq();
     void rankSeqClicked();

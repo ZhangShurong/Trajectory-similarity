@@ -66,9 +66,14 @@ double calCoef() {
 
     double timeGapAvg=0.5*(timeGap1+timeGap2);
 
+    if(timeGapAvg==0){
+        timeGapAvg=1;
+    }
+
     double coef=avgSqr/timeGapAvg;
     return coef;
 }
+
 
 
 void
@@ -125,6 +130,18 @@ getSquFromFile(Csv *csv, Sequence *se)
             se->appendPt(tContainer[i]);
         }
     }
+    double minLongtitude = 73;
+    double maxLongtitude = 136;
+    double minLatitude = 3;
+    double maxLatitude = 54;
+    int type = hardCluster(se,
+               minLongtitude,
+               maxLongtitude,
+               minLatitude,
+               maxLatitude,
+               3
+               );
+    se->setType(QString::number(type));
     tContainer.clear();
 }
 
@@ -954,4 +971,159 @@ void clusterAgglomerartive(Sequence *seqs, int len)
                 self.trajectories[j].setClusterIdx(i)
      */
 
+}
+/*
+ * 矩形按照如下方式递归分割
+ *  ______________________
+ * |          |           |
+ * |     1    |     2     |
+ * |          |           |
+ * |——————————|———————————|
+ * |          |           |
+ * |     3    |     4     |
+ * |__________|___________|
+ *
+ */
+int hardCluster(Sequence * q,double minLongtitude,
+                double maxLongtitude,
+                double minLatitude,
+                double maxLatitude,
+                int depth)
+{
+    double midLongtitude = 0.5*(maxLongtitude + minLongtitude);
+    double midLatitude = 0.5*(maxLatitude + minLatitude);
+    depth --;
+    if(depth < 0)
+    {
+        return 0;
+    }
+    if(q->getMaxX() > midLongtitude)
+    {
+        if(q->getMinX() < midLatitude)
+        {
+            return 0;
+        }
+        if(q->getMaxY() > midLatitude)
+        {
+            if(q->getMinY() < midLatitude)
+            {
+                return 0;
+            }
+            else
+            {
+
+//                double min2Longtitude = midLongtitude;
+//                double max2Longtitude = maxLongtitude;
+//                double min2Latitude = midLatitude;
+//                double max2Latitude = maxLatitude;
+                int res = hardCluster(q, midLongtitude,
+                                      maxLongtitude,
+                                      midLongtitude,
+                                      maxLatitude,
+                                      depth);
+                if(res != 0)
+                {
+                    int n = 1 + (int)log10(res);
+                    return 2*pow(10,n) +res ;
+                }
+                else
+                    return 2;
+            }
+        }
+        else
+        {
+            //    double min4Longtitude = midLongtitude;
+            //    double max4Longtitude = maxLongtitude;
+            //    double min4Latitude = minLatitude;
+            //    double max4Latitude = midLatitude;
+            int res = hardCluster(q,midLongtitude,
+                                  maxLongtitude,
+                                  minLatitude,
+                                  midLatitude,
+                                  depth);
+            if(res != 0)
+            {
+                int n = 1 + (int)log10(res);
+                return 4*pow(10,n) +res ;
+            }
+            else
+            {
+                return 4;
+            }
+
+        }
+    }
+    else
+    {
+        if(q->getMaxY() > midLatitude)
+        {
+            if(q->getMinY() < midLatitude)
+            {
+                return 0;
+            }
+            else
+            {
+                //    double min1Longtitude = minLongtitude;
+                //    double max1Longtitude = midLongtitude;
+                //    double min1Latitude = midLatitude;
+                //    double max1Latitude = maxLatitude;
+                int res =hardCluster(q,minLongtitude,
+                                     midLongtitude,
+                                     midLatitude,
+                                     maxLatitude,
+                                     depth);
+                if(res != 0)
+                {
+                    int n = 1 + (int)log10(res);
+                    return 1*pow(10,n) +res ;
+                }
+                else
+                    return 1;
+            }
+        }
+        else
+        {
+            //    double min3Longtitude = minLongtitude;
+            //    double max3Longtitude = midLongtitude;
+            //    double min3Latitude = minLatitude;
+            //    double max3Latitude = midLatitude;
+            int res = hardCluster(q, minLongtitude,
+                                     midLongtitude,
+                                     minLatitude,
+                                     midLatitude,
+                                     depth);
+            if(res != 0)
+            {
+                int n = 1 + (int)log10(res);
+                return 3*pow(10,n) +res ;
+            }
+            else
+                return 3;
+        }
+    }
+    return 0;
+
+
+}
+
+
+bool compareType(QString input_type, QString type)
+{
+    if(input_type == type)
+    {
+        return true;
+    }
+    if(input_type.startsWith(type))
+    {
+        return true;
+    }
+    if(input_type == "0")
+    {
+        return true;
+    }
+    if(type == "0")
+    {
+        return true;
+    }
+    return false;
 }

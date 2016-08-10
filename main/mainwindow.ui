@@ -534,7 +534,7 @@ color:white;
        <string notr="true">font-family:'微软雅黑';</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -1007,7 +1007,7 @@ color:white;
                <bool>true</bool>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="tab">
                <attribute name="title">
@@ -1016,8 +1016,14 @@ color:white;
                <layout class="QHBoxLayout" name="horizontalLayout_8">
                 <item>
                  <widget class="QStackedWidget" name="searchStackedWidget">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="currentIndex">
-                   <number>0</number>
+                   <number>3</number>
                   </property>
                   <widget class="QWidget" name="page_13">
                    <layout class="QHBoxLayout" name="horizontalLayout_10">
@@ -1040,6 +1046,20 @@ color:white;
                     </item>
                    </layout>
                   </widget>
+                  <widget class="QWidget" name="page_11">
+                   <layout class="QHBoxLayout" name="horizontalLayout_54">
+                    <item>
+                     <widget class="QTableWidget" name="searchNewSelected">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
                  </widget>
                 </item>
                </layout>
@@ -1052,7 +1072,7 @@ color:white;
                 <item>
                  <widget class="QStackedWidget" name="searchStackedWidget_time">
                   <property name="currentIndex">
-                   <number>1</number>
+                   <number>3</number>
                   </property>
                   <widget class="QWidget" name="page_15">
                    <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -1065,6 +1085,20 @@ color:white;
                    <layout class="QHBoxLayout" name="horizontalLayout_17">
                     <item>
                      <widget class="QTableWidget" name="searchTable_time_point"/>
+                    </item>
+                   </layout>
+                  </widget>
+                  <widget class="QWidget" name="page_12">
+                   <layout class="QHBoxLayout" name="horizontalLayout_55">
+                    <item>
+                     <widget class="QTableWidget" name="searchNewTime">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
@@ -1785,12 +1819,24 @@ color:white;
        <layout class="QVBoxLayout" name="verticalLayout_23">
         <item>
          <widget class="QGroupBox" name="groupBox_4">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>400</height>
+           </size>
+          </property>
           <property name="title">
            <string>团队信息</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_49">
            <item>
             <widget class="QTextEdit" name="textEdit_2">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>400</height>
+              </size>
+             </property>
              <property name="focusPolicy">
               <enum>Qt::NoFocus</enum>
              </property>
@@ -1808,14 +1854,13 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;开发团队名&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;：Kryponite&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;参赛赛题：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;第五届“中国软件杯”大学生软件设计大赛—针对以经纬度或经纬度带时间定义的不同轨迹&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;软件名称：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;基于“弗雷歇距离”的轨迹相似度分析软件&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;代表学校：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;武汉大学 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;院系：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;国际软件学院 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;开发时间：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;2016年4至6月&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;指导老师：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;陈刚 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;  &lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;队长：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;张树荣 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;      &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt; 队员:&lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;柯磊、王旭东&lt;/span&gt; &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;代表学校：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;武汉大学 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;院系：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;国际软件学院 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;  &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;开发时间：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;2016年4至6月&lt;/span&gt; &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;指导老师：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;陈刚 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;  &lt;/span&gt; &lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;队长：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;张树荣 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;      &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt; 队员:&lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;柯磊、王旭东&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;联系地址：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;湖北省武汉市武汉大学国际软件学院行政楼&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;联系电话：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;133-4993-6422&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;邮箱：&lt;/span&gt;&lt;a href=&quot;mailto:Zhang_Shurong@foxmail.com&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; text-decoration: underline; color:#0000ff;&quot;&gt;Zhang_Shurong@foxmail.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt; , &lt;/span&gt;&lt;a href=&quot;mailto:kelei@whu.edu.cn&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; text-decoration: underline; color:#000000;&quot;&gt;kelei@whu.edu.cn&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;开发语言：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;C++ &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;  &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;开发环境：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;Qt&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;程序运行环境：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;Windows 7/8 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;Windows 10&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;程序运行环境：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;Windows 7/8 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;Windows 10&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -1827,7 +1872,7 @@ p, li { white-space: pre-wrap; }
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>160</height>
            </size>
           </property>
           <property name="title">
@@ -1839,11 +1884,14 @@ p, li { white-space: pre-wrap; }
              <property name="maximumSize">
               <size>
                <width>16777215</width>
-               <height>200</height>
+               <height>160</height>
               </size>
              </property>
              <property name="focusPolicy">
               <enum>Qt::NoFocus</enum>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
              </property>
              <property name="html">
               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -1862,7 +1910,7 @@ p, li { white-space: pre-wrap; }
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>140</height>
+            <height>100</height>
            </size>
           </property>
           <property name="title">
@@ -1871,6 +1919,12 @@ p, li { white-space: pre-wrap; }
           <layout class="QHBoxLayout" name="horizontalLayout_50">
            <item>
             <widget class="QTextEdit" name="textEdit_4">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>100</height>
+              </size>
+             </property>
              <property name="focusPolicy">
               <enum>Qt::NoFocus</enum>
              </property>
@@ -1879,7 +1933,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;此基于“弗雷歇距离”的轨迹相似度分析软件由武汉大学国际软件学院Kryptonite团队开发，用作于第五届中国软件杯中的“针对以经纬度或经纬度带时间定义的不同轨迹”赛题参数作品，未经开发团队Kryponite允许不得擅自用作商业用途。&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;   此基于“弗雷歇距离”的轨迹相似度分析软件由武汉大学国际软件学院Kryptonite团队开发，用作于第五届中国软件杯中的“针对以经纬度或经纬度带时间定义的不同轨迹”赛题参赛作品，未经开发团队Kryponite允许不得擅自用作商业用途。&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>

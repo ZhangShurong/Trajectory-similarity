@@ -30,57 +30,6 @@ class MapWindow;
 class CalWindow;
 class SearchWin;
 
-//class ImportThread : public QThread {
-//    Q_OBJECT
-//private:
-//    DataBase *&database;
-//    const std::string &tName;
-
-//public:
-//    QStringList fileList;
-
-//    ImportThread(DataBase *&db, const std::string &t, const QStringList &ls)
-//            : QThread(), database(db), tName(t), fileList(ls) {}
-
-//    void run() {
-//        int n_ok = 0;
-//        int total = 0;
-
-//        foreach (const QString eachFile, fileList) {
-
-//            string fileName = eachFile.toLocal8Bit().data();
-//      //   ifstream fin(fileName.c_str());
-//            emit importHandledSignal(total++);
-
-
-//            ifstream fin2(fileName.c_str());
-//            Csv format(fin2);
-//      //      Sequence *t = new Sequence();
-//            try {
-//       //     getSquFromFile(&format, t);
-//               database->insertData(&format, tName);
-//            } catch (int i) {
-//                emit importFileErrorSignal(i);
-//                break;
-//            }
-
-//   //         delete t;
-//            /*
-//            Csv csv(fin);
-//            database->insertData(&csv, tName);
-//            */
-//            emit importedOneFileSignal(n_ok);
-//            ++n_ok;
-//        }
-//        emit importFinishedSignal(n_ok, fileList.size() - n_ok);
-//    }
-//signals:
-//    void importFinishedSignal(int, int);
-//    void importedOneFileSignal(int);
-//    void importFileErrorSignal(int);
-//    void importHandledSignal(int);
-//};
-
 namespace Ui {
 class MainWindow;
 }

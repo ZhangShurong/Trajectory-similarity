@@ -632,11 +632,6 @@ void MainWindow::initSig()
     connect(ui->searchToolButton, SIGNAL(clicked()), this, SLOT(on_searchToolButton_clicked()));
     connect(ui->calToolButton, SIGNAL(clicked()), this, SLOT(on_calToolButton_clicked()));
 
-//    connect(&importThread, SIGNAL(finished()), importProgressDialog, SLOT(hide()));
-//    connect(&importThread, SIGNAL(importHandledSignal(int)),
-//            importProgressDialog, SLOT(setValue(int)));
-//    connect(importProgressDialog, SIGNAL(canceled()),
-//            &importThread, SLOT(quit()));
 }
 
 void MainWindow::initCan()

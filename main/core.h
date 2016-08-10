@@ -67,4 +67,10 @@ int getZoom(Sequence seq_a);
 int calZoomCoef(double res);
 double modHausDist(Sequence*, Sequence*);
 void clusterAgglomerartive(Sequence *seqs, int len);
+int hardCluster(Sequence * q,double minLongtitude,
+                double maxLongtitude,
+                double minLatitude,
+                double maxLatitude,
+                int depth);
+bool compareType(QString input_type,QString type);
 #endif // CORE_H

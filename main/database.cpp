@@ -2,6 +2,7 @@
 #include "database.h"
 #include <QtCore/QCoreApplication>
 #include <QtSql>
+#include "core.h"
 
 DataBase::DataBase()
 {
@@ -107,6 +108,76 @@ string DataBase::insertData(Csv *csv, string tbName)
         start = query.value(0).toString();
     }
 
+
+    Sequence *temp = new Sequence();
+    getSquFromFile(csv,temp);
+    if(!temp->hasTime())
+    {
+        for (int i = 0; i < temp->pointsNum; i++)
+        {
+            insert = "insert into " + tableName +
+                     " values ('','POINT(" +
+                    QString::number(temp->pts[i].longitude) + " " +
+                    QString::number(temp->pts[i].latitude) + " " +
+                    ")',NULL,NULL,NULL);";
+            q.exec(insert);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < temp->pointsNum; i++)
+        {
+            insert = "insert into " + tableName +
+                     " values ('','POINT(" +
+                    QString::number(temp->pts[i].longitude) + " " +
+                    QString::number(temp->pts[i].latitude) + " " +
+                    ")',"+
+                    temp->pts->time+
+                    ",NULL,NULL);";
+            q.exec(insert);
+        }
+    }
+    query.exec("select max(id) from "+tableName);
+    while (query.next()) {
+        end = query.value(0).toString();
+    }
+    //------------------------//
+/*
+    double minLongtitude = 73;
+    double maxLongtitude = 136;
+    double minLatitude = 3;
+    double maxLatitude = 54;
+    QString tid = (start+"_"+end);
+    insert = "insert into "
+             + tableName
+             + " values ("
+             + "'"
+             + tid
+             + "'"
+             + ",NULL,NULL,NULL,"
+             + QString::number(hardCluster(temp, minLongtitude,
+                           maxLongtitude,
+                           minLatitude,
+                           maxLatitude,
+                           6
+                           ))
+             + ");";
+*/
+    QString tid = (start+"_"+end);
+    insert = "insert into "
+             + tableName
+             + " values ("
+             + "'"
+             + tid
+             + "'"
+             + ",NULL,NULL,NULL,"
+             + temp->getType()
+             + ");";
+    query.exec(insert);
+ //   db.commit();
+    return tid.toStdString();
+
+/*
     while (csv->getline(line) != 0) {
         if (line.empty())
         {
@@ -169,117 +240,9 @@ string DataBase::insertData(Csv *csv, string tbName)
     query.exec(insert);
  //   db.commit();
     return tid.toStdString();
+   */
 }
 
-//string DataBase::insertData(Sequence *seq_a, string tbName)
-//{
-//    QSqlQuery q;
-//    QString insert;
-//    QString tableName = QString::fromStdString(tbName);
-
-
-//    if (!isTableExist(tbName))
-//    {
-//        createTable(tbName);
-//    }
-//    QSqlQuery query;
-//    QString start;
-//    QString end;
-
-//    if (getRecordNum(tableName.toStdString()) == 0)
-//    {
-//        query.exec("insert into " + tableName
-//                   + " values('',NULL,NULL,NULL);");
-//    }
-//    query.exec("select max(id) from "+tableName+";");
-//    if(query.next()) {
-//        start = query.value(0).toString();
-//    }
-//   // QVector<Point> t;
-//    for(int i = 0; i < seq_a->getNum();i++)
-//    {
-//   //     t.append(seq_a->pts[i]);
-//        if(seq_a->hasTime())
-//        {
-//            insert = "insert into " + tableName
-//                    + " values ('','POINT("
-//                    + QString::number((seq_a->pts[i]).longitude)
-//                    + " "
-//                    + QString::number((seq_a->pts[i]).latitude)
-//                    + " )','"
-//                    + (seq_a->pts[i]).time
-//                    + "',NULL);";
-//        }
-//        else
-//        {
-//            insert = "insert into " + tableName +
-//                     " values ('','POINT("
-//                    + QString::number(seq_a->pts[i].longitude)
-//                    + " "
-//                    + QString::number(seq_a->pts[i].latitude)
-//                    + " )',NULL,NULL);";
-//        }
-//        q.exec(insert);
-
-//    }
-//    /*
-//    while (csv->getline(line) != 0) {
-//        if (line.empty())
-//        {
-//            continue;
-//        }
-//        const char *t = line.c_str();
-//        if (Csv::notStdAscii(t[0]))
-//            continue;
-//        insert = "insert into " + tableName +
-//                 " values ('','POINT(";
-//        int j = csv->getnfield();
-//        if (j == 2)
-//        {
-//            for (int i = 0; i < j; i++)
-//            {
-//                insert += QString::fromStdString(csv->getfield(i)) + " ";
-//                //qDebug() << QString::fromStdString(csv->getfield(i)) << "\n";
-//            }
-//            insert += ")',NULL,NULL);";
-
-//        }
-//        else if (j==3)
-//        {
-//            for (int i = 0; i < 2; i++)
-//            {
-//                insert += QString::fromStdString(csv->getfield(i)) + " ";
-//            }
-//            insert = insert + ")','"
-//                     + QString::fromStdString(csv->getfield(2))
-//                     +"',NULL);";
-//        }
-//        else
-//        {
-//            fprintf(stderr, "Format wrong\n");
-//            return NULL;
-//        }
-//        q.exec(insert);
-//    }
-//    */
-//    query.exec("select max(id) from "+tableName);
-//    while (query.next()) {
-//        end = query.value(0).toString();
-//    }
-//    //------------------------//
-//    QString tid = (start+"_"+end);
-//    insert = "insert into "
-//             + tableName
-//             + " values ("
-//             + "'"
-//             + tid
-//             + "'"
-//             + ",NULL,NULL,NULL);";
-
-//    //------------------------//
-//    query.exec(insert);
-//    return tid.toStdString();
-//}
 
 void DataBase::getSequenceByID(string tableName, Sequence *squ, string ID)
 {
@@ -314,6 +277,15 @@ void DataBase::getSequenceByID(string tableName, Sequence *squ, string ID)
     squ->setPtNum(l);
     squ->setPoints(temp);
     squ->setID(QString::fromStdString(ID));
+    query.exec("SELECT type from "
+               + QString::fromStdString(tableName)
+               +" where tid = '"
+               +QString::fromStdString(ID)
+               +"';"
+              );
+    query.next();
+    QString type = query.value(0).toString();
+    squ->setType(type);
     //qDebug() << squ->getNum();
 }
 
@@ -355,7 +327,7 @@ int DataBase::getRecordNum(string tableName)
 void DataBase::createTable(string tableName)
 {
     QSqlQuery query;
-    query.exec("create table "+QString::fromStdString(tableName)+"(tid varchar,pt varchar,time datetime,id integer primary key)");
+    query.exec("create table "+QString::fromStdString(tableName)+"(tid varchar,pt varchar,time datetime,id integer primary key, type int)");
 }
 
 Sequence * DataBase::getNSequences(int &n, string tableName)
