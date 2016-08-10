@@ -86,7 +86,6 @@ string DataBase::insertData(Csv *csv, string tbName)
     QSqlQuery q;
     QString insert;
     QString tableName = QString::fromStdString(tbName);
-    string line;
 
 //    db.transaction();
 
@@ -131,9 +130,10 @@ string DataBase::insertData(Csv *csv, string tbName)
                      " values ('','POINT(" +
                     QString::number(temp->pts[i].longitude) + " " +
                     QString::number(temp->pts[i].latitude) + " " +
-                    ")',"+
-                    temp->pts->time+
-                    ",NULL,NULL);";
+                    ")','"+
+                     temp->pts->time+
+                    "',NULL,NULL);";
+
             q.exec(insert);
         }
     }

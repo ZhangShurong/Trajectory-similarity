@@ -534,7 +534,7 @@ color:white;
        <string notr="true">font-family:'微软雅黑';</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
