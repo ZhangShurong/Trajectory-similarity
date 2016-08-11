@@ -6,6 +6,7 @@ Makefile
 importData
 *.user
 *.pro.user
+*.pro.user.*
 *.orig
 
 
