@@ -2,6 +2,9 @@
 #define CLUSTERDEMO_H
 
 #include <QWidget>
+#include "sequence.h"
+#include "core.h"
+
 typedef struct Line{
     QPoint startPnt;
     QPoint endPnt;
@@ -10,10 +13,10 @@ class ClusterDemo : public QWidget
 {
 public:
     explicit ClusterDemo(QWidget *parent = 0);
-    void paintEvent(QPaintEvent) Q_DECL_OVERRIDE;
+    void paintEvent(QPaintEvent *p) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
-    void mouseReleaseEvent(QMouseEvent) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
     ~ClusterDemo();
 private:
     QPoint startPnt;   //起点

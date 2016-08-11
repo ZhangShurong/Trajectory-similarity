@@ -5,4 +5,7 @@ ui_mainwindow.h
 Makefile
 importData
 *.user
+*.pro.user
+*.orig
+
 

@@ -11,7 +11,7 @@ ClusterDemo::ClusterDemo(QWidget *parent) : QWidget(parent)
     this->isPressed = false;
 }
 
-void ClusterDemo::paintEvent(QPaintEvent /**p*/)
+void ClusterDemo::paintEvent(QPaintEvent *p)
 {
     QPainter painter(this);
     QPen pen;                                 //创建一个画笔
@@ -55,7 +55,7 @@ void ClusterDemo::mouseMoveEvent(QMouseEvent *e)
     }
 }
 
-void ClusterDemo::mouseReleaseEvent(QMouseEvent)
+void ClusterDemo::mouseReleaseEvent(QMouseEvent *e)
 {
     setCursor(Qt::ArrowCursor);
     this->isPressed = false;

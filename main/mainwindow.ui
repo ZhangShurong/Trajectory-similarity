@@ -2084,16 +2084,11 @@ p, li { white-space: pre-wrap; }
        </layout>
       </widget>
       <widget class="QWidget" name="page_19">
-       <widget class="ClusterDemo" name="clusterdemo" native="true">
-        <property name="geometry">
-         <rect>
-          <x>190</x>
-          <y>20</y>
-          <width>801</width>
-          <height>561</height>
-         </rect>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_56">
+        <item>
+         <widget class="ClusterDemo" name="clusterdemo" native="true"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
