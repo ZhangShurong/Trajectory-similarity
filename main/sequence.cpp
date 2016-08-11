@@ -41,9 +41,11 @@ void Sequence::clear()
     if (pointsNum != 0)
     {
         delete[] pts;
-        Point *temp = new Point[initSize];
-        pts = temp;
+        seek = 0;
+        id = "";
         pointsNum = 0;
+        initSize = 15;
+        pts = new Point[initSize];
     }
 }
 

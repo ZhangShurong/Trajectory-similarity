@@ -940,37 +940,6 @@ void clusterAgglomerartive(Sequence *seqs, int len)
             qDebug() << clusters.at(i).at(j);
         }
     }
-    /*
-     *
-        while len(clusters) > cn:
-            affMat = np.zeros((len(clusters), len(clusters)))
-            for r in range(affMat.shape[0] - 1):
-                for c in range(r + 1, affMat.shape[1]):
-                    ## count inter-cluster average distance
-                    dist = 0
-
-                    for t1idx in clusters[r]:
-                        for t2idx in clusters[c]:
-                            # distance of trajectory t1 (t1 in tA) and trajectory t2 (t2 in tB)
-                            dist += 1 / ((self.distMat[t1idx, t2idx] * self.distMat[t2idx, t1idx]) + 1e-6)
-
-                    dist *= 1.0 / (len(clusters[r]) * len(clusters[c]))
-                    affMat[r, c] = dist
-
-            # Find two closest clusters and merge them
-            # First trajectory is given by row index, second trajectory is given by column index of affinity matrix
-            t1idx = np.argmax(affMat) / affMat.shape[1]
-            t2idx = np.argmax(affMat) % affMat.shape[0]
-
-            clusters[t1idx].extend(clusters[t2idx])
-            clusters = [clusters[i] for i in range(len(clusters)) if i != t2idx]
-
-        # Assign an estimated cluster index to each trajectory
-        for i in range(len(clusters)):
-            for j in clusters[i]:
-                self.trajectories[j].setClusterIdx(i)
-     */
-
 }
 /*
  * 矩形按照如下方式递归分割
@@ -1126,4 +1095,147 @@ bool compareType(QString input_type, QString type)
         return true;
     }
     return false;
+}
+
+void normalize(Sequence &se)
+{
+    if(se.getMaxX() == se.getMinX())
+    {
+        double midLong = 0.5 * (MAXLONG - MINLONG);
+        for(int i = 0; i < se.pointsNum; i++)
+        {
+            se.pts[i].longitude = midLong;
+        }
+    }
+    else
+    {
+        double k = (MAXLONG - MINLONG)/(se.getMaxX() - se.getMinX());
+        double b = MINLONG - k*se.getMinX();
+        for(int i = 0; i < se.pointsNum; i++)
+        {
+            se.pts[i].longitude = k*se.pts[i].longitude + b;
+        }
+    }
+    if(se.getMaxY() == se.getMinY())
+    {
+        double midLa = 0.5 * (MAXLA - MINLA);
+        for(int i = 0; i < se.pointsNum; i++)
+        {
+            se.pts[i].latitude = midLa;
+        }
+    }
+    else
+    {
+
+        double k = (MAXLA - MINLA)/(se.getMaxY() - se.getMinY());
+        double b = MINLA - k*se.getMinY();
+        for(int i = 0; i < se.pointsNum; i++)
+        {
+            se.pts[i].latitude = k*se.pts[i].latitude + b;
+        }
+    }
+}
+
+vector<int> clusterAgglomerartive(vector<Sequence> seqs)
+{
+    int len = seqs.size();
+    double distMat[len][len];
+    for(int i = 0; i < len; i++)
+    {
+        for(int j = 0; j < len; j++)
+        {
+            distMat[i][j] = 1;
+            double dist = modHausDist(&seqs[i], &seqs[j]);
+            distMat[i][j] = dist;
+            //std::cout  << distMat[i][j] << "\t";
+        }
+       // std::cout << std::endl;
+    }
+
+    vector<vector<int> > clusters;
+    for(int i = 0;i < len; i++)
+    {
+        vector<int> temp;
+        temp.push_back(i);
+        clusters.push_back(temp);
+    }
+    int size = len;
+    int cn=3;
+    while(size > cn)
+    {
+        double affMat[size][size];
+        //TODO 可以用mp加速
+       for(int x = 0; x < size; x++)
+       {
+           for(int y = 0; y < size; y++)
+           {
+               affMat[x][y] = 0;
+           }
+       }
+        for(int r = 0; r < size - 1; r++)
+        {
+            for(int c = r+1; c < size; c++)
+            {
+                double dist = 0;
+                vector<int> temp1 = clusters.at(r);
+                vector<int> temp2 = clusters.at(c);
+                for(int i = 0; i < temp1.size();i++)
+                {
+                    int t1idx = temp1.at(i);
+                    for(int j = 0; j < temp2.size();j++)
+                    {
+                        int t2idx = temp2.at(j);
+                        dist += 1 / ((distMat[t1idx][t2idx] * distMat[t2idx][t1idx]) + 0.000006);
+                    }
+                }
+                dist *= 1.0 / (temp1.size() * temp2.size());
+                affMat[r][c] = dist;
+            }
+        }
+        double init = -1;
+        int t1idx = -1;
+        int t2idx = -1;
+        for(int i = 0; i < size; i ++)
+        {
+            for(int j = 0; j < size; j++)
+            {
+                if(affMat[i][j] > init)
+                {
+                    init = affMat[i][j];
+                    t1idx = i;
+                    t2idx = j;
+                }
+            }
+        }
+        for (uint i = 0; i < clusters.at(t2idx).size(); i++)
+        {
+            if(t1idx == t2idx)
+                continue;
+            clusters.at(t1idx).push_back(clusters.at(t2idx).at(i));
+        }
+        vector<vector<int> >temp;
+        for (int i = 0; i < clusters.size(); i++)
+        {
+            if(i != t2idx)
+                temp.push_back(clusters.at(i));
+        }
+        clusters = temp;
+        size = clusters.size();
+        //clusters[t1idx].extend(clusters[t2idx]);
+        //clusters = [clusters[i] for i in range(len(clusters)) if i != t2idx];
+
+    }
+    vector<int> res;
+    for(int i = 0; i < seqs.size();i++)
+    {
+        res.push_back(-1);
+    }
+    for(int i = 0; i < clusters.size();i++)
+    {
+        for(int j = 0; j< clusters.at(i).size(); j++)
+        {
+            res.at(clusters.at(i).at(j)) = i;
+        }
+    }
+    return res;
 }

@@ -22,6 +22,11 @@
 #include "sequence.h"
 #include "csv.h"
 
+#define MINLONG 73
+#define MAXLONG 136
+#define MINLA 3
+#define MAXLA 54
+
 struct PointCompare{
   int index1;
   int index2;
@@ -67,10 +72,12 @@ int getZoom(Sequence seq_a);
 int calZoomCoef(double res);
 double modHausDist(Sequence*, Sequence*);
 void clusterAgglomerartive(Sequence *seqs, int len);
+vector<int> clusterAgglomerartive(vector<Sequence> seqs);
 int hardCluster(Sequence * q,double minLongtitude,
                 double maxLongtitude,
                 double minLatitude,
                 double maxLatitude,
                 int depth);
 bool compareType(QString input_type,QString type);
+void normalize(Sequence &se);
 #endif // CORE_H

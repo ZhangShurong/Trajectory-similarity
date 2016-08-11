@@ -8,7 +8,11 @@
 ClusterDemo::ClusterDemo(QWidget *parent) : QWidget(parent)
 {
     this->setMouseTracking(true);
+    this->setFocusPolicy(Qt::StrongFocus);
     this->isPressed = false;
+    this->pointsNum = 0;
+    this->index = 0;
+    this->clustered = false;
 }
 
 void ClusterDemo::paintEvent(QPaintEvent *p)
@@ -23,23 +27,48 @@ void ClusterDemo::paintEvent(QPaintEvent *p)
     for(uint i = 0;i<lines.size();i++){
         Line pLine = lines[i];
         painter.drawLine(pLine.startPnt,pLine.endPnt);
-        if(i%10 == 0)
+    }
+    for(uint i = 0; i < points.size(); i++)
+    {
+        pen.setWidth(10);
+        painter.setPen(pen);
+        painter.drawPoint(points[i]);
+    }
+    if(clustered)
+    {
+        for(uint i = 0; i < sequences.size(); i++)
         {
             pen.setWidth(10);
+            if(res.at(i) == 0)
+            {
+                pen.setColor(Qt::red);
+            }
+            else if(res.at(i) == 2)
+            {
+                pen.setColor(Qt::blue);
+            }
+            else
+            {
+                pen.setColor(Qt::yellow);
+            }
             painter.setPen(pen);
-            painter.drawPoint(pLine.startPnt);
-            pen.setWidth(5);
-            painter.setPen(pen);
+            for(int j = 0; j < sequences.at(i).pointsNum; j++)
+            {
+                painter.drawPoint(sequences.at(i).pts[j].longitude,sequences.at(i).pts[j].latitude);
+            }
         }
     }
 }
 
 void ClusterDemo::mousePressEvent(QMouseEvent *e)
 {
+    clustered = false;
     setCursor(Qt::PointingHandCursor);
     startPnt = e->pos();
     endPnt = e->pos();
     this->isPressed = true;
+    this->pointsNum ++;
+    points.push_back(startPnt);
 }
 
 void ClusterDemo::mouseMoveEvent(QMouseEvent *e)
@@ -52,17 +81,64 @@ void ClusterDemo::mouseMoveEvent(QMouseEvent *e)
         this->lines.push_back(line);
         update();                                    //repainter，call paintEvent
         startPnt = endPnt;
+        pointsNum ++;
+        if(pointsNum %5 == 0)
+        {
+            points.push_back(startPnt);
+        }
     }
 }
 
 void ClusterDemo::mouseReleaseEvent(QMouseEvent *e)
 {
+    points.push_back(startPnt);
     setCursor(Qt::ArrowCursor);
     this->isPressed = false;
+    update();
+
+    Sequence t;
+    for(int i = index; i < points.size(); i++)
+    {
+        t.appendPt(new Point(points[i].x(), points[i].y()));
+    }
+    index = points.size();
+    sequences.push_back(t);
+}
+
+void ClusterDemo::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key()==Qt::Key_R)
+    {
+        reset();
+    }
+    if(e->key()==Qt::Key_A)
+    {
+        cluster();
+    }
 }
 
 ClusterDemo::~ClusterDemo()
 {
+
+}
+
+void ClusterDemo::reset()
+{
+    points.clear();
+    sequences.clear();
+    lines.clear();
+    update();
+}
+
+void ClusterDemo::cluster()
+{
+    if(sequences.size() != 0)
+    {
+        res = clusterAgglomerartive(sequences);
+        qDebug() << res.size();
+        clustered = true;
+        update();
+    }
 
 }
 
