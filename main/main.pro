@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     lcmwidget.cpp \
     netstatindicator.cpp \
     partdetail.cpp \
-    pointdetail.cpp
+    pointdetail.cpp \
+    clusterdemo.cpp
 
 HEADERS += \
     csv.h \
@@ -47,7 +48,8 @@ HEADERS += \
     lcmwidget.h \
     netstatindicator.h \
     partdetail.h \
-    pointdetail.h
+    pointdetail.h \
+    clusterdemo.h
 
 RESOURCES += \
     res.qrc \

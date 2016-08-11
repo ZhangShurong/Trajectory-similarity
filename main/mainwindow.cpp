@@ -211,6 +211,11 @@ void MainWindow::on_gjToolButton_clicked()
     this->setStackCurrentPage(7);
 }
 
+void MainWindow::on_clusterToolButton_clicked()
+{
+    this->setStackCurrentPage(8);
+}
+
 void MainWindow::openFile()
 {
     QString file_name = QFileDialog::getOpenFileName(this,
@@ -631,7 +636,7 @@ void MainWindow::initSig()
     connect(ui->deleteBtn, SIGNAL(clicked()), this, SLOT(deleteOneAct()));
     connect(ui->searchToolButton, SIGNAL(clicked()), this, SLOT(on_searchToolButton_clicked()));
     connect(ui->calToolButton, SIGNAL(clicked()), this, SLOT(on_calToolButton_clicked()));
-
+    connect(ui->clusterBtn,SIGNAL(clicked()), this,SLOT(on_clusterToolButton_clicked()));
 }
 
 void MainWindow::initCan()

@@ -76,6 +76,7 @@ private slots:
     void on_exToolButton_clicked();
     void aboutButton_clicked();
     void on_gjToolButton_clicked();
+    void on_clusterToolButton_clicked();
     void openFile();
     void showMap();
     void about();
