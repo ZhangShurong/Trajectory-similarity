@@ -6,13 +6,15 @@
 
 QT       += core sql gui widgets webkitwidgets printsupport network
 
-TARGET = importData
+TARGET = main
 
 TEMPLATE = app
 
 QMAKE_CXXFLAGS += -fopenmp
 
 LIBS += -lgomp -lpthread
+
+INCLUDEPATH += ./ThirdParty/eigen/Eigen
 
 SOURCES += main.cpp \
     csv.cpp \
@@ -66,3 +68,5 @@ DISTFILES += \
     Readme.txt
 
 RC_FILE = safe.rc
+
+

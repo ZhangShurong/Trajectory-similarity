@@ -4,6 +4,7 @@
 #include <QtAlgorithms>
 #include <time.h>
 #include <calwindow.h>
+#include <Eigen>
 
 using namespace std;
 double **mem = NULL;
@@ -1239,10 +1240,9 @@ vector<int> clusterAgglomerartive(vector<Sequence> seqs)
     }
     return res;
 }
-void clusterSpectral(vector<Sequence> trajectories)
+void clusterSpectral()
 {
-    int len = seqs.size();
-
+    int len = 5;
     //createDistanceMatrix()
     double rowSortedDistMat[len][len];
     double distMat[len][len];
@@ -1252,17 +1252,20 @@ void clusterSpectral(vector<Sequence> trajectories)
         for(int j = 0; j < len; j++)
         {
             distMat[i][j] = 1;
-            double dist = modHausDist(&seqs[i], &seqs[j]);
+            double dist = i+j;
             distMat[i][j] = dist;
+            rowSortedDistMat[i][j] = dist;
             K[i][j] = 0;
         }
     }
+
     //createStdDevs()
     //rowSortedDistMat.sort(axis = 1)
     for(int i = 0; i < len; i++)
     {
-        std::sort(rowSortedDistMat[i],len + rowSortedDistMat[i]);
+        std::sort(rowSortedDistMat[i],rowSortedDistMat[i]+len);
     }
+
     //FIXME stdNN = 2????
     //self.stdDevs = rowSortedDistMat[:, min(self.stdNN, rowSortedDistMat.shape[1] - 1)]
     int stdNN = 2;
@@ -1271,6 +1274,7 @@ void clusterSpectral(vector<Sequence> trajectories)
     for(int i = 0;i < len; i++)
     {
         stdDev[i] = rowSortedDistMat[i][t];
+        std::cout << stdDev[i] << ", ";
     }
     /*
      *         for i in range(len(self.stdDevs)):
@@ -1281,7 +1285,9 @@ void clusterSpectral(vector<Sequence> trajectories)
     for(int i = 0; i < len;i++)
     {
         stdDev[i] = std::max(stdMin, std::min(stdMax,stdDev[i]));
+
     }
+    std::cout << std::endl;
 
     // Compute affinity matrix
     //std::exp( -(distMat[r][c] * distMat[r][c]) / (2 * stdDev(r) * stdDev(c)));
@@ -1289,7 +1295,7 @@ void clusterSpectral(vector<Sequence> trajectories)
     {
         for(int c = 0; c < len; c++)
         {
-            K[r][c] = std::exp( -(distMat[r][c] * distMat[r][c]) / (2 * stdDev(r) * stdDev(c)));
+            K[r][c] = std::exp( -(distMat[r][c] * distMat[r][c]) / (2 * stdDev[r] * stdDev[c]));
         }
     }
     //W = np.diag(1.0 / np.sqrt(np.sum(K, 1)))
@@ -1304,6 +1310,7 @@ void clusterSpectral(vector<Sequence> trajectories)
         }
         W[i][i] = 1/std::sqrt(sum);
     }
+
 
     //# Normalized affinity matrix
     //L = np.dot(np.dot(W, K), W)
@@ -1324,7 +1331,8 @@ void clusterSpectral(vector<Sequence> trajectories)
         }
     }
     //temp.*W
-    double L[len][len];
+    Eigen::MatrixXd L(len,len);
+    //double L[len][len];
     for(int i = 0; i < len;i++)
     {
         for(int j = 0; j< len;j++)
@@ -1334,11 +1342,37 @@ void clusterSpectral(vector<Sequence> trajectories)
             {
                 sum += temp[i][k] * W[k][j];
             }
-            L[i][j] = sum;
+            L(i,j) = sum;
+        }
+    }
+    std::cout <<"L:-----------------------------\n";
+    std::cout<< L << std::endl;
+
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigenSolver(L);
+    Eigen::MatrixXd eigenvalue(len,1);
+    Eigen::MatrixXd eigenvectors(len,len);
+    if (eigenSolver.info() == Eigen::Success) {
+        eigenvalue = eigenSolver.eigenvalues();
+        std::cout << "eigenvalues:\n" << eigenvalue << std::endl;
+        eigenvectors = eigenSolver.eigenvectors();
+        std::cout << "eigenvectors:\n"<< eigenvectors << std::endl;
+    }
+
+    double gMin = 0;
+    double gMax = 0;
+    for(int i = 0; i < len; i++)
+    {
+        if(eigenvalue(i) > 0.8)
+        {
+            gMax += 1;
+        }
+        if(eigenvalue(i) > 0.99)
+        {
+            gMin += 1;
         }
     }
 
 
-
-
+    int clusters = -1;
+    int g = clusters;
 }

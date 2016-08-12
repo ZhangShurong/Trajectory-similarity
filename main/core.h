@@ -80,4 +80,5 @@ int hardCluster(Sequence * q,double minLongtitude,
                 int depth);
 bool compareType(QString input_type,QString type);
 void normalize(Sequence &se);
+void clusterSpectral();
 #endif // CORE_H
