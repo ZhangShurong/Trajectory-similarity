@@ -14,8 +14,6 @@ QMAKE_CXXFLAGS += -fopenmp
 
 LIBS += -lgomp -lpthread
 
-INCLUDEPATH += ./ThirdParty/eigen/Eigen
-
 SOURCES += main.cpp \
     csv.cpp \
     database.cpp \

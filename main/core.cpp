@@ -4,7 +4,7 @@
 #include <QtAlgorithms>
 #include <time.h>
 #include <calwindow.h>
-#include <Eigen>
+#include "ThirdParty/Eigen/Eigen"
 
 using namespace std;
 double **mem = NULL;
