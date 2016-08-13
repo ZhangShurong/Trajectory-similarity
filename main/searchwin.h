@@ -39,9 +39,12 @@ public:
     void refreshTable();
     void setNumOfSeqs(int num);
     void init();
+    void initWithOutClear();
     void clearInput();
+    void loadIntoMem();
     QVector<Sequence> getCurrentSeq();
     ~SearchWin();
+
 private:
     Ui::MainWindow *ui;
     Sequence *input;
@@ -75,6 +78,7 @@ private:
 */
     QStringList *tracs;
     QStringList coincide;//专门存储轨迹id
+    QProgressDialog *pro;
 
     void initTable(QTableWidget *table);
     void initSeqPartTable(QTableWidget *table);
@@ -98,7 +102,7 @@ private:
     void drawNewSeq();
 
     void searchPoint();
-    void loadIntoMem();
+
 
     void searchSelectedSeqs();
 
@@ -114,5 +118,4 @@ public slots:
     void rankSeqClicked();
     void rankSeqPointClicked();
 };
-
 #endif // SEARCHWIN_H

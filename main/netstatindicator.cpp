@@ -43,7 +43,7 @@ QString NetStatIndicator::toHumanSpeed(double speed)
 
 QString NetStatIndicator::toDescription(double speed)
 {
-    const double ok_threshold = 5 * 1024;
+    const double ok_threshold = 15 * 1024;
     const double good_threshold = 100 * 1024;
 
     if (speed < ok_threshold) {
@@ -89,15 +89,8 @@ void NetStatIndicator::alertProperly()
     if (!this->alerted) {
         this->netspeedLabel->setText(tr("0 B/s"));
         this->netStatLabel->setText(tr("网络断开"));
-#if 0
-        QMessageBox::information(this, tr("网络连接中断"),
-                                 tr("网络状态差，地图可能无法正确绘制！"),
-                                 QMessageBox::Yes);
-#else
-    QString styleStr = tr("QLabel { color : red; }");
-    /** Ui part **/
-    this->netspeedLabel->setStyleSheet(styleStr);
-#endif
+//        QMessageBox::information(this, tr("网络连接中断"),
+//                             tr("网络状态差，地图可能无法正确绘制！"), QMessageBox::Yes);
         alerted = true;
     }
 }

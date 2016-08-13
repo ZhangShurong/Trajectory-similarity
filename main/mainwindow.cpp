@@ -34,12 +34,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->searchMap->setJs("./html/search.js");
 
 
+    showedInMap=false;
+
     initMap();
     initAction();
-    initTable();
+
     // initCSS();
     initSig();
+
     initCan();
+    initTable();
 
 //    searchWin->setDB(db);
     searchMode(false);
@@ -166,7 +170,9 @@ void MainWindow::on_searchToolButton_clicked()
 
 void MainWindow::on_checkToolButton_2_clicked()
 {
-    refreshTable();
+    if(!showedInMap){
+       refreshTable();
+    }
     searchMode(false);
     this->setStackCurrentPage(0);
 }
@@ -209,11 +215,6 @@ void MainWindow::aboutButton_clicked()
 void MainWindow::on_gjToolButton_clicked()
 {
     this->setStackCurrentPage(7);
-}
-
-void MainWindow::on_clusterToolButton_clicked()
-{
-    this->setStackCurrentPage(8);
 }
 
 void MainWindow::openFile()
@@ -349,9 +350,13 @@ void MainWindow::openFilesSlot()
     int c=0;
    // importProgressDialog.setValue(1);
     db->db.transaction();
+    string fileName;
+//    ifstream fin2;
+//    Csv format;
+
     for (int i = 0; i < fileNames.length(); i++)
         {
-            string fileName = fileNames[i].toLocal8Bit().data();
+            fileName = fileNames[i].toLocal8Bit().data();
             ifstream fin2(fileName.c_str());
             Csv format(fin2);
 
@@ -366,9 +371,9 @@ void MainWindow::openFilesSlot()
                 break;
             }
             importProgressDialog.setValue(i);
-            refreshTable();
         }
         db->db.commit();
+        refreshTable();
         importProgressDialog.setValue(fileNames.length());
         importFinished(c,fileNames.length()-c);
 }
@@ -410,6 +415,14 @@ void MainWindow::deleteOneAct()
 
 void MainWindow::searchSlot_R()
 {
+    progress = new QProgressDialog(tr("正在计算轨迹数据，请稍候..."), tr("取消"),
+                                                       0,tracs->length(),this);
+
+    progress->setWindowModality(Qt::WindowModal);
+    progress->setWindowTitle(tr("Please Wait"));
+   // progress->setLabelText(tr("processing , please wait..."));
+    progress->show();
+    qApp->processEvents();
     selectedSeqS= getCurrentSeqs();
     if (selectedSeqS.length() == 0) {
         return;
@@ -468,6 +481,7 @@ void MainWindow::goBackSlot()
 
 void MainWindow::showInMap()
 {
+    showedInMap=true;
     showInMapSlot_R();
     /*
     ui->mapWin->initJS();
@@ -553,6 +567,7 @@ void MainWindow::initCSS()
 
 void MainWindow::initTable()
 {
+
     ui->mainTable->horizontalHeader()->setStretchLastSection(true);
     ui->mainTable->setContextMenuPolicy(Qt::ActionsContextMenu);
     ui->mainTable->addAction(deleteAct);
@@ -636,7 +651,7 @@ void MainWindow::initSig()
     connect(ui->deleteBtn, SIGNAL(clicked()), this, SLOT(deleteOneAct()));
     connect(ui->searchToolButton, SIGNAL(clicked()), this, SLOT(on_searchToolButton_clicked()));
     connect(ui->calToolButton, SIGNAL(clicked()), this, SLOT(on_calToolButton_clicked()));
-    connect(ui->clusterBtn,SIGNAL(clicked()), this,SLOT(on_clusterToolButton_clicked()));
+
 }
 
 void MainWindow::initCan()
@@ -663,6 +678,7 @@ void MainWindow::initSearchWin()
 
 void MainWindow::search(Sequence input)
 {
+
     this->input = input;
     if(input.getNum() == 0) {
         return;
@@ -680,8 +696,13 @@ void MainWindow::search(Sequence input)
     int beginMin2=0;
     */
 
+    QTableWidgetItem *tItem;
     for (int i = 0; i < tracs->length(); i++) {
-        QTableWidgetItem *tItem = new QTableWidgetItem();
+        progress->setValue(i);
+        if (progress->wasCanceled()) {
+            break;
+        }
+        tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
         dfDis = computeDiscreteFrechet(&input,&sf);
 
@@ -691,9 +712,11 @@ void MainWindow::search(Sequence input)
         ui->mainTable->setItem(i,2,tItem);
         if (dfDis >= maxDis)
             maxDis = dfDis;
+
     }
     //填充百分数
     for (int i = 0; i < tracs->length(); i++) {
+
         QString temp = ui->mainTable->item(i,2)->text();
         dfDis = temp.toDouble();
         double percent = ((maxDis - dfDis)/maxDis)*100;
@@ -706,10 +729,11 @@ void MainWindow::search(Sequence input)
                            QString::number(percent) + "%");
         }
 
-        ui->mainTable->setItem(i,3,tItem);
+        ui->mainTable->setItem(i,3,tItem);    
     }
 
     ui->mainTable->sortItems(2,Qt::AscendingOrder);
+    progress->setValue(tracs->length());
 }
 
 void MainWindow::initMap()

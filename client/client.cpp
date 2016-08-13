@@ -2,6 +2,7 @@
 #include <iostream>
 #include <QHostAddress>
 #include <QObject>
+#include <QDataStream>
 
 Client::Client()
 {

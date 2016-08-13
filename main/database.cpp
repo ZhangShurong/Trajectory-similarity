@@ -110,15 +110,35 @@ string DataBase::insertData(Csv *csv, string tbName)
 
     Sequence *temp = new Sequence();
     getSquFromFile(csv,temp);
+    char  buffer1[200];
+    char  buffer2[200];
+    QString str1;
+    QString str2;
     if(!temp->hasTime())
     {
         for (int i = 0; i < temp->pointsNum; i++)
         {
+
+            sprintf(buffer1,"%.6lf",temp->pts[i].longitude);
+            sprintf(buffer2,"%.6lf",temp->pts[i].latitude);
+            str1 = QString(QLatin1String(buffer1));
+            str2 = QString(QLatin1String(buffer2));
             insert = "insert into " + tableName +
                      " values ('','POINT(" +
-                    QString::number(temp->pts[i].longitude) + " " +
-                    QString::number(temp->pts[i].latitude) + " " +
+                    str1 + " " +
+                    str2 + " " +
                     ")',NULL,NULL,NULL);";
+//            insert = "insert into " + tableName +
+//                     " values ('','POINT(" +
+//                    QString::number(temp->pts[i].longitude) + " " +
+//                    QString::number(temp->pts[i].latitude) + " " +
+//                    ")',NULL,NULL,NULL);";
+//            string insert1 = "insert into " + tableName +
+//                     " values ('','POINT(" +
+//                    temp->pts[i].longitude + " " +
+//                    number(temp->pts[i].latitude+ " " +
+//                    ")',NULL,NULL,NULL);";
+//            insert=QString::fromStdString(insert1);
             q.exec(insert);
         }
     }
@@ -126,10 +146,14 @@ string DataBase::insertData(Csv *csv, string tbName)
     {
         for (int i = 0; i < temp->pointsNum; i++)
         {
+            sprintf(buffer1,"%.6lf",temp->pts[i].longitude);
+            sprintf(buffer2,"%.6lf",temp->pts[i].latitude);
+            str1 = QString(QLatin1String(buffer1));
+            str2 = QString(QLatin1String(buffer2));
             insert = "insert into " + tableName +
                      " values ('','POINT(" +
-                    QString::number(temp->pts[i].longitude) + " " +
-                    QString::number(temp->pts[i].latitude) + " " +
+                    str1 + " " +
+                    str2 + " " +
                     ")','"+
                      temp->pts->time+
                     "',NULL,NULL);";

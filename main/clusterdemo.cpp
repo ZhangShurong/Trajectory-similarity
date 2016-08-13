@@ -124,6 +124,10 @@ ClusterDemo::~ClusterDemo()
 
 void ClusterDemo::reset()
 {
+    temp.clear();
+    index = 0;
+    pointsNum = 0;
+    res.clear();
     points.clear();
     sequences.clear();
     lines.clear();

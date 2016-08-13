@@ -76,7 +76,6 @@ private slots:
     void on_exToolButton_clicked();
     void aboutButton_clicked();
     void on_gjToolButton_clicked();
-    void on_clusterToolButton_clicked();
     void openFile();
     void showMap();
     void about();
@@ -104,6 +103,7 @@ private:
     friend class CalWindow;
     friend class SearchWin;
     SettingWin *settingWin;
+    //int showedMap;
     /*
      * 记录窗口位置
      */
@@ -113,6 +113,7 @@ private:
     // Database
     string tName;
     bool search_mode;
+    bool showedInMap;
     DataBase *db;
     Canvas *can;
     // Thread for import file
@@ -135,6 +136,8 @@ private:
     QAction *searchAct;
     QAction *showInMapAct;
     QAction *detailAct;
+
+    QProgressDialog *progress;
 
     Sequence input;
 
