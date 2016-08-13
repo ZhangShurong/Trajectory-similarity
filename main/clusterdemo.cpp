@@ -143,6 +143,5 @@ void ClusterDemo::cluster()
         clustered = true;
         update();
     }
-
 }
 

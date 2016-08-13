@@ -1,24 +1,26 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2016-03-18T13:22:16
+# Project created by QtCreator 2016-08-12T23:47:31
 #
 #-------------------------------------------------
 
 QT       += core gui widgets sql network
 
-TARGET = test
+TARGET = tcptest
+CONFIG   += console
+CONFIG   -= app_bundle
 
 TEMPLATE = app
 
 
-SOURCES += test.cpp \
+SOURCES += main.cpp \
+    server.cpp \
     ../main/csv.cpp \
     ../main/database.cpp \
     ../main/sequence.cpp \
     ../main/core.cpp \
-    testqdatastream.cpp
-
-
-HEADERS += \ 
-    testqdatastream.h
+    clientsocket.cpp 
+HEADERS += \
+    server.h \
+    clientsocket.h 
 INCLUDEPATH += ../main

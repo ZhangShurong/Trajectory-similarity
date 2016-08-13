@@ -14,6 +14,8 @@
 #include <cassert>
 #include <iostream>
 #include <string.h>
+#include <QDataStream>
+#include <QtNetWork>
 
 struct Time
 {
@@ -38,13 +40,23 @@ public:
     QString id;
     Time t;
     bool painted;
+    friend QDataStream &operator >>(QDataStream &in, Point &p)
+    {
+        in >> p.longitude >> p.latitude >> p.time >> p.id;
+        return in;
+    }
+
+    friend QDataStream &operator <<(QDataStream &out, const Point &p)
+    {
+        out << p.longitude << p.latitude << p.time << p.id;
+        return out;
+    }
 };
 
 class Sequence
 {
 private:
     QString id;
-
     int initSize;
     int seek;
     int getNumByID();
@@ -85,6 +97,26 @@ public:
     QString getType()
     {
         return type;
+    }
+    friend QDataStream &operator >>(QDataStream &in, Sequence &s)
+    {
+        in >> s.id >> s.initSize >> s.seek >> s.type >> s.pointsNum;
+        s.pts = new Point[s.pointsNum];
+        for(int i = 0; i < s.pointsNum ;i++)
+        {
+            in >> s.pts[i];
+        }
+        return in;
+    }
+
+    friend QDataStream &operator <<(QDataStream &out, const Sequence &s)
+    {
+        out << s.id << s.initSize << s.seek << s.type << s.pointsNum;
+        for(int i = 0; i < s.pointsNum ;i++)
+        {
+            out << s.pts[i];
+        }
+        return out;
     }
 };
 #endif // SEQUENCE_H

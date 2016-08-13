@@ -23,13 +23,67 @@ void Client::connectToServer()
     nextBlockSize = 0;
 }
 
-void Client::sendRequest()
+void Client::search()
 {
-    std::cout << "In send";
+    std::cout << "In search:\n";
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
-    out << qint16(0) << qint8('T') << QString("Hello World");
+    /* _______________________________________________________
+     * |             |                  |           |        |
+     * |size(quint16)|requestType(qint8)|num(qint16)|Sequence|
+     * |_____________|__________________|___________|________|
+     */
+    qint16 num(1);
+    out << qint16(0) << qint8('S') << num ;
+    out << sequence;
+    out.device()->seek(0);
+    out << qint16(block.size() - sizeof(quint16));
+    tcpSocket.write(block);
+    std::cout << "send over";
+}
+
+void Client::insert()
+{
+    std::cout << "In insert:\n";
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+    /* _______________________________________________________
+     * |             |                  |           |        |
+     * |size(quint16)|requestType(qint8)|num(qint16)|Sequence|
+     * |_____________|__________________|___________|________|
+     */
+    qint16 num(sequences.size());
+    out << qint16(0) << qint8('I') << num ;
+    for(uint i = 0; i < sequences.size(); i++)
+    {
+        out << sequences[i];
+    }
+    out.device()->seek(0);
+    out << qint16(block.size() - sizeof(quint16));
+    tcpSocket.write(block);
+    std::cout << "send over";
+}
+
+void Client::sendRequest()
+{
+    if(sequence.pointsNum != 0)
+    {
+        search();
+        return;
+    }
+    if(sequences.size() != 0)
+    {
+        insert();
+        return;
+    }
+
+    std::cout << "In send:\n";
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+    out << qint16(0) << qint8('E') << QString("Hello World");
     out.device()->seek(0);
     out << qint16(block.size() - sizeof(quint16));
     tcpSocket.write(block);
