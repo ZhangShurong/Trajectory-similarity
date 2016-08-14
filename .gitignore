@@ -8,5 +8,6 @@ importData
 *.pro.user
 *.pro.user.*
 *.orig
+./build*
 
 
