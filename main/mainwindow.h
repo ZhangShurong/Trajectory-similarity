@@ -98,6 +98,9 @@ private slots:
     void importFinished(int ok, int bad);
  //   void transferImportNumber(int n);
 
+    void cloudBtnClicked();
+    void clusterBtnClicked();
+
 private:
     Ui::MainWindow *ui;
     friend class CalWindow;

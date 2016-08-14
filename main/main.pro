@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     netstatindicator.cpp \
     partdetail.cpp \
     pointdetail.cpp \
-    clusterdemo.cpp
+    clusterdemo.cpp \
+    cloud.cpp
 
 HEADERS += \
     csv.h \
@@ -49,7 +50,8 @@ HEADERS += \
     netstatindicator.h \
     partdetail.h \
     pointdetail.h \
-    clusterdemo.h
+    clusterdemo.h \
+    cloud.h
 
 RESOURCES += \
     res.qrc \

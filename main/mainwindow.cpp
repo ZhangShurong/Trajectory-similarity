@@ -483,20 +483,6 @@ void MainWindow::showInMap()
 {
     showedInMap=true;
     showInMapSlot_R();
-    /*
-    ui->mapWin->initJS();
-    selectedSeqS= getCurrentSeqs();
-    if (selectedSeqS.length() == 0)
-    {
-        return;
-    }
-    ui->mapWin->setCentralPoint(selectedSeqS[0].getCentralPoint().longitude, selectedSeqS[0].getCentralPoint().latitude,8);
-    //ui->mapWin->drawSqu(&(selectedSeqS[0]), 1, 3);
-    ui->mapWin->drawSequence(selectedSeqS[0],1,3);
-    ui->mapWin->reload();
-    //ui->mapWin->show();
-    ui->stackedWidget->setCurrentIndex(3);
-    */
 }
 
 void MainWindow::setSlot()
@@ -636,6 +622,16 @@ void MainWindow::importFinished(int ok, int bad)
     //importProgressDialog->hide();
 }
 
+void MainWindow::cloudBtnClicked()
+{
+    this->setStackCurrentPage(9);
+}
+
+void MainWindow::clusterBtnClicked()
+{
+    this->setStackCurrentPage(8);
+}
+
 void MainWindow::initSig()
 {
     connect(ui->aboutBtn, SIGNAL(clicked()), this, SLOT(aboutButton_clicked()));
@@ -651,6 +647,8 @@ void MainWindow::initSig()
     connect(ui->deleteBtn, SIGNAL(clicked()), this, SLOT(deleteOneAct()));
     connect(ui->searchToolButton, SIGNAL(clicked()), this, SLOT(on_searchToolButton_clicked()));
     connect(ui->calToolButton, SIGNAL(clicked()), this, SLOT(on_calToolButton_clicked()));
+    connect(ui->cloudBtn, SIGNAL(clicked(bool)), this, SLOT(cloudBtnClicked()));
+    connect(ui->clusterBtn, SIGNAL(clicked(bool)), this, SLOT(clusterBtnClicked()));
 
 }
 
