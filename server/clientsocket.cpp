@@ -22,7 +22,7 @@ ClientSocket::~ClientSocket()
 }
 void ClientSocket::readClient()
 {
-    std::cout << "In read client:\n";
+    std::cout << "Readdy to read the client:\n";
     QDataStream in(this);
     in.setVersion(QDataStream::Qt_5_4);
     if(nextBlockSize == 0)
@@ -63,7 +63,9 @@ void ClientSocket::echo(QString msg)
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
-    out<< quint16(0)
+    quint8 returnType;
+    returnType = 'E';
+    out<< quint16(0) << returnType
        << msg;
     out.device()->seek(0);
     out << quint16(block.size() - sizeof(quint16));
@@ -108,7 +110,9 @@ void ClientSocket::insert()
 
 void ClientSocket::searchInDB(Sequence sequence)
 {
-
+    QString msg = "Server got the sequence and the points number is "+ QString::number(sequence.getNum())
+            + "\n";
+    echo(msg);
 }
 
 void ClientSocket::search()
@@ -123,9 +127,28 @@ void ClientSocket::search()
     }
     Sequence temp;
     in >> temp;
-
-        echo(QString("Got sequences in search\n"));
-
+    echo(QString("Got sequences in search\n"));
     searchInDB(temp);
+}
+
+void ClientSocket::download()
+{
+    QDataStream in(this);
+    quint16 num;
+    in >> num;
+    if(num != -1)
+    {
+        //TODO Error report
+        return;
+    }
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+    quint8 returnType;
+    returnType = 'D';
+    out<< quint16(0) << returnType;
+    out.device()->seek(0);
+    out << quint16(block.size() - sizeof(quint16));
+    write(block);
 }
 

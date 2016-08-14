@@ -139,6 +139,7 @@ void Client::error()
 
 void Client::getData()
 {
+
     std::cout << "In getData";
     QDataStream in(&tcpSocket);
     in.setVersion(QDataStream::Qt_5_4);
@@ -159,9 +160,31 @@ void Client::getData()
         {
             break;
         }
-        QString msg;
-        in >> msg;
-        QMessageBox::information(NULL, "提示", msg, QMessageBox::Yes, QMessageBox::Yes);
+        quint8 returnType;
+        in >> returnType;
+        if(returnType == 'E')
+        {
+            QString msg;
+            in >> msg;
+            QMessageBox::information(NULL, "提示", msg, QMessageBox::Yes, QMessageBox::Yes);
+        }
+        if(returnType == 'I')
+        {
+
+        }
+        if(returnType == 'R')
+        {
+
+        }
+        if(returnType == 'D')
+        {
+
+        }
+        if(returnType == 'S')
+        {
+
+        }
+
         nextBlockSize = 0;
     }
 }

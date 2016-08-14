@@ -17,10 +17,13 @@ public:
     ~Cloud();
 private slots:
     void openfiles();
+    void openfile();//For search
 private:
     Ui::MainWindow *ui;
     Client *client;
     void upload(vector<Sequence> sequences);
+    void search(Sequence sequence);
+    void initTable();
 };
 
 #endif // CLOUD_H

@@ -17,6 +17,7 @@ private:
     void insert();
     void searchInDB(Sequence sequence);
     void search();
+    void download();
     quint16 nextBlockSize;
     DataBase *db;
 };

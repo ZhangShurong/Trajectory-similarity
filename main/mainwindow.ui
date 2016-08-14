@@ -2201,7 +2201,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="searchBtn_2">
+             <widget class="QToolButton" name="searchInServerBtn">
               <property name="text">
                <string>搜索</string>
               </property>
@@ -2235,6 +2235,13 @@ p, li { white-space: pre-wrap; }
            <widget class="QProgressBar" name="progressBar">
             <property name="value">
              <number>24</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="serverInfo">
+            <property name="text">
+             <string/>
             </property>
            </widget>
           </item>
