@@ -21,6 +21,7 @@
 #include "calwindow.h"
 #include "searchwin.h"
 #include "settingwin.h"
+#include "cloud.h"
 
 #define ROW_NUM 100
 
@@ -106,6 +107,7 @@ private:
     friend class CalWindow;
     friend class SearchWin;
     SettingWin *settingWin;
+    Cloud *cloudWin;
     //int showedMap;
     /*
      * 记录窗口位置

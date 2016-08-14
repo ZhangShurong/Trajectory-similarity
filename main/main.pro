@@ -31,7 +31,8 @@ SOURCES += main.cpp \
     partdetail.cpp \
     pointdetail.cpp \
     clusterdemo.cpp \
-    cloud.cpp
+    cloud.cpp \
+    client.cpp
 
 HEADERS += \
     csv.h \
@@ -51,7 +52,8 @@ HEADERS += \
     partdetail.h \
     pointdetail.h \
     clusterdemo.h \
-    cloud.h
+    cloud.h \
+    client.h
 
 RESOURCES += \
     res.qrc \

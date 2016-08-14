@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     cal = new CalWindow(ui);
     searchWin = new SearchWin(ui, db);
     settingWin = new SettingWin(ui);
+    cloudWin = new Cloud(ui);
 
     ui->mapWidget->setHtml("./html/cal.html");
     ui->mapWidget->setJs("./html/cal.js");

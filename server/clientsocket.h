@@ -1,7 +1,8 @@
 #ifndef CLIENTSOCKET_H
 #define CLIENTSOCKET_H
 #include <QTcpSocket>
-
+#include "sequence.h"
+#include "database.h"
 class ClientSocket :public QTcpSocket
 {
     Q_OBJECT
@@ -12,7 +13,12 @@ private slots:
     void readClient();
 private:
     void echo(QString msg);
+    void insertIntoDB(vector<Sequence> sequences);
+    void insert();
+    void searchInDB(Sequence sequence);
+    void search();
     quint16 nextBlockSize;
+    DataBase *db;
 };
 
 #endif // CLIENTSOCKET_H

@@ -34,6 +34,7 @@ public:
     void setDBName(string databaseName);
     bool isTableExist(string tableName);
     string insertData(Csv *csv, string tbName);
+    string insertData(Sequence sequence, string tbName);
  //   string insertData(Sequence *seq_a, string tbName);
     void getSequenceByID(string tableName, Sequence *squ, string ID);
     int getPointNumByID(string ID);
@@ -44,6 +45,7 @@ public:
     Sequence *getNSequences(int &n, string tableName);
     bool hasTime(string ID, string tableName);
     void delSeq(string ID,string tableName);
+
 };
 
 #endif // DATABASE_H

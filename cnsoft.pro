@@ -1,2 +1,2 @@
 TEMPLATE  = subdirs
-SUBDIRS = main test client server
+SUBDIRS = main test
