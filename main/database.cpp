@@ -305,7 +305,7 @@ int DataBase::getPointNumByID(string ID)
 
 QStringList *DataBase::getAllTracID(string tableName)
 {
-    QStringList *temp = new QStringList();
+    QStringList *temp = new QStringList;
     QString str = "select tid from "
                   + QString::fromStdString(tableName)
                   + " where tid <> '';";
@@ -356,6 +356,7 @@ Sequence * DataBase::getNSequences(int &n, string tableName)
         id = QString((*allTascID)[i]).toStdString();
         getSequenceByID(tableName,&all[i],id);
     }
+    delete allTascID;
     return all;
 }
 

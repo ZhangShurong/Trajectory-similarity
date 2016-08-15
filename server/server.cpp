@@ -12,8 +12,8 @@ Server::~Server()
 
 void Server::incomingConnection(int socketId)
 {
-
     ClientSocket *socket = new ClientSocket(this);
     socket->setSocketDescriptor(socketId);
+    std::cout << "Socket id is "<<socketId << "\n";
 }
 

@@ -76,6 +76,10 @@ QVector<Sequence> MainWindow::getCurrentSeqs()
 
 MainWindow::~MainWindow()
 {
+    if(!tracs)
+    {
+        delete tracs;
+    }
     delete ui;
 }
 

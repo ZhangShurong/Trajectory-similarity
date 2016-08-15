@@ -43,6 +43,7 @@ void ClientSocket::readClient()
         in >> msg;
         std::cout << "Message is " <<msg.toStdString() << std::endl;
         echo(msg);
+        QDataStream out(this);
         out << quint16(0xffff);
         close();
         return;
@@ -59,6 +60,7 @@ void ClientSocket::readClient()
     }
     QDataStream out(this);
     out << quint16(0xffff);
+    std::cout << this->socketDescriptor() <<" is Closed\n";
     close();
 }
 
@@ -110,6 +112,7 @@ void ClientSocket::insert()
         insertIntoDB(sequences);
         echo(QString("Got sequences in insert"));
     }
+    closeConnection();
 }
 
 void ClientSocket::searchInDB(Sequence sequence)
@@ -117,7 +120,7 @@ void ClientSocket::searchInDB(Sequence sequence)
     QString msg = "Server got the sequence and the points number is "+ QString::number(sequence.getNum())
             + "\n";
     echo(msg);
-    DataBase d("Server");
+
 
 
 }
@@ -136,6 +139,22 @@ void ClientSocket::search()
     in >> temp;
     echo(QString("Got sequences in search\n"));
     searchInDB(temp);
+    vector<Sequence> seq;
+    loadIntoMemory(seq);
+    QString msg = "In databasem, there is " + QString::number(seq.size()) + " Sequences\n";
+    echo(msg);
+    closeConnection();
+}
+
+void ClientSocket::loadIntoMemory(vector<Sequence> &seq)
+{
+    QStringList *tracIds = db->getAllTracID("Server");
+    for(int i = 0; i < tracIds->size(); i++)
+    {
+        Sequence temp;
+        db->getSequenceByID("Server", &temp, QString((*tracIds)[i]).toStdString());
+        seq.push_back(temp);
+    }
 }
 
 void ClientSocket::download()
@@ -157,5 +176,13 @@ void ClientSocket::download()
     out.device()->seek(0);
     out << quint16(block.size() - sizeof(quint16));
     write(block);
+}
+
+void ClientSocket::closeConnection()
+{
+    QDataStream out(this);
+    out << quint16(0xffff);
+    std::cout << this->socketDescriptor() <<" is Closed\n";
+    close();
 }
 
