@@ -105,6 +105,7 @@ string DataBase::insertData(Csv *csv, string tbName)
         start = query.value(0).toString();
     }
 
+
     Sequence *temp = new Sequence();
     getSquFromFile(csv,temp);
     char  buffer1[200];
@@ -141,7 +142,7 @@ string DataBase::insertData(Csv *csv, string tbName)
                     str1 + " " +
                     str2 + " " +
                     ")','"+
-                     temp->pts->time+
+                     temp->pts[i].time+
                     "',NULL,NULL);";
 
             q.exec(insert);
@@ -164,7 +165,6 @@ string DataBase::insertData(Csv *csv, string tbName)
              + ");";
     query.exec(insert);
     return tid.toStdString();
-
 }
 
 string DataBase::insertData(Sequence sequence, string tbName)
@@ -251,7 +251,6 @@ string DataBase::insertData(Sequence sequence, string tbName)
 
 void DataBase::getSequenceByID(string tableName, Sequence *squ, string ID)
 {
-
     int start,end;
     decodeID(ID, &start, &end);
     int l = end - start;
@@ -270,11 +269,14 @@ void DataBase::getSequenceByID(string tableName, Sequence *squ, string ID)
                + ";"
               );
     query.next();
+    QString pt;
+    QString time;
+    QString id ;
     for (int i = 0; i< l; i++)
     {
-        QString pt = query.value(0).toString();
-        QString time = query.value(1).toString();
-        QString id = query.value(2).toString();
+        pt = query.value(0).toString();
+        time = query.value(1).toString();
+        id = query.value(2).toString();
         temp[i].buildPoint(pt,time,id);
         query.next();
         // qDebug() << pt + time + id;
@@ -392,3 +394,9 @@ void DataBase::delSeq(string ID,string tableName)
                + ";"
               );
 }
+
+void DataBase::close()
+{
+    db.close();
+}
+

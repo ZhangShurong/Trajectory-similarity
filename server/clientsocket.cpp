@@ -18,6 +18,7 @@ ClientSocket::ClientSocket(QObject *parent)
 
 ClientSocket::~ClientSocket()
 {
+    db->close();
     delete db;
 }
 void ClientSocket::readClient()
@@ -42,16 +43,19 @@ void ClientSocket::readClient()
         in >> msg;
         std::cout << "Message is " <<msg.toStdString() << std::endl;
         echo(msg);
-        QDataStream out(this);
         out << quint16(0xffff);
+        close();
+        return;
     }
     if(requestType == 'I')
     {
         insert();
+        return;
     }
     if(requestType == 'S')
     {
         search();
+        return;
     }
     QDataStream out(this);
     out << quint16(0xffff);
@@ -113,6 +117,9 @@ void ClientSocket::searchInDB(Sequence sequence)
     QString msg = "Server got the sequence and the points number is "+ QString::number(sequence.getNum())
             + "\n";
     echo(msg);
+    DataBase d("Server");
+
+
 }
 
 void ClientSocket::search()

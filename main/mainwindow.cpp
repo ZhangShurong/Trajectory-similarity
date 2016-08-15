@@ -696,6 +696,7 @@ void MainWindow::search(Sequence input)
     */
 
     QTableWidgetItem *tItem;
+    Core core;
     for (int i = 0; i < tracs->length(); i++) {
         progress->setValue(i);
         if (progress->wasCanceled()) {
@@ -703,7 +704,6 @@ void MainWindow::search(Sequence input)
         }
         tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
-        Core core;
         dfDis = core.computeDiscreteFrechet(&input,&sf);
 
         //qc = getSimplify(&input,&sf,beginMin1,beginMin2);

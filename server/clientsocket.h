@@ -13,10 +13,14 @@ private slots:
     void readClient();
 private:
     void echo(QString msg);
+
     void insertIntoDB(vector<Sequence> sequences);
     void insert();
+
     void searchInDB(Sequence sequence);
     void search();
+    void searchResult();
+
     void download();
     quint16 nextBlockSize;
     DataBase *db;

@@ -72,6 +72,7 @@ private:
 
     QMap<QString, int> seq_index;
     QMap<QString, Sequence> id_seq_map;
+    QVector<QString> storeId;
 /*    QMap<double, QString> res_seq;
     QMap<double, partInfo> res_part;
     QMap<double, QString> res_point;

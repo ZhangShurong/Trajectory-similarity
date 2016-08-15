@@ -45,7 +45,7 @@ public:
     Sequence *getNSequences(int &n, string tableName);
     bool hasTime(string ID, string tableName);
     void delSeq(string ID,string tableName);
-
+	void close();
 };
 
 #endif // DATABASE_H

@@ -8,6 +8,7 @@ QT       += core gui widgets sql network
 
 TARGET = tcptest
 CONFIG   += console
+CONFIG   += c++11
 CONFIG   -= app_bundle
 
 TEMPLATE = app

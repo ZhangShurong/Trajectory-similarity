@@ -16,8 +16,7 @@
 #include <string.h>
 #include <QDataStream>
 #include <QtNetWork>
-#include "core.h"
-class Core;
+
 struct Time
 {
     int year;
@@ -64,7 +63,6 @@ private:
     void buildPrefixSum();
     std::vector<double> prefixSum;
     QString type;
-    Core *core;
 public:
     int pointsNum;
     Point *pts;
