@@ -236,11 +236,25 @@ void SearchWin::sortSeqTable()
 //    ui->searchNewSelected->sortItems(2, Qt::AscendingOrder);
     ui->searchTable_time->sortItems(2, Qt::AscendingOrder);
 //    ui->searchNewTime->sortItems(2, Qt::AscendingOrder);
-    if(tracs->length()>500&&storeId.length()==0){
-        QAbstractItemModel *model;
-        QModelIndex index1;
-        QString id1;
+    QAbstractItemModel *model;
+    QModelIndex index1;
+    QString id1;
+    if(tracs->length()>500&&storeId.length()==0){     
         for(int i=0;i<tracs->length()/10;i++){
+            model = ui->searchTable_common->model();
+            index1 = model->index(i,0);
+            id1 = model->data(index1).toString();
+            storeId.append(id1);
+        }
+    }else if(500>tracs->length()>50&&storeId.length()==0){
+        for(int i=0;i<tracs->length()/5;i++){
+            model = ui->searchTable_common->model();
+            index1 = model->index(i,0);
+            id1 = model->data(index1).toString();
+            storeId.append(id1);
+        }
+    }else if(tracs->length()<50&&storeId.length()==0){
+        for(int i=0;i<tracs->length();i++){
             model = ui->searchTable_common->model();
             index1 = model->index(i,0);
             id1 = model->data(index1).toString();
