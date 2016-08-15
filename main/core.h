@@ -25,11 +25,15 @@
 #define MAXLONG 136
 #define MINLA 3
 #define MAXLA 54
+extern int tracsLen;
+class Sequence;
+class Point;
+class Time;
 
 struct PointCompare{
-  int index1;
-  int index2;
-  double distance;
+    int index1;
+    int index2;
+    double distance;
 };
 
 struct SecCompare{
@@ -39,46 +43,66 @@ struct SecCompare{
     int endIndex2;
     double simliarity;//轨迹段相似度
 };
+class Core{
+    double **mem = NULL;
+    Sequence *p;
+    Sequence *q;
+    double coef;
+    int mX;
+    int mY;
+public:
+    Core();
+    void initP_Q(Sequence *m, Sequence *n);
+    void initMemSpace(Sequence *p, Sequence *q);
+    double computeDiscreteFrechet(Sequence *sa,Sequence *sb);
+    double computeDFD(int i,int j, Sequence *p_a, Sequence * q_a);
+    double  getSecSim(int i1,int j1,int i2,int j2);
+    void mergeChange(int gap,QVector<SecCompare> &q1,QVector<SecCompare> &q2,double limit);
+    QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b);//调用以计算轨迹段
+    void calculateSec(int gap, int h,QVector<SecCompare> &q1);
+    Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres);
+    double calCoef();
+    QVector<SecCompare> findBest(Sequence* p,Sequence* q);
+    QVector<QVector<int> > getSimplify(Sequence* p,Sequence* q);
 
-void initP_Q(Sequence *m, Sequence *n);
-QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a);
-void initMemSpace(Sequence *p, Sequence *q);
-void getSquFromFile(Csv *csv, Sequence *se);
-double computeDiscreteFrechet(Sequence *sa,Sequence *sb);
-double computeDFD(int i,int j, Sequence *p_a, Sequence * q_a);
-double euclideanDistance(Point* a, Point* b);
-double  getSecSim(int i1,int j1,int i2,int j2);
-bool compare(SecCompare s1,SecCompare s2);
-QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b);//调用以计算轨迹段
-void calculateSec(int gap, int h,QVector<SecCompare>&q1);
-void mergeChange(int gap,QVector<SecCompare>&q1,QVector<SecCompare>&q2,double limit);
-Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres);
-Point getCenterPoint(Sequence *se_a, int num);
-Point getCenterPoint(QVector<Sequence> seqV);
+    double computeDFD_new(int startx, int endx, int starty, int endy);
+    double euclideanDistance(Point* a, Point* b);
+    QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a);
+    QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b);
+
+
+
+    double modHausDist(Sequence*, Sequence*);
+    void clusterAgglomerartive(Sequence *seqs, int len);
+
+    bool compareType(QString input_type,QString type);
+    void normalize(Sequence &se);
+    void clusterSpectral();
+    vector<int> clusterAgglomerartive(vector<Sequence> seqs);
+
+
+    double calTimeDistance(Point *a,Point *b);
+
+
+};
 Time loadToStruct(QString time);
 bool timeCompare(Point*p1,Point*p2);
-double calTimeDistance(Point *a,Point *b);
-double calCoef();
-QVector<SecCompare> findBest(Sequence*p,Sequence*q);
-QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q);
-QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b);
+bool compare(SecCompare s1,SecCompare s2);
 bool compareDis(PointCompare p1,PointCompare p2);
-double computeDFD_new(int startx, int endx, int starty, int endy);
-double rad(double d);
-double getDistance(double lng1, double lat1, double lng2, double lat2);
-int getZoom(QVector<Sequence> seqV);
-int getZoom(Sequence seq_a);
-int calZoomCoef(double res);
-double modHausDist(Sequence*, Sequence*);
-void clusterAgglomerartive(Sequence *seqs, int len);
+double euDistance(Point a, Point b);
+void getSquFromFile(Csv *csv, Sequence *se);
 int hardCluster(Sequence * q,double minLongtitude,
                 double maxLongtitude,
                 double minLatitude,
                 double maxLatitude,
                 int depth);
-bool compareType(QString input_type,QString type);
-extern int tracsLen;
-void normalize(Sequence &se);
-void clusterSpectral();
-vector<int> clusterAgglomerartive(vector<Sequence> seqs);
+Point getCenterPoint(Sequence *se_a, int num);
+Point getCenterPoint(QVector<Sequence> seqV);
+int getZoom(QVector<Sequence> seqV);
+int getZoom(Sequence seq_a);
+double rad(double d);
+double getDistance(double lng1, double lat1, double lng2, double lat2);
+int calZoomCoef(double res);
+
+
 #endif // CORE_H

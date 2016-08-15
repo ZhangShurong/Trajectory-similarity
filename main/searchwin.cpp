@@ -149,7 +149,8 @@ void SearchWin::searchSeq()
         tItem = new QTableWidgetItem();
 
         if((input->hasTime() && sf.hasTime())||((!input->hasTime()) && (!sf.hasTime()))){
-            dfDis = computeDiscreteFrechet(input,&sf);
+            Core core;
+            dfDis = core.computeDiscreteFrechet(input,&sf);
         }
         else {
             continue;
@@ -292,8 +293,8 @@ void SearchWin::searchSelectedSeqs(){
             break;
         }
         for(int j=i+1;j< selectedSeqS.length();j++){
-
-            dfDis = computeDiscreteFrechet(&selectedSeqS[j],&selectedSeqS[i]);
+            Core core;
+            dfDis = core.computeDiscreteFrechet(&selectedSeqS[j],&selectedSeqS[i]);
 //            if (dfDis == 0)
 //            {
 //                coincide << selectedSeqS[i].getID();
@@ -498,8 +499,9 @@ void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partIn
     QVector<int>pv=partInfo[0];
     QVector<int>qv=partInfo[1];
     QString str;
-    initP_Q(input, se);
-    initMemSpace(input, se);
+    Core core;
+    core.initP_Q(input, se);
+    core.initMemSpace(input, se);
     for(int i=0; i<pv.size() - 1; i=i+2) {
         int begin1=pv[i];
         int end1=pv[i+1];
@@ -513,7 +515,7 @@ void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partIn
         str  = QString::number(begin1) + "-"+QString::number(end1);
         table->setItem(partRowcount, 2, new QTableWidgetItem(str));
 
-        double res = computeDFD_new(begin1, end1, begin2, end2);
+        double res = core.computeDFD_new(begin1, end1, begin2, end2);
 
         str  = QString::number(res);
         table->setItem(partRowcount, 3, new QTableWidgetItem(str));
@@ -544,13 +546,15 @@ void SearchWin::calSecPart()
 
         if (sf.hasTime() && input->hasTime())
         {
-            qc = getSimplify(input,&sf);
+            Core core;
+            qc = core.getSimplify(input,&sf);
             fillPartTable(ui->searchTable_time_part,
                           qc, &sf);
         }
         else if (!sf.hasTime() && !input->hasTime())
         {
-            qc = getSimplify(input,&sf);
+            Core core;
+            qc = core.getSimplify(input,&sf);
             fillPartTable(ui->searchTable_common_part,
                           qc, &sf);
         }
@@ -840,12 +844,14 @@ void SearchWin::searchPoint()
         sf = id_seq_map[tracs->at(i)];
         if (sf.hasTime() && input->hasTime())
         {
-            pVec = getNearestPoint(input, &sf);
+            Core core;
+            pVec = core.getNearestPoint(input, &sf);
             fillPointTable(ui->searchTable_time_point, pVec, &sf);
         }
         else if (!sf.hasTime() && !input->hasTime())
         {
-            pVec = getNearestPoint(input, &sf);
+            Core core;
+            pVec = core.getNearestPoint(input, &sf);
             fillPointTable(ui->searchTable_common_point, pVec, &sf);
         }
     }

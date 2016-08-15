@@ -1,5 +1,4 @@
 #include "sequence.h"
-#include "core.h"
 
 int Sequence::getNumByID()
 {
@@ -11,6 +10,7 @@ int Sequence::getNumByID()
 
 Sequence::Sequence(QString ID)
 {
+    core = new Core();
     seek = 0;
     id = ID;
     pointsNum = getNumByID();
@@ -21,6 +21,7 @@ Sequence::Sequence(QString ID)
 
 Sequence::Sequence()
 {
+    core = new Core();
     seek = 0;
     id = "";
     pointsNum = 0;
@@ -258,7 +259,7 @@ void Sequence::buildPrefixSum()
     for(int i = 0; i < pointsNum; i++)
     {
         prefixSum.push_back(prefixSum[prefixSum.size() - 1] +
-                euclideanDistance(pts + prefixSum.size() - 1, pts + prefixSum.size()));
+                core->euclideanDistance(pts + prefixSum.size() - 1, pts + prefixSum.size()));
     }
 }
 

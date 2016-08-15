@@ -7,16 +7,10 @@
 #include "ThirdParty/Eigen/Eigen"
 
 using namespace std;
-double **mem = NULL;
-Sequence *p;
-Sequence *q;
-double coef;
-int mX;
-int mY;
 
 int tracsLen=0;
 
-double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
+double Core::computeDiscreteFrechet(Sequence *sa, Sequence *sb)
 {
     p = sa;
     q = sb;
@@ -27,32 +21,7 @@ double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
     return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
 }
 
-double euclideanDistance(Point* a, Point* b)
-{
-    double dis = 0;
-    if(a->time.isEmpty()) {
-        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
-              + (a->latitude - b->latitude)*(a->latitude - b->latitude);
-    } else {
-        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
-              + (a->latitude - b->latitude)*(a->latitude - b->latitude)+calTimeDistance(a,b)*coef;
-    }
-//    dis = sqrt(dis);
-    return dis;
-}
-
-double calTimeDistance(Point *a,Point *b) {
-    double hourGap;
-
-    if((a->t.year!=b->t.year)||(a->t.month!=b->t.month)) {
-        hourGap=720;
-    } else {
-        hourGap=qAbs((a->t.day*24+a->t.hour+a->t.minute*0.016+a->t.second*0.0002)-(b->t.day*24+b->t.hour+b->t.minute*0.016+b->t.second*0.0002));
-    }
-    return hourGap;
-}
-
-double calCoef() {
+double Core::calCoef() {
     double x1=p->getMaxX()-p->getMinX();
     double y1=p->getMaxY()-p->getMinY();
     double sqr1=sqrt(x1*x1+y1*y1);
@@ -76,125 +45,9 @@ double calCoef() {
     return coef;
 }
 
-void
-getSquFromFile(Csv *csv, Sequence *se)
-{
-    if (se->getNum() != 0)
-    {
-        delete se;
-        Sequence *t = new Sequence();
-        se = t;
-    }
-    se->setID("Input");
-    string line;
-    bool ok;
-    QString xStr;
-    QString yStr;
-    double x;
-    double y;
 
-    QVector<Point*> tContainer;
-    while (csv->getline(line) != 0) {
-        const char *t = line.c_str();
-        if (Csv::notStdAscii(t[0]))
-            continue;
-        xStr = QString::fromStdString(csv->getfield(0));
-        yStr = QString::fromStdString(csv->getfield(1));
-        x = xStr.toDouble(&ok);
-        if (ok)
-        {
-            y = yStr.toDouble(&ok);
-            if(ok)
-            {
-                int j =csv->getnfield();
-                if ( j== 2)
-                {
-                    Point *temp = new Point(x,y);
-                    se->appendPt(temp);
-                }
-                else if (j == 3) {
-                    Point *temp = new Point(x,y,QString::fromStdString(csv->getfield(2)));
-                    temp->t=loadToStruct(temp->time);
-                    tContainer.append(temp);
-                }
-                else {
-                    fprintf(stderr, "Wrong\n");
-                    return;
-                }
-            }
-        }
-    }
-    if(!tContainer.isEmpty()) {
-        sort(tContainer.begin(),tContainer.end(),timeCompare);
-        for(int i=0; i<tContainer.size(); i++) {
-            se->appendPt(tContainer[i]);
-        }
-    }
-    double minLongtitude = 73;
-    double maxLongtitude = 136;
-    double minLatitude = 3;
-    double maxLatitude = 54;
-    int type = hardCluster(se,
-               minLongtitude,
-               maxLongtitude,
-               minLatitude,
-               maxLatitude,
-               3
-               );
-    se->setType(QString::number(type));
-    tContainer.clear();
-}
 
-Time loadToStruct(QString time) {
-    QString re = "\\d{8}[\\s]+[\\d]+:[\\d]+:[\\d]+";
-    QRegExp rx(re);
-    bool match = rx.exactMatch(time);
-    if(!match)
-    {
-        throw 0;
-    }
-
-    Time t;
-    QStringList tl=time.split(QRegExp(QRegExp("[\\s]+")));
-    t.year=tl[0].mid(0,4).toInt();
-    t.month=tl[0].mid(4,2).toInt();
-    t.day=tl[0].mid(6,2).toInt();
-
-    QStringList tl1=tl[1].split(":");
-    t.hour=tl1[0].toInt();
-    t.minute=tl1[1].toInt();
-    t.second=tl1[2].toInt();
-    return t;
-}
-
-bool timeCompare(Point*p1,Point*p2) {
-    Time* t1=&p1->t;
-    Time* t2=&p2->t;
-
-    if(t1->year<t2->year) {
-        return true;
-    } else if(t1->year==t2->year) {
-        if(t1->month<t2->month) {
-            return true;
-        } else if(t1->month==t2->month) {
-            if(t1->day<t2->day) {
-                return true;
-            } else if(t1->day==t2->day) {
-                int totalSecond1=t1->hour*3600+t1->minute*60+t1->second;
-                int totalSecond2=t2->hour*3600+t2->minute*60+t2->second;
-                return totalSecond1<=totalSecond2;
-            }else{
-                return false;
-            }
-       }else{
-            return false;
-        }
-    }else {
-        return false;
-    }
-}
-
-void initMemSpace(Sequence *p, Sequence *q)
+void Core::initMemSpace(Sequence *p, Sequence *q)
 {
     if(mem != NULL)
     {
@@ -221,17 +74,15 @@ void initMemSpace(Sequence *p, Sequence *q)
 }
 
 //分别输入两个轨迹段的起点和终位置
-double  getSecSim(int i1,int j1,int i2,int j2) {
+double  Core::getSecSim(int i1,int j1,int i2,int j2) {
     initMemSpace(p, q);
-
     return computeDFD_new(i1, j1, i2, j2);
 }
 
-QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
+QVector<SecCompare> Core::findSimilarSection(Sequence *se_a, Sequence *se_b)
 {
     QVector<SecCompare> q1;
     QVector<SecCompare> q2;
-
     p = se_a;
     q = se_b;
 //    initMemSpace(p, q);
@@ -283,7 +134,7 @@ QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
     return q1;
 }
 
-QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q) {
+QVector<QVector<int> > Core::getSimplify(Sequence*p,Sequence*q) {
     p->initPainted();
     q->initPainted();
     QVector<QVector<int> >qb;
@@ -359,7 +210,7 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q) {
     return qb;
 }
 
-QVector<SecCompare> findBest(Sequence*p,Sequence*q) {
+QVector<SecCompare> Core::findBest(Sequence*p,Sequence*q) {
     QVector<SecCompare> temp = getBestSce(findSimilarSection(p, q));
     return temp;
 }
@@ -370,7 +221,7 @@ bool compare(SecCompare s1,SecCompare s2) {
 }
 
 
-double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
+double Core::computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
 {
     if (mem[i][j] > -1)
         return mem[i][j];
@@ -398,7 +249,7 @@ double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
     return mem[i][j];
 }
 
-void calculateSec(int gap, int h, QVector<SecCompare> &q1)
+void Core::calculateSec(int gap, int h, QVector<SecCompare> &q1)
 {
     SecCompare s;
     double result;
@@ -421,7 +272,7 @@ void calculateSec(int gap, int h, QVector<SecCompare> &q1)
 //    std::cout<<"time: "<<t2-t1<<std::endl;
 }
 
-void mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2,double limit)
+void Core::mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2,double limit)
 {
     limit=limit*0.1;
     SecCompare s;
@@ -449,7 +300,7 @@ void mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2,doubl
 //       std::cout<<"time: "<<t2-t1<<std::endl;
 }
 
-Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres)
+Sequence* Core::longestCommonSeq(Sequence &p, Sequence &q, double thres)
 {
     //Sequence commonSeq[2];
     Sequence *commonSeq = new Sequence[2];
@@ -497,7 +348,7 @@ Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres)
     return commonSeq;
 }
 
-QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a)
+QVector<SecCompare> Core::getBestSce(QVector<SecCompare> secCompareV_a)
 {
     QVector<SecCompare> t;
     // QVector<SecCompare> t1;
@@ -521,6 +372,55 @@ QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a)
     }
     return t;
 }
+
+
+
+
+bool compareDis(PointCompare p1,PointCompare p2) {
+    return p1.distance<p2.distance;
+}
+
+double Core::computeDFD_new(int startx, int endx, int starty, int endy)
+{
+    if (mem[endx][endy] > -1)
+        return mem[endx][endy];
+    // if top left column, just compute the distance
+    else if (endx == startx && endy == starty)
+        mem[endx][endy] = euclideanDistance(&p->pts[endx],&q->pts[endy]);
+    // can either be the actual distance or distance pulled from above
+    else if (endx > startx && endy == starty)
+        mem[endx][endy] = max(computeDFD_new(startx, endx - 1, starty, endy), euclideanDistance(&p->pts[endx], &q->pts[endy]));
+    // can either be the distance pulled from the left or the actual
+    // distance
+    else if (endx == startx && endy > starty)
+        mem[endx][endy] = max(computeDFD_new(startx, endx, starty ,endy - 1), euclideanDistance(&p->pts[endx], &q->pts[endy]));
+    // can be the actual distance, or distance from above or from the left
+    else if (endx > startx && endy > starty) {
+        double temp = min(min(computeDFD_new(startx, endx - 1, starty ,endy), computeDFD_new(startx, endx - 1,starty,  endy - 1)), computeDFD_new(startx, endx, starty, endy - 1));
+        mem[endx][endy] = max(temp, euclideanDistance(&p->pts[endx], &q->pts[endy]));
+    }
+    // infinite
+    else
+        mem[endx][endy] = 10000;
+
+    // printMemory();
+    // return the DFD
+    return mem[endx][endy];
+}
+
+Core::Core()
+{
+    coef = 0;
+}
+
+void Core::initP_Q(Sequence *m, Sequence *n)
+{
+    p = m;
+    q = n;
+}
+
+
+
 
 Point getCenterPoint(Sequence *se_a, int num)
 {
@@ -567,90 +467,6 @@ Point getCenterPoint(QVector<Sequence> seqV)
     pt.latitude = pt.latitude/seqV.length();
     return pt;
 }
-
-QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b) {
-    QVector<PointCompare>q1;
-    // PointCollection pc;
-    QVector<PointCompare>q2;
-//    PointCompare* p=NULL;
-    PointCompare p;
-    for(int i=0; i<se_a->getNum(); i++) {
-        for(int j=0; j<se_b->getNum(); j++) {
-            p.distance=euclideanDistance(&se_a->pts[i],&se_b->pts[j]);
-            p.index1=i;
-            p.index2=j;
-            q1.append(p);
-        }
-    }
-    sort(q1.begin(),q1.end(),compareDis);
-    double sim=q1[0].distance;
-    for(int i=0; i<q1.size(); i++) {
-        if(q1[i].distance<=sim) {
-            //  pc.p1.append(q1[i].index1);
-            //pc.p2.append(q1[i].index2);
-            q2.append(q1[i]);
-
-        } else {
-            break;
-        }
-    }
-    // return pc;
-    return q2;
-}
-
-bool compareDis(PointCompare p1,PointCompare p2) {
-    return p1.distance<p2.distance;
-}
-
-double computeDFD_new(int startx, int endx, int starty, int endy)
-{
-    if (mem[endx][endy] > -1)
-        return mem[endx][endy];
-    // if top left column, just compute the distance
-    else if (endx == startx && endy == starty)
-        mem[endx][endy] = euclideanDistance(&p->pts[endx],&q->pts[endy]);
-    // can either be the actual distance or distance pulled from above
-    else if (endx > startx && endy == starty)
-        mem[endx][endy] = max(computeDFD_new(startx, endx - 1, starty, endy), euclideanDistance(&p->pts[endx], &q->pts[endy]));
-    // can either be the distance pulled from the left or the actual
-    // distance
-    else if (endx == startx && endy > starty)
-        mem[endx][endy] = max(computeDFD_new(startx, endx, starty ,endy - 1), euclideanDistance(&p->pts[endx], &q->pts[endy]));
-    // can be the actual distance, or distance from above or from the left
-    else if (endx > startx && endy > starty) {
-        double temp = min(min(computeDFD_new(startx, endx - 1, starty ,endy), computeDFD_new(startx, endx - 1,starty,  endy - 1)), computeDFD_new(startx, endx, starty, endy - 1));
-        mem[endx][endy] = max(temp, euclideanDistance(&p->pts[endx], &q->pts[endy]));
-    }
-    // infinite
-    else
-        mem[endx][endy] = 10000;
-
-    // printMemory();
-    // return the DFD
-    return mem[endx][endy];
-}
-
-void initP_Q(Sequence *m, Sequence *n)
-{
-    p = m;
-    q = n;
-}
-
-
-double getDistance(double lng1, double lat1, double lng2, double lat2)
-{
-    double radLat1 = rad(lat1);
-    double radLat2 = rad(lat2);
-    double a = radLat1 - radLat2;
-    double b = rad(lng1) - rad(lng2);
-    double s = 2 * asin(sqrt(pow(sin(a/2),2) +
-                             cos(radLat1)*cos(radLat2)*pow(sin(b/2),2)));
-    s = s * EARTH_RADIUS;
-    s = round(s * 10000) / 10000;
-    return s;
-}
-
-
 int getZoom(QVector<Sequence> seqV)
 {
     double maxLon = seqV[0].getMaxX();
@@ -681,12 +497,17 @@ int getZoom(QVector<Sequence> seqV)
     return calZoomCoef(res);
 }
 
-
-double rad(double d)
+int getZoom(Sequence seq_a)
 {
-    return d * PI / 180.0;
-}
+    double maxLon = seq_a.getMaxX();
+    double maxLat = seq_a.getMaxY();
+    double minLon = seq_a.getMinX();
+    double minLat = seq_a.getMinY();
+    double res = getDistance(minLon, minLat, maxLon, maxLat);
 
+    return calZoomCoef(res);
+
+}
 int calZoomCoef(double res){
     int dis = res / 8.0;
     if ( dis > 100)
@@ -716,19 +537,7 @@ int calZoomCoef(double res){
 
     return 6;
 }
-
-int getZoom(Sequence seq_a)
-{
-    double maxLon = seq_a.getMaxX();
-    double maxLat = seq_a.getMaxY();
-    double minLon = seq_a.getMinX();
-    double minLat = seq_a.getMinY();
-    double res = getDistance(minLon, minLat, maxLon, maxLat);
-
-    return calZoomCoef(res);
-
-}
-double modHausDist(Sequence *sa, Sequence *sb)
+double Core::modHausDist(Sequence *sa, Sequence *sb)
 {
     if(sa == sb)
     {
@@ -783,7 +592,7 @@ double modHausDist(Sequence *sa, Sequence *sb)
         double dist = 9999;//inf
         for(j = 0; j < neighborhoodIdxs.size(); j ++)
         {
-            double newdist = euclideanDistance(&pt1, &(sb->pts[neighborhoodIdxs.at(j)]));
+            double newdist = euDistance(pt1, (sb->pts[neighborhoodIdxs.at(j)]));
             if(newdist < dist)
             {
                 dist = newdist;
@@ -795,9 +604,7 @@ double modHausDist(Sequence *sa, Sequence *sb)
     //FIXME 0.88常数
     return distance[std::min(int(sa->pointsNum * 0.88), sa->pointsNum - 1)];
 }
-
-
-void clusterAgglomerartive(Sequence *seqs, int len)
+void Core::clusterAgglomerartive(Sequence *seqs, int len)
 {
     //createDistanceMatrix
     double distMat[len][len];
@@ -1056,13 +863,66 @@ int hardCluster(Sequence * q,double minLongtitude,
         }
     }
     return 0;
-
-
 }
+bool Core::compareType(QString input_type, QString type)
+{
+    if(input_type == type)
+    {
+        return true;
+    }
+    if(input_type.startsWith(type))
+    {
+        return true;
+    }
+    if(input_type == "0")
+    {
+        return true;
+    }
+    if(type == "0")
+    {
+        return true;
+    }
+    return false;
+}
+void Core::normalize(Sequence &se)
+{
+    if(se.getMaxX() == se.getMinX())
+    {
+        double midLong = 0.5 * (MAXLONG - MINLONG);
+        for(int i = 0; i < se.pointsNum; i++)
+        {
+            se.pts[i].longitude = midLong;
+        }
+    }
+    else
+    {
+        double k = (MAXLONG - MINLONG)/(se.getMaxX() - se.getMinX());
+        double b = MINLONG - k*se.getMinX();
+        for(int i = 0; i < se.pointsNum; i++)
+        {
+            se.pts[i].longitude = k*se.pts[i].longitude + b;
+        }
+    }
+    if(se.getMaxY() == se.getMinY())
+    {
+        double midLa = 0.5 * (MAXLA - MINLA);
+        for(int i = 0; i < se.pointsNum; i++)
+        {
+            se.pts[i].latitude = midLa;
+        }
+    }
+    else
+    {
 
-
-
-void clusterSpectral()
+        double k = (MAXLA - MINLA)/(se.getMaxY() - se.getMinY());
+        double b = MINLA - k*se.getMinY();
+        for(int i = 0; i < se.pointsNum; i++)
+        {
+            se.pts[i].latitude = k*se.pts[i].latitude + b;
+        }
+    }
+}
+void Core::clusterSpectral()
 {
     int len = 5;
     //createDistanceMatrix()
@@ -1198,66 +1058,7 @@ void clusterSpectral()
     int clusters = -1;
     int g = clusters;
 }
-bool compareType(QString input_type, QString type)
-{
-    if(input_type == type)
-    {
-        return true;
-    }
-    if(input_type.startsWith(type))
-    {
-        return true;
-    }
-    if(input_type == "0")
-    {
-        return true;
-    }
-    if(type == "0")
-    {
-        return true;
-    }
-    return false;
-}
-
-void normalize(Sequence &se)
-{
-    if(se.getMaxX() == se.getMinX())
-    {
-        double midLong = 0.5 * (MAXLONG - MINLONG);
-        for(int i = 0; i < se.pointsNum; i++)
-        {
-            se.pts[i].longitude = midLong;
-        }
-    }
-    else
-    {
-        double k = (MAXLONG - MINLONG)/(se.getMaxX() - se.getMinX());
-        double b = MINLONG - k*se.getMinX();
-        for(int i = 0; i < se.pointsNum; i++)
-        {
-            se.pts[i].longitude = k*se.pts[i].longitude + b;
-        }
-    }
-    if(se.getMaxY() == se.getMinY())
-    {
-        double midLa = 0.5 * (MAXLA - MINLA);
-        for(int i = 0; i < se.pointsNum; i++)
-        {
-            se.pts[i].latitude = midLa;
-        }
-    }
-    else
-    {
-
-        double k = (MAXLA - MINLA)/(se.getMaxY() - se.getMinY());
-        double b = MINLA - k*se.getMinY();
-        for(int i = 0; i < se.pointsNum; i++)
-        {
-            se.pts[i].latitude = k*se.pts[i].latitude + b;
-        }
-    }
-}
-vector<int> clusterAgglomerartive(vector<Sequence> seqs)
+vector<int> Core::clusterAgglomerartive(vector<Sequence> seqs)
 {
     int len = seqs.size();
     double distMat[len][len];
@@ -1359,4 +1160,195 @@ vector<int> clusterAgglomerartive(vector<Sequence> seqs)
         }
     }
     return res;
+}
+void getSquFromFile(Csv *csv, Sequence *se)
+{
+    if (se->getNum() != 0)
+    {
+        delete se;
+        Sequence *t = new Sequence();
+        se = t;
+    }
+    se->setID("Input");
+    string line;
+    bool ok;
+    QString xStr;
+    QString yStr;
+    double x;
+    double y;
+
+    QVector<Point*> tContainer;
+    while (csv->getline(line) != 0) {
+        const char *t = line.c_str();
+        if (Csv::notStdAscii(t[0]))
+            continue;
+        xStr = QString::fromStdString(csv->getfield(0));
+        yStr = QString::fromStdString(csv->getfield(1));
+        x = xStr.toDouble(&ok);
+        if (ok)
+        {
+            y = yStr.toDouble(&ok);
+            if(ok)
+            {
+                int j =csv->getnfield();
+                if ( j== 2)
+                {
+                    Point *temp = new Point(x,y);
+                    se->appendPt(temp);
+                }
+                else if (j == 3) {
+                    Point *temp = new Point(x,y,QString::fromStdString(csv->getfield(2)));
+                    temp->t=loadToStruct(temp->time);
+                    tContainer.append(temp);
+                }
+                else {
+                    fprintf(stderr, "Wrong\n");
+                    return;
+                }
+            }
+        }
+    }
+    if(!tContainer.isEmpty()) {
+        sort(tContainer.begin(),tContainer.end(),timeCompare);
+        for(int i=0; i<tContainer.size(); i++) {
+            se->appendPt(tContainer[i]);
+        }
+    }
+    double minLongtitude = 73;
+    double maxLongtitude = 136;
+    double minLatitude = 3;
+    double maxLatitude = 54;
+    int type = hardCluster(se,
+               minLongtitude,
+               maxLongtitude,
+               minLatitude,
+               maxLatitude,
+               3
+               );
+    se->setType(QString::number(type));
+    tContainer.clear();
+}
+Time loadToStruct(QString time) {
+    QString re = "\\d{8}[\\s]+[\\d]+:[\\d]+:[\\d]+";
+    QRegExp rx(re);
+    bool match = rx.exactMatch(time);
+    if(!match)
+    {
+        throw 0;
+    }
+
+    Time t;
+    QStringList tl=time.split(QRegExp(QRegExp("[\\s]+")));
+    t.year=tl[0].mid(0,4).toInt();
+    t.month=tl[0].mid(4,2).toInt();
+    t.day=tl[0].mid(6,2).toInt();
+
+    QStringList tl1=tl[1].split(":");
+    t.hour=tl1[0].toInt();
+    t.minute=tl1[1].toInt();
+    t.second=tl1[2].toInt();
+    return t;
+}
+double Core::calTimeDistance(Point *a,Point *b) {
+    double hourGap;
+    if((a->t.year!=b->t.year)||(a->t.month!=b->t.month)) {
+        hourGap=720;
+    } else {
+        hourGap=qAbs((a->t.day*24+a->t.hour+a->t.minute*0.016+a->t.second*0.0002)-(b->t.day*24+b->t.hour+b->t.minute*0.016+b->t.second*0.0002));
+    }
+    return hourGap;
+}
+bool timeCompare(Point*p1,Point*p2) {
+    Time* t1=&p1->t;
+    Time* t2=&p2->t;
+
+    if(t1->year<t2->year) {
+        return true;
+    } else if(t1->year==t2->year) {
+        if(t1->month<t2->month) {
+            return true;
+        } else if(t1->month==t2->month) {
+            if(t1->day<t2->day) {
+                return true;
+            } else if(t1->day==t2->day) {
+                int totalSecond1=t1->hour*3600+t1->minute*60+t1->second;
+                int totalSecond2=t2->hour*3600+t2->minute*60+t2->second;
+                return totalSecond1<=totalSecond2;
+            }else{
+                return false;
+            }
+       }else{
+            return false;
+        }
+    }else {
+        return false;
+    }
+}
+QVector<PointCompare> Core::getNearestPoint(Sequence *se_a, Sequence *se_b) {
+    QVector<PointCompare>q1;
+    // PointCollection pc;
+    QVector<PointCompare>q2;
+//    PointCompare* p=NULL;
+    PointCompare p;
+    for(int i=0; i<se_a->getNum(); i++) {
+        for(int j=0; j<se_b->getNum(); j++) {
+            p.distance=euclideanDistance(&se_a->pts[i],&se_b->pts[j]);
+            p.index1=i;
+            p.index2=j;
+            q1.append(p);
+        }
+    }
+    sort(q1.begin(),q1.end(),compareDis);
+    double sim=q1[0].distance;
+    for(int i=0; i<q1.size(); i++) {
+        if(q1[i].distance<=sim) {
+            //  pc.p1.append(q1[i].index1);
+            //pc.p2.append(q1[i].index2);
+            q2.append(q1[i]);
+
+        } else {
+            break;
+        }
+    }
+    // return pc;
+    return q2;
+}
+double rad(double d)
+{
+    return d * PI / 180.0;
+}
+double getDistance(double lng1, double lat1, double lng2, double lat2)
+{
+    double radLat1 = rad(lat1);
+    double radLat2 = rad(lat2);
+    double a = radLat1 - radLat2;
+    double b = rad(lng1) - rad(lng2);
+    double s = 2 * asin(sqrt(pow(sin(a/2),2) +
+                             cos(radLat1)*cos(radLat2)*pow(sin(b/2),2)));
+    s = s * EARTH_RADIUS;
+    s = round(s * 10000) / 10000;
+    return s;
+}
+double Core::euclideanDistance(Point* a, Point* b)
+{
+    double dis = 0;
+    if(a->time.isEmpty()) {
+        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
+              + (a->latitude - b->latitude)*(a->latitude - b->latitude);
+    } else {
+        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
+              + (a->latitude - b->latitude)*(a->latitude - b->latitude)+calTimeDistance(a,b)*coef;
+    }
+//    dis = sqrt(dis);
+    return dis;
+}
+
+double euDistance(Point a, Point b)
+{
+    double dis = 0;
+    dis = (a.longitude - b.longitude)*(a.longitude - b.longitude)
+              + (a.latitude - b.latitude)*(a.latitude - b.latitude);
+
+//    dis = sqrt(dis);
+    return dis;
 }

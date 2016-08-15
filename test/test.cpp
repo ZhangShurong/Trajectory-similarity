@@ -42,7 +42,8 @@ void testCluster()
     openfile(&seqs[4],"./data/y=sinx.csv");
     openfile(&seqs[3],"./data/y=x.csv");
 
-    clusterAgglomerartive(seqs,6);
+    Core core;
+    core.clusterAgglomerartive(seqs,6);
 
 
     double minLongtitude = 73;

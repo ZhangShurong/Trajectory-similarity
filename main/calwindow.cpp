@@ -26,7 +26,8 @@ CalWindow::~CalWindow()
 
 int CalWindow::calSeq()
 {
-    double res = computeDiscreteFrechet(p,q);
+    Core core;
+    double res = core.computeDiscreteFrechet(p,q);
     if(res == 0)
     {
         QMessageBox::information(NULL, "提示", "输入轨迹完全重合", QMessageBox::Yes, QMessageBox::Yes);
@@ -38,7 +39,8 @@ int CalWindow::calSeq()
 
 void CalWindow::calPoint()
 {
-    QVector<PointCompare> pc=getNearestPoint(p,q);
+    Core core;
+    QVector<PointCompare> pc=core.getNearestPoint(p,q);
     pointDetail.setPointInfo(pc, p, q, namep, nameq);
     PointCompare pc1=pc[0];
     ui->bianhao1->setText(QString::number(1));
@@ -206,7 +208,8 @@ void CalWindow::startSlot()
         calPoint();
 
         // int beginMin1,beginMin2;
-        QVector<QVector<int> >qc=getSimplify(p,q);
+        Core core;
+        QVector<QVector<int> >qc=core.getSimplify(p,q);
         QVector<int>pv=qc[0];
         QVector<int>qv=qc[1];
 

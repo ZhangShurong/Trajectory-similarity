@@ -105,7 +105,6 @@ string DataBase::insertData(Csv *csv, string tbName)
         start = query.value(0).toString();
     }
 
-
     Sequence *temp = new Sequence();
     getSquFromFile(csv,temp);
     char  buffer1[200];

@@ -138,7 +138,8 @@ void ClusterDemo::cluster()
 {
     if(sequences.size() != 0)
     {
-        res = clusterAgglomerartive(sequences);
+        Core core;
+        res = core.clusterAgglomerartive(sequences);
         qDebug() << res.size();
         clustered = true;
         update();

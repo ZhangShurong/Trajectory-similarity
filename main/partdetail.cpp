@@ -18,13 +18,13 @@ partDetail::~partDetail()
 
 void partDetail::setPartInfo(Sequence *p, Sequence *q, QString namep, QString nameq)
 {
-
-    QVector<QVector<int> >qc=getSimplify(p,q);
+    Core core;
+    QVector<QVector<int> >qc=core.getSimplify(p,q);
     QVector<int>pv=qc[0];
     QVector<int>qv=qc[1];
 
-    initP_Q(p, q);
-    initMemSpace(p, q);
+    core.initP_Q(p, q);
+    core.initMemSpace(p, q);
    // std::cout<<"time: "<<pv.size()<<std::endl;
     for(int i=0; i+1<pv.size(); i=i+2) {
         int begin1=pv[i];
@@ -39,7 +39,7 @@ void partDetail::setPartInfo(Sequence *p, Sequence *q, QString namep, QString na
         ui->mainTable->setItem(i,4, new QTableWidgetItem(QString::number(begin2)));
         ui->mainTable->setItem(i,5, new QTableWidgetItem(QString::number(end2)));
 
-        double res = computeDFD_new(begin1, end1, begin2, end2);
+        double res = core.computeDFD_new(begin1, end1, begin2, end2);
         ui->mainTable->setItem(i,6, new QTableWidgetItem(QString::number(res)));
 
     }

@@ -703,7 +703,8 @@ void MainWindow::search(Sequence input)
         }
         tItem = new QTableWidgetItem();
         db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
-        dfDis = computeDiscreteFrechet(&input,&sf);
+        Core core;
+        dfDis = core.computeDiscreteFrechet(&input,&sf);
 
         //qc = getSimplify(&input,&sf,beginMin1,beginMin2);
 
