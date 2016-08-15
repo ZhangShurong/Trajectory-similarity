@@ -538,7 +538,8 @@ void SearchWin::calSecPart()
 //    omp_init_lock(&lock);
 //    #pragma omp parallel for
     //tracLeng=tracs->length();
-    tracsLen=tracs->length();
+    Core core;
+    core.tracsLen=tracs->length();
     for (int i = 0; i < tracs->length(); i++)
     {
      //   omp_set_lock(&lock);
@@ -546,14 +547,13 @@ void SearchWin::calSecPart()
 
         if (sf.hasTime() && input->hasTime())
         {
-            Core core;
+
             qc = core.getSimplify(input,&sf);
             fillPartTable(ui->searchTable_time_part,
                           qc, &sf);
         }
         else if (!sf.hasTime() && !input->hasTime())
         {
-            Core core;
             qc = core.getSimplify(input,&sf);
             fillPartTable(ui->searchTable_common_part,
                           qc, &sf);
