@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
    // importThread(db, tName, QStringList()),
     //importProgressDialog(NULL)
 {
+    db = new DataBase();
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->startAnimation();

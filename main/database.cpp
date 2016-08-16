@@ -48,7 +48,7 @@ DataBase::DataBase(QString connName, string databaseName)
 
 void DataBase::clearDB(string tableName)
 {
-    QSqlQuery q;
+    QSqlQuery q(db);
     QString str = "DELETE FROM "
                   + QString::fromStdString(tableName)
                   + ";";
@@ -96,7 +96,8 @@ void DataBase::decodeID(string ID, int *start, int *end)
 
 bool DataBase::isTableExist(string tableName)
 {
-    QSqlQuery query;
+    //QSqlQuery query;
+    QSqlQuery query(db);
     bool exist;
     query.exec(QString("select count(*) from sqlite_master where type='table' and name='%1';").arg(QString::fromStdString(tableName)));
     query.next();
@@ -106,7 +107,7 @@ bool DataBase::isTableExist(string tableName)
 
 string DataBase::insertData(Csv *csv, string tbName)
 {
-    QSqlQuery q;
+    QSqlQuery q(db);
     QString insert;
     QString tableName = QString::fromStdString(tbName);
 
@@ -114,7 +115,8 @@ string DataBase::insertData(Csv *csv, string tbName)
     {
         createTable(tbName);
     }
-    QSqlQuery query;
+    //QSqlQuery query;
+    QSqlQuery query(db);
     QString start;
     QString end;
 
@@ -198,7 +200,8 @@ string DataBase::insertData(Sequence sequence, string tbName)
     {
         createTable(tbName);
     }
-    QSqlQuery query;
+    //QSqlQuery query;
+    QSqlQuery query(db);
     QString start;
     QString end;
 
@@ -282,7 +285,8 @@ void DataBase::getSequenceByID(string tableName, Sequence *squ, string ID)
         return;
     }
     Point *temp = new Point[l];
-    QSqlQuery query;
+    //QSqlQuery query;
+    QSqlQuery query(db);
     query.exec("SELECT pt, time, id from "
                + QString::fromStdString(tableName)
                +" where id between "
@@ -332,7 +336,7 @@ QStringList *DataBase::getAllTracID(string tableName)
     QString str = "select tid from "
                   + QString::fromStdString(tableName)
                   + " where tid <> '';";
-    QSqlQuery q;
+    QSqlQuery q(db);
     q.exec(str);
     while (q.next()) {
         *temp << q.value(0).toString();
@@ -346,7 +350,8 @@ int DataBase::getRecordNum(string tableName)
     QString str = "select count(*) from "
                   + QString::fromStdString(tableName)
                   + ";";
-    QSqlQuery q;
+    //QSqlQuery q;
+    QSqlQuery q(db);
     q.exec(str);
     while (q.next()) {
         result = q.value(0).toString().toInt();
@@ -356,7 +361,8 @@ int DataBase::getRecordNum(string tableName)
 
 void DataBase::createTable(string tableName)
 {
-    QSqlQuery query;
+    //QSqlQuery query;
+    QSqlQuery query(db);
     query.exec("create table "+QString::fromStdString(tableName)+"(tid varchar,pt varchar,time datetime,id integer primary key, type int)");
 }
 
@@ -387,8 +393,8 @@ bool DataBase::hasTime(string ID,string tableName)
 {
     int start,end;
     decodeID(ID, &start, &end);
-
-    QSqlQuery query;
+    //QSqlQuery query;
+    QSqlQuery query(db);
     query.exec("SELECT pt, time, id from "
                + QString::fromStdString(tableName)
                +" where id between "
@@ -408,7 +414,7 @@ void DataBase::delSeq(string ID,string tableName)
     //delete from importtest where tid =
     int start,end;
     decodeID(ID, &start, &end);
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.exec("DELETE from "
                + QString::fromStdString(tableName)
                +" where id between "
