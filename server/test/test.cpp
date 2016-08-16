@@ -96,10 +96,11 @@ void testQdata()
     qDebug() << t2.getNum();
 
 }
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    //testQdata();
+    testQdata();
     qDebug() << "Hello World";
     return a.exec();
 }

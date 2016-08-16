@@ -2254,7 +2254,7 @@ p, li { white-space: pre-wrap; }
           <item>
            <widget class="QLabel" name="serverInfo">
             <property name="text">
-             <string>连接成功</string>
+             <string>连接断开</string>
             </property>
            </widget>
           </item>

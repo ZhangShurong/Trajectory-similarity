@@ -225,6 +225,10 @@ void TcpSocket::insertIntoDB(vector<Sequence> sequences)
 
 void TcpSocket::loadIntoMemory(vector<Sequence> &seq)
 {
+    seq = db->getNSequences(10,"Server");
+    std::cout<< seq.size();
+    std::cout.flush();
+    /*
     QStringList *tracIds = db->getAllTracID("Server");
     for(int i = 0; i < tracIds->size(); i++)
     {
@@ -233,4 +237,5 @@ void TcpSocket::loadIntoMemory(vector<Sequence> &seq)
         seq.push_back(temp);
     }
     delete tracIds;
+    */
 }

@@ -57,13 +57,14 @@ void Cloud::openfiles()
 
 void Cloud::openfile()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString file_name = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "", "CSV Files(*.csv)", 0);
-    if(filename.isEmpty())
+    if(file_name.isEmpty())
     {
         return;
     }
-    ifstream fin(filename.toStdString().c_str());
+    string fileName = file_name.toLocal8Bit().data();
+    ifstream fin(fileName.c_str());
     Csv csv(fin);
     Sequence sequence;
     try

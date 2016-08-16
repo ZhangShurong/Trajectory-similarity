@@ -46,6 +46,7 @@ void Client::search(Sequence sequence)
     out << qint16(block.size() - sizeof(quint16));
     this->write(block);
     std::cout << "send over";
+    std::cout.flush();
 }
 
 void Client::upload(vector<Sequence> sequences)

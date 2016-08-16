@@ -50,8 +50,8 @@ void DataBase::clearDB(string tableName)
 {
     QSqlQuery q(db);
     QString str = "DELETE FROM "
-                  + QString::fromStdString(tableName)
-                  + ";";
+            + QString::fromStdString(tableName)
+            + ";";
     q.exec(str);
 }
 
@@ -147,7 +147,7 @@ string DataBase::insertData(Csv *csv, string tbName)
             str1 = QString(QLatin1String(buffer1));
             str2 = QString(QLatin1String(buffer2));
             insert = "insert into " + tableName +
-                     " values ('','POINT(" +
+                    " values ('','POINT(" +
                     str1 + " " +
                     str2 + " " +
                     ")',NULL,NULL,NULL);";
@@ -163,11 +163,11 @@ string DataBase::insertData(Csv *csv, string tbName)
             str1 = QString(QLatin1String(buffer1));
             str2 = QString(QLatin1String(buffer2));
             insert = "insert into " + tableName +
-                     " values ('','POINT(" +
+                    " values ('','POINT(" +
                     str1 + " " +
                     str2 + " " +
                     ")','"+
-                     temp->pts[i].time+
+                    temp->pts[i].time+
                     "',NULL,NULL);";
 
             q.exec(insert);
@@ -180,14 +180,14 @@ string DataBase::insertData(Csv *csv, string tbName)
 
     QString tid = (start+"_"+end);
     insert = "insert into "
-             + tableName
-             + " values ("
-             + "'"
-             + tid
-             + "'"
-             + ",NULL,NULL,NULL,"
-             + temp->getType()
-             + ");";
+            + tableName
+            + " values ("
+            + "'"
+            + tid
+            + "'"
+            + ",NULL,NULL,NULL,"
+            + temp->getType()
+            + ");";
     query.exec(insert);
     return tid.toStdString();
 }
@@ -229,7 +229,7 @@ string DataBase::insertData(Sequence sequence, string tbName)
             str1 = QString(QLatin1String(buffer1));
             str2 = QString(QLatin1String(buffer2));
             insert = "insert into " + tableName +
-                     " values ('','POINT(" +
+                    " values ('','POINT(" +
                     str1 + " " +
                     str2 + " " +
                     ")',NULL,NULL,NULL);";
@@ -245,11 +245,11 @@ string DataBase::insertData(Sequence sequence, string tbName)
             str1 = QString(QLatin1String(buffer1));
             str2 = QString(QLatin1String(buffer2));
             insert = "insert into " + tableName +
-                     " values ('','POINT(" +
+                    " values ('','POINT(" +
                     str1 + " " +
                     str2 + " " +
                     ")','"+
-                     sequence.pts[i].time+
+                    sequence.pts[i].time+
                     "',NULL,NULL);";
 
             query.exec(insert);
@@ -262,14 +262,14 @@ string DataBase::insertData(Sequence sequence, string tbName)
 
     QString tid = (start+"_"+end);
     insert = "insert into "
-             + tableName
-             + " values ("
-             + "'"
-             + tid
-             + "'"
-             + ",NULL,NULL,NULL,"
-             + sequence.getType()
-             + ");";
+            + tableName
+            + " values ("
+            + "'"
+            + tid
+            + "'"
+            + ",NULL,NULL,NULL,"
+            + sequence.getType()
+            + ");";
     query.exec(insert);
     return tid.toStdString();
 }
@@ -294,7 +294,7 @@ void DataBase::getSequenceByID(string tableName, Sequence *squ, string ID)
                + " and "
                + QString::number(end)
                + ";"
-              );
+               );
     query.next();
     QString pt;
     QString time;
@@ -316,7 +316,7 @@ void DataBase::getSequenceByID(string tableName, Sequence *squ, string ID)
                +" where tid = '"
                +QString::fromStdString(ID)
                +"';"
-              );
+               );
     query.next();
     QString type = query.value(0).toString();
     squ->setType(type);
@@ -334,8 +334,8 @@ QStringList *DataBase::getAllTracID(string tableName)
 {
     QStringList *temp = new QStringList;
     QString str = "select tid from "
-                  + QString::fromStdString(tableName)
-                  + " where tid <> '';";
+            + QString::fromStdString(tableName)
+            + " where tid <> '';";
     QSqlQuery q(db);
     q.exec(str);
     while (q.next()) {
@@ -348,8 +348,8 @@ int DataBase::getRecordNum(string tableName)
 {
     int result = 0;
     QString str = "select count(*) from "
-                  + QString::fromStdString(tableName)
-                  + ";";
+            + QString::fromStdString(tableName)
+            + ";";
     //QSqlQuery q;
     QSqlQuery q(db);
     q.exec(str);
@@ -370,9 +370,42 @@ vector<Sequence> DataBase::getNSequences(int n, string tableName)
 {
     //loadinto memory
     QSqlQuery query(db);
-    QString qstr = "select * from " +QString::fromStdString(tableName) + " ";
+    //select id from Server  where tid <> "" limit 10;
+    QString qstr = "select id from " +QString::fromStdString(tableName) + "where tid <> '' limit " + n;
+    query.exec(qstr);
+    query.next();
+    query.clear();
+    QString maxid = query.value(0).toString();
+    qstr = "select * from Server  where id <= " + maxid;
+    //tid,pt,time,id,type
+    query.exec(qstr);
+    QString tid;
+    QString pt;
+    QString time;
+    QString id ;
 
+    Point temp;
+    Sequence t;
     vector<Sequence>  res;
+    while (query.next()) {
+        tid = query.value(0).toString();
+        if(tid.isEmpty())
+        {
+            pt = query.value(1).toString();
+            time = query.value(2).toString();
+            id = query.value(3).toString();
+            temp.buildPoint(pt,time,id);
+            t.appendPt(&temp);
+        }
+        else
+        {
+            t.setID(tid);
+            res.push_back(t);
+            t.clear();
+        }
+        query.next();
+        // qDebug() << pt + time + id;
+    }
     return res;
 }
 
@@ -389,7 +422,7 @@ bool DataBase::hasTime(string ID,string tableName)
                + " and "
                + QString::number(end)
                + ";"
-              );
+               );
     query.next();
     QString time = query.value(1).toString();
     query.clear();
@@ -409,7 +442,7 @@ void DataBase::delSeq(string ID,string tableName)
                + " and "
                + QString::number(end + 1)
                + ";"
-              );
+               );
 }
 
 void DataBase::close()
@@ -424,7 +457,7 @@ void DataBase::closeConnection(QString connName){
     {//force db to destruct before removeDatabase
         QSqlDatabase db=QSqlDatabase::database(connName);
         if(db.isOpen()){
-           db.close();
+            db.close();
         }
     }
     QSqlDatabase::removeDatabase(connName);
