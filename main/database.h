@@ -31,6 +31,7 @@ public:
     DataBase();
     DataBase(int i);
     DataBase(string databaseName);
+    DataBase(QString connName, string databaseName);
     void clearDB(string tableName);
     void setDBName(string databaseName);
     bool isTableExist(string tableName);
@@ -46,8 +47,7 @@ public:
     Sequence *getNSequences(int &n, string tableName);
     bool hasTime(string ID, string tableName);
     void delSeq(string ID,string tableName);
-
-    void closeConnection(QString connName);
+    void closeConnection(QString connName="");
 };
 
 #endif // DATABASE_H

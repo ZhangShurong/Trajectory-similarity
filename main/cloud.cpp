@@ -9,12 +9,12 @@ Cloud::Cloud(Ui::MainWindow *ui, QWidget *parent)
     ipAdd = "127.0.0.1";
     portd = 10086;
     client = new Client();
-    connectServer();
-    ui->progressBar->hide();
-    ui->serverInfo->hide();
+
+    ui->progressBar->hide();    
     initTable();
     connect(ui->uploadBtn, SIGNAL(clicked()), this, SLOT(openfiles()));
     connect(ui->searchInServerBtn, SIGNAL(clicked(bool)), this, SLOT(openfile()));
+    connect(ui->connectPushBtn, SIGNAL(clicked()), this, SLOT(connectPushBtnClicked()));
 
     connect(client, SIGNAL(connected()), this, SLOT(connectedMsg()));
     connect(client, SIGNAL(disconnected()), this, SLOT(connectionClosedByServer()));
@@ -78,9 +78,26 @@ void Cloud::openfile()
     client->search(sequence);
 }
 
+void Cloud::connectPushBtnClicked()
+{
+    if ("连接" == this->ui->connectPushBtn->text())
+    {
+        connectServer();
+    }
+    else {
+        client->disconnectFromHost();
+        if (client->state() == QAbstractSocket::UnconnectedState || client->waitForDisconnected(1000) )
+        {
+            ui->connectPushBtn->setText("连接");
+            ui->serverInfo->setText("连接已断开");
+        }
+    }
+
+}
+
 void Cloud::connectedMsg()
 {
-    std::cout << "Connected\n";
+    ui->connectPushBtn->setText("断开");
 }
 
 void Cloud::stop()
@@ -131,7 +148,7 @@ void Cloud::readData()
             QString msg;
             in >> msg;
             //QMessageBox::information(NULL, "提示", msg, QMessageBox::Yes, QMessageBox::Yes);
-            std::cout << msg.toStdString();
+            std::cerr << msg.toStdString();
         }
         if(returnType == 'I')
         {
@@ -159,10 +176,13 @@ void Cloud::connectServer()
     client->connectToServer(ipAdd, portd);
     if (client->waitForConnected(1000))
     {
-         QMessageBox::information(NULL, "提示", "连接成功", QMessageBox::Yes, QMessageBox::Yes);
+        ui->serverInfo->setText("连接成功");
+        ui->connectPushBtn->setText("断开");
+         //QMessageBox::information(NULL, "提示", "连接成功", QMessageBox::Yes, QMessageBox::Yes);
     }
     else
     {
+        ui->serverInfo->setText("连接已断开");
          QMessageBox::information(NULL, "提示", "连接失败", QMessageBox::Yes, QMessageBox::Yes);
     }
 }

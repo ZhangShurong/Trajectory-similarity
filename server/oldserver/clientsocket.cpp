@@ -47,7 +47,6 @@ void ClientSocket::readClient()
         echo(msg);
         QDataStream out(this);
         out << quint16(0xffff);
-        close();
         return;
     }
     if(requestType == 'I')
@@ -62,8 +61,6 @@ void ClientSocket::readClient()
     }
     QDataStream out(this);
     out << quint16(0xffff);
-    close();
-    std::cout << this->socketDescriptor() <<" is Closed\n";
 }
 
 void ClientSocket::echo(QString msg)

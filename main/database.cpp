@@ -23,6 +23,29 @@ DataBase::DataBase(string databaseName)
     initDb();
 }
 
+DataBase::DataBase(QString connName, string databaseName)
+{
+    dbName = databaseName;
+    loadDriver();
+    //initDb();
+    if(connName.isEmpty())
+        connName=QSqlDatabase::defaultConnection;
+    if(QSqlDatabase::contains(connName)){ //if connection is contained
+        QSqlDatabase tmpdb=QSqlDatabase::database(connName);
+        tmpdb.close();
+    }
+    //QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL",connName);
+
+    db = QSqlDatabase::addDatabase("QSQLITE",connName);
+    db.setDatabaseName(QString::fromStdString(dbName));
+
+    if (!db.open()) {
+        fprintf(stderr,"Can not open database %s \n", dbName.c_str());
+        //return db.lastError();
+    }
+    qDebug() << "Connected! And connName is " << connName;
+}
+
 void DataBase::clearDB(string tableName)
 {
     QSqlQuery q;
@@ -413,4 +436,3 @@ void DataBase::closeConnection(QString connName){
     }
     QSqlDatabase::removeDatabase(connName);
 }
-

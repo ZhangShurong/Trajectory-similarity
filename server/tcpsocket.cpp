@@ -8,7 +8,9 @@
 TcpSocket::TcpSocket(qintptr socketDescriptor, QObject *parent) : //构造函数在主线程执行，lambda在子线程
     QTcpSocket(parent),socketID(socketDescriptor)
 {
-    db = new DataBase();
+    //QString connName = "connName" + QString::number(socketDescriptor);
+    //db = new DataBase(connName, "Server");
+    db = new DataBase("Server");
     nextBlockSize = 0;
     this->setSocketDescriptor(socketDescriptor);
     connect(this,&TcpSocket::readyRead,this,&TcpSocket::readData);
@@ -25,6 +27,7 @@ TcpSocket::TcpSocket(qintptr socketDescriptor, QObject *parent) : //构造函数
 
 TcpSocket::~TcpSocket()
 {
+    delete db;
 }
 
 
@@ -202,9 +205,14 @@ void TcpSocket::insertIntoDB(vector<Sequence> sequences)
     {
         return;
     }
+    vector<string> stringList;
     for(uint i = 0; i < sequences.size(); i++)
     {
-        db->insertData(sequences[i], "Server");
+        stringList.push_back(db->insertData(sequences[i], "Server"));
+    }
+    if(stringList.size() == sequences.size())
+    {
+        echo("Insert sucess");
     }
 }
 

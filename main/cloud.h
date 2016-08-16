@@ -18,6 +18,7 @@ public:
 private slots:
     void openfiles();
     void openfile();//For search
+    void connectPushBtnClicked();
 
     //for socket
     void connectedMsg();
