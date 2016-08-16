@@ -8,18 +8,18 @@
 TcpSocket::TcpSocket(qintptr socketDescriptor, QObject *parent) : //构造函数在主线程执行，lambda在子线程
     QTcpSocket(parent),socketID(socketDescriptor)
 {
-    //QString connName = "connName" + QString::number(socketDescriptor);
-    //db = new DataBase(connName, "Server");
-    db = new DataBase("Server");
+    QString connName = "connName" + QString::number(socketDescriptor);
+    db = new DataBase(connName, "Server");
+    //db = new DataBase("Server");
     nextBlockSize = 0;
     this->setSocketDescriptor(socketDescriptor);
     connect(this,&TcpSocket::readyRead,this,&TcpSocket::readData);
     dis = connect(this,&TcpSocket::disconnected,
-        [&](){
-            qDebug() << "disconnect" ;
-            emit sockDisConnect(socketID,this->peerAddress().toString(),this->peerPort(),QThread::currentThread());//发送断开连接的用户信息
-            this->deleteLater();
-        });
+                  [&](){
+        qDebug() << "disconnect" ;
+        emit sockDisConnect(socketID,this->peerAddress().toString(),this->peerPort(),QThread::currentThread());//发送断开连接的用户信息
+        this->deleteLater();
+    });
     connect(&watcher,&QFutureWatcher<QByteArray>::finished,this,&TcpSocket::startNext);
     connect(&watcher,&QFutureWatcher<QByteArray>::canceled,this,&TcpSocket::startNext);
     qDebug() << "new connect" ;
@@ -55,7 +55,7 @@ void TcpSocket::disConTcp(int i)
 
 void TcpSocket::readData()
 {
-//    datas.append(this->readAll());
+    //    datas.append(this->readAll());
     //auto data  = handleData(this->readAll(),this->peerAddress().toString(),this->peerPort());
     //qDebug() << data;
     //this->write(data);
@@ -91,7 +91,7 @@ void TcpSocket::readData()
         search();
     }
     nextBlockSize = 0;
-/*
+    /*
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
@@ -105,10 +105,10 @@ void TcpSocket::readData()
     write(block);
     qDebug() << msg;
     */
-//    if (!watcher.isRunning())//放到异步线程中处理。
-//    {
-//        watcher.setFuture(QtConcurrent::run(this,&TcpSocket::handleData,datas.dequeue(),this->peerAddress().toString(),this->peerPort()));
-//    }
+    //    if (!watcher.isRunning())//放到异步线程中处理。
+    //    {
+    //        watcher.setFuture(QtConcurrent::run(this,&TcpSocket::handleData,datas.dequeue(),this->peerAddress().toString(),this->peerPort()));
+    //    }
 }
 
 QByteArray TcpSocket::handleData(QByteArray data, const QString &ip, qint16 port)
@@ -136,6 +136,7 @@ void TcpSocket::startNext()
 void TcpSocket::echo(QString msg)
 {
     std::cout << "Echo << \""<<msg.toStdString() << " \"" << std::endl;
+    std::cout.flush();
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
@@ -206,13 +207,15 @@ void TcpSocket::insertIntoDB(vector<Sequence> sequences)
         return;
     }
     vector<string> stringList;
+    db->db.transaction();
     for(uint i = 0; i < sequences.size(); i++)
     {
         stringList.push_back(db->insertData(sequences[i], "Server"));
     }
+    db->db.commit();
     if(stringList.size() == sequences.size())
     {
-        echo("Insert sucess");
+        echo("Insert sucess and the first id is "+ QString::fromStdString(stringList.at(0)));
     }
 }
 
