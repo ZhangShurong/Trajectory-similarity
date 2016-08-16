@@ -5,35 +5,23 @@
 #include <QObject>
 #include <QDataStream>
 #include "sequence.h"
-class Client:public QObject
+class Client:public QTcpSocket
 {
     Q_OBJECT
 public:
-    QString msg;
-    Sequence sequence;
-    std::vector<Sequence> sequences;
 
-    explicit Client();
-    void upload(vector<Sequence> sequences);
-    void search(Sequence sequence);
-    void echo(QString msg);
-    void closeConnection();
-    ~Client();
-private slots:
-    void sendRequest();
-    void stop();
-    void connectionClosedByServer();
-    void error();
-    void getData();
-private:
-    void connectToServer();
-    void search();
-    void insert();
-    void echo();
-    QTcpSocket tcpSocket;
     quint16 nextBlockSize;
     quint8 requestType;
 
+    explicit Client();
+    ~Client();
+
+    void closeConnection();
+    void connectToServer(QString ipaddr, uint port);
+
+    void upload(vector<Sequence> sequences);
+    void search(Sequence sequence);
+    void echo(QString msg);
 };
 
 #endif // CLIENT_H

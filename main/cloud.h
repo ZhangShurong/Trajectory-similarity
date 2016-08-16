@@ -18,12 +18,24 @@ public:
 private slots:
     void openfiles();
     void openfile();//For search
+
+    //for socket
+    void connectedMsg();
+    void stop();
+    void connectionClosedByServer();
+    void error();
+    void readData();
 private:
     Ui::MainWindow *ui;
     Client *client;
-    void upload(vector<Sequence> sequences);
-    void search(Sequence sequence);
+    QString ipAdd;
+    uint portd;
+
+    void connectServer();
+    void disconnectServer();
+
     void initTable();
+
 };
 
 #endif // CLOUD_H

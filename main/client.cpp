@@ -4,45 +4,31 @@
 
 Client::Client()
 {
-    connect(&tcpSocket, SIGNAL(connected()), this, SLOT(sendRequest()));
-    connect(&tcpSocket, SIGNAL(disconnected()), this, SLOT(connectionClosedByServer()));
-    connect(&tcpSocket, SIGNAL(readyRead()), this, SLOT(getData()));
-    connect(&tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error()));
+
 }
 
-void Client::search(Sequence sequence)
-{
-    requestType = 'S';
-    this->sequence = sequence;
-    connectToServer();
-}
 
-void Client::echo(QString msg)
-{
-    requestType = 'E';
-    this->msg = msg;
-    connectToServer();
-}
-
-void Client::upload(vector<Sequence> sequences)
-{
-    requestType = 'I';
-    this->sequences = sequences;
-    connectToServer();
-}
 
 Client::~Client()
 {
 
 }
 
-void Client::connectToServer()
+
+
+void Client::connectToServer(QString ipaddr, uint port)
 {
-    tcpSocket.connectToHost(QHostAddress::LocalHost, 10086);
+    if(ipaddr.isEmpty())
+    {
+        this->connectToHost(QHostAddress::LocalHost, 10086);
+    }
+    else {
+        this->connectToHost(ipaddr, port);
+    }
     nextBlockSize = 0;
 }
 
-void Client::search()
+void Client::search(Sequence sequence)
 {
     std::cout << "In search:\n";
     QByteArray block;
@@ -58,11 +44,11 @@ void Client::search()
     out << sequence;
     out.device()->seek(0);
     out << qint16(block.size() - sizeof(quint16));
-    tcpSocket.write(block);
+    this->write(block);
     std::cout << "send over";
 }
 
-void Client::insert()
+void Client::upload(vector<Sequence> sequences)
 {
     std::cout << "In insert:\n";
     QByteArray block;
@@ -81,11 +67,11 @@ void Client::insert()
     }
     out.device()->seek(0);
     out << qint16(block.size() - sizeof(quint16));
-    tcpSocket.write(block);
+    this->write(block);
     qDebug() << "Insert over";
 }
 
-void Client::echo()
+void Client::echo(QString msg)
 {
     std::cout << "In echo:\n";
     QByteArray block;
@@ -94,103 +80,6 @@ void Client::echo()
     out << qint16(0) << qint8('E') << msg;
     out.device()->seek(0);
     out << qint16(block.size() - sizeof(quint16));
-    tcpSocket.write(block);
+    this->write(block);
     std::cout << "echo over";
 }
-
-void Client::sendRequest()
-{
-    qDebug() << "In send request";
-    if(requestType == 'I')
-    {
-        insert();
-        return;
-    }
-    if(requestType == 'S')
-    {
-        search();
-        return;
-    }
-    if(requestType == 'E')
-    {
-        echo();
-        return;
-    }
-
-}
-
-void Client::stop()
-{
-    tcpSocket.close();
-}
-
-void Client::connectionClosedByServer()
-{
-    if(nextBlockSize != 0xffff)
-        std::cerr<<"Connection close by server\n";
-    closeConnection();
-}
-
-void Client::error()
-{
-    std::cerr << "Error \n";
-    tcpSocket.close();
-}
-
-void Client::getData()
-{
-
-    std::cout << "In getData";
-    QDataStream in(&tcpSocket);
-    in.setVersion(QDataStream::Qt_5_4);
-    forever
-    {
-        if(nextBlockSize == 0)
-        {
-            if(tcpSocket.bytesAvailable() < sizeof(qint16))
-                break;
-            in >> nextBlockSize;
-        }
-        if(nextBlockSize == 0xffff)
-        {
-            closeConnection();
-            break;
-        }
-        if(tcpSocket.bytesAvailable() < nextBlockSize)
-        {
-            break;
-        }
-        quint8 returnType;
-        in >> returnType;
-        if(returnType == 'E')
-        {
-            QString msg;
-            in >> msg;
-            QMessageBox::information(NULL, "提示", msg, QMessageBox::Yes, QMessageBox::Yes);
-        }
-        if(returnType == 'I')
-        {
-
-        }
-        if(returnType == 'R')
-        {
-
-        }
-        if(returnType == 'D')
-        {
-
-        }
-        if(returnType == 'S')
-        {
-
-        }
-
-        nextBlockSize = 0;
-    }
-}
-
-void Client::closeConnection()
-{
-    tcpSocket.close();
-}
-

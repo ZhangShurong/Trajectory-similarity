@@ -11,6 +11,7 @@
 ClientSocket::ClientSocket(QObject *parent)
     :QTcpSocket(parent)
 {
+    std::cout << "Socket " << this->socketDescriptor() <<" is closed and the connection will be cleared!\n";
     nextBlockSize = 0;
     db = new DataBase("Server");
     connect(this, SIGNAL(readyRead()), this, SLOT(readClient()));
@@ -18,12 +19,12 @@ ClientSocket::ClientSocket(QObject *parent)
 
 ClientSocket::~ClientSocket()
 {
-    db->close();
+    db->closeConnection("");
     delete db;
 }
 void ClientSocket::readClient()
 {
-    std::cout << "Readdy to read the client:\n";
+    std::cout << "Ready to read the client:\n";
     QDataStream in(this);
     in.setVersion(QDataStream::Qt_5_4);
     if(nextBlockSize == 0)
@@ -38,6 +39,7 @@ void ClientSocket::readClient()
     quint8 requestType;
     QString msg;
     in >> requestType;
+    std::cout << "Request type is " << requestType << std::endl;
     if(requestType == 'E')
     {
         in >> msg;
@@ -60,12 +62,13 @@ void ClientSocket::readClient()
     }
     QDataStream out(this);
     out << quint16(0xffff);
-    std::cout << this->socketDescriptor() <<" is Closed\n";
     close();
+    std::cout << this->socketDescriptor() <<" is Closed\n";
 }
 
 void ClientSocket::echo(QString msg)
 {
+    std::cout << "Echo << \""<<msg.toStdString() << " \"" << std::endl;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
@@ -76,6 +79,7 @@ void ClientSocket::echo(QString msg)
     out.device()->seek(0);
     out << quint16(block.size() - sizeof(quint16));
     write(block);
+    //out << quint16(0xffff);
 }
 
 void ClientSocket::insertIntoDB(vector<Sequence> sequences)
@@ -120,9 +124,6 @@ void ClientSocket::searchInDB(Sequence sequence)
     QString msg = "Server got the sequence and the points number is "+ QString::number(sequence.getNum())
             + "\n";
     echo(msg);
-
-
-
 }
 
 void ClientSocket::search()
@@ -146,6 +147,11 @@ void ClientSocket::search()
     closeConnection();
 }
 
+void ClientSocket::searchResult()
+{
+
+}
+
 void ClientSocket::loadIntoMemory(vector<Sequence> &seq)
 {
     QStringList *tracIds = db->getAllTracID("Server");
@@ -155,6 +161,7 @@ void ClientSocket::loadIntoMemory(vector<Sequence> &seq)
         db->getSequenceByID("Server", &temp, QString((*tracIds)[i]).toStdString());
         seq.push_back(temp);
     }
+    delete tracIds;
 }
 
 void ClientSocket::download()
@@ -180,9 +187,10 @@ void ClientSocket::download()
 
 void ClientSocket::closeConnection()
 {
+    db->closeConnection("");
     QDataStream out(this);
     out << quint16(0xffff);
-    std::cout << this->socketDescriptor() <<" is Closed\n";
-    close();
+    //std::cout << this->socketDescriptor() <<" is Closed\n";
+    //close();
 }
 

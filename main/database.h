@@ -25,6 +25,7 @@ private:
     bool loadDriver();
     QSqlError initDb();
     void decodeID(string ID, int *start, int *end);
+    void close();
 public:
     QSqlDatabase db;
     DataBase();
@@ -45,7 +46,8 @@ public:
     Sequence *getNSequences(int &n, string tableName);
     bool hasTime(string ID, string tableName);
     void delSeq(string ID,string tableName);
-    void close();
+
+    void closeConnection(QString connName);
 };
 
 #endif // DATABASE_H

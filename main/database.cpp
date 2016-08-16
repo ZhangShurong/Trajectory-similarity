@@ -400,4 +400,17 @@ void DataBase::close()
 {
     db.close();
 }
+void DataBase::closeConnection(QString connName){
+    if(connName.isEmpty())
+        connName=QSqlDatabase::defaultConnection;
+    if(!QSqlDatabase::contains(connName))
+        return;
+    {//force db to destruct before removeDatabase
+        QSqlDatabase db=QSqlDatabase::database(connName);
+        if(db.isOpen()){
+           db.close();
+        }
+    }
+    QSqlDatabase::removeDatabase(connName);
+}
 

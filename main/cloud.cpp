@@ -6,12 +6,20 @@ Cloud::Cloud(Ui::MainWindow *ui, QWidget *parent)
 :QMainWindow(parent)
 {
     this->ui = ui;
+    ipAdd = "127.0.0.1";
+    portd = 10086;
     client = new Client();
+    connectServer();
     ui->progressBar->hide();
     ui->serverInfo->hide();
     initTable();
     connect(ui->uploadBtn, SIGNAL(clicked()), this, SLOT(openfiles()));
     connect(ui->searchInServerBtn, SIGNAL(clicked(bool)), this, SLOT(openfile()));
+
+    connect(client, SIGNAL(connected()), this, SLOT(connectedMsg()));
+    connect(client, SIGNAL(disconnected()), this, SLOT(connectionClosedByServer()));
+    connect(client, SIGNAL(readyRead()), this, SLOT(readData()));
+    connect(client, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error()));
 }
 
 Cloud::~Cloud()
@@ -70,9 +78,93 @@ void Cloud::openfile()
     client->search(sequence);
 }
 
-void Cloud::search(Sequence sequence)
+void Cloud::connectedMsg()
 {
+    std::cout << "Connected\n";
+}
 
+void Cloud::stop()
+{
+    client->close();
+}
+
+void Cloud::connectionClosedByServer()
+{
+    if(client->nextBlockSize != 0xffff)
+        std::cerr<<"Connection close by server\n";
+    client->disconnectFromHost();
+    client->close();
+}
+
+void Cloud::error()
+{
+    std::cerr << "Error \n";
+    client->close();
+}
+
+void Cloud::readData()
+{
+    std::cout << "In getData";
+    QDataStream in(client);
+    in.setVersion(QDataStream::Qt_5_4);
+    forever
+    {
+        if(client->nextBlockSize == 0)
+        {
+            if(client->bytesAvailable() < sizeof(qint16))
+                break;
+            in >> client->nextBlockSize;
+        }
+        if(client->nextBlockSize == 0xffff)
+        {
+            client->close();
+            break;
+        }
+        if(client->bytesAvailable() < client->nextBlockSize)
+        {
+            break;
+        }
+        quint8 returnType;
+        in >> returnType;
+        if(returnType == 'E')
+        {
+            QString msg;
+            in >> msg;
+            //QMessageBox::information(NULL, "提示", msg, QMessageBox::Yes, QMessageBox::Yes);
+            std::cout << msg.toStdString();
+        }
+        if(returnType == 'I')
+        {
+
+        }
+        if(returnType == 'R')
+        {
+
+        }
+        if(returnType == 'D')
+        {
+
+        }
+        if(returnType == 'S')
+        {
+
+        }
+
+        client->nextBlockSize = 0;
+    }
+}
+
+void Cloud::connectServer()
+{
+    client->connectToServer(ipAdd, portd);
+    if (client->waitForConnected(1000))
+    {
+         QMessageBox::information(NULL, "提示", "连接成功", QMessageBox::Yes, QMessageBox::Yes);
+    }
+    else
+    {
+         QMessageBox::information(NULL, "提示", "连接失败", QMessageBox::Yes, QMessageBox::Yes);
+    }
 }
 
 void Cloud::initTable()
@@ -92,5 +184,14 @@ void Cloud::initTable()
            << tr("备注");
     ui->tableWidget->setHorizontalHeaderLabels(header);
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+}
+
+void Cloud::disconnectServer()
+{
+    client->disconnectFromHost();
+    if (client->state() == QAbstractSocket::UnconnectedState || client->waitForDisconnected(1000) )
+    {
+        QMessageBox::information(NULL, "提示", "连接断开", QMessageBox::Yes, QMessageBox::Yes);
+    }
 }
 
