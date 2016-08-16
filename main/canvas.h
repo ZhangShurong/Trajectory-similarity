@@ -36,7 +36,7 @@ private:
     QPoint translateCo(double x, double y);
     void drawAxies();
     void getRange();
-    void drawSeq(Sequence *se_a);
+    void drawSeq(Sequence *se_a,int i);
 
 public:
     explicit Canvas(QWidget *parent = 0);

@@ -58,6 +58,7 @@ void SearchWin::setTracs(QStringList *tracs)
     this->tracs = tracs;
 }
 
+
 void SearchWin::setDB(DataBase *db)
 {
     this->db = db;
@@ -138,22 +139,18 @@ void SearchWin::searchSeq()
     double maxDis = 0;
     int c = 0;
     int t = 0;
-
-    QProgressDialog progress(tr("正在计算轨迹数据，请稍候..."),
-                             tr("取消"),
-                             0, tracs->length());
-    progress.setWindowModality(Qt::WindowModal);
-    //progress.show();
-
+    Sequence sf;
+    QTableWidgetItem *tItem;
+    Core core;
     for (int i = 0; i < tracs->length(); i++)
     {
-        Sequence sf;
+
         sf = id_seq_map[tracs->at(i)];
 
-        QTableWidgetItem *tItem = new QTableWidgetItem();
+        tItem = new QTableWidgetItem();
 
         if((input->hasTime() && sf.hasTime())||((!input->hasTime()) && (!sf.hasTime()))){
-            dfDis = computeDiscreteFrechet(input,&sf);
+            dfDis = core.computeDiscreteFrechet(input,&sf);
         }
         else {
             continue;
@@ -179,12 +176,7 @@ void SearchWin::searchSeq()
         {
             maxDis = dfDis;
         }
-        progress.setValue(i);
-        if (progress.wasCanceled()) {
-            break;
-        }
     }
-    progress.setValue(tracs->length());
 
 
     if ( c != 0)
@@ -244,6 +236,31 @@ void SearchWin::sortSeqTable()
 //    ui->searchNewSelected->sortItems(2, Qt::AscendingOrder);
     ui->searchTable_time->sortItems(2, Qt::AscendingOrder);
 //    ui->searchNewTime->sortItems(2, Qt::AscendingOrder);
+    QAbstractItemModel *model;
+    QModelIndex index1;
+    QString id1;
+    if(tracs->length()>500&&storeId.length()==0){     
+        for(int i=0;i<tracs->length()/10;i++){
+            model = ui->searchTable_common->model();
+            index1 = model->index(i,0);
+            id1 = model->data(index1).toString();
+            storeId.append(id1);
+        }
+    }else if(500>tracs->length()>50&&storeId.length()==0){
+        for(int i=0;i<tracs->length()/5;i++){
+            model = ui->searchTable_common->model();
+            index1 = model->index(i,0);
+            id1 = model->data(index1).toString();
+            storeId.append(id1);
+        }
+    }else if(tracs->length()<50&&storeId.length()==0){
+        for(int i=0;i<tracs->length();i++){
+            model = ui->searchTable_common->model();
+            index1 = model->index(i,0);
+            id1 = model->data(index1).toString();
+            storeId.append(id1);
+        }
+    }
 }
 
 void SearchWin::initSig()
@@ -290,16 +307,20 @@ void SearchWin::searchSelectedSeqs(){
     progress.setWindowModality(Qt::WindowModal);
     //progress.show();
 
+    Core core;
     for (int i = 0; i < selectedSeqS.length()-1; i++)
     {
 //        Sequence sf;
 //        sf = selectedSeqS[i];
 
        // QTableWidgetItem *tItem = new QTableWidgetItem();
-
+        progress.setValue(i);
+        if (progress.wasCanceled()) {
+            break;
+        }
         for(int j=i+1;j< selectedSeqS.length();j++){
 
-            dfDis = computeDiscreteFrechet(&selectedSeqS[j],&selectedSeqS[i]);
+            dfDis = core.computeDiscreteFrechet(&selectedSeqS[j],&selectedSeqS[i]);
 //            if (dfDis == 0)
 //            {
 //                coincide << selectedSeqS[i].getID();
@@ -326,10 +347,7 @@ void SearchWin::searchSelectedSeqs(){
 //                maxDis = dfDis;
 //            }
         }
-        progress.setValue(i);
-        if (progress.wasCanceled()) {
-            break;
-        }
+
     }
     progress.setValue(selectedSeqS.length());
 
@@ -507,8 +525,9 @@ void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partIn
     QVector<int>pv=partInfo[0];
     QVector<int>qv=partInfo[1];
     QString str;
-    initP_Q(input, se);
-    initMemSpace(input, se);
+    Core core;
+    core.initP_Q(input, se);
+    core.initMemSpace(input, se);
     for(int i=0; i<pv.size() - 1; i=i+2) {
         int begin1=pv[i];
         int end1=pv[i+1];
@@ -522,7 +541,7 @@ void SearchWin::fillPartTable(QTableWidget *table, QVector<QVector<int> > partIn
         str  = QString::number(begin1) + "-"+QString::number(end1);
         table->setItem(partRowcount, 2, new QTableWidgetItem(str));
 
-        double res = computeDFD_new(begin1, end1, begin2, end2);
+        double res = core.computeDFD_new(begin1, end1, begin2, end2);
 
         str  = QString::number(res);
         table->setItem(partRowcount, 3, new QTableWidgetItem(str));
@@ -541,29 +560,74 @@ void SearchWin::calSecPart()
     //  #pragma omp parallel for
     QVector<QVector<int> >qc;
     Sequence sf;
-    for (int i = 0; i < tracs->length(); i++)
-    {
-        sf = id_seq_map[tracs->at(i)];
+//    omp_lock_t lock;
+//    omp_init_lock(&lock);
+//    #pragma omp parallel for
+    //tracLeng=tracs->length();
+    Core core;
+    core.tracsLen=tracs->length();
 
-        if (sf.hasTime() && input->hasTime())
+    if(storeId.length()!=0){
+        progress.setMaximum(storeId.length());
+        for (int i = 0; i <storeId.length(); i++)
         {
-            qc = getSimplify(input,&sf);
-            fillPartTable(ui->searchTable_time_part,
-                          qc, &sf);
-        }
-        else if (!sf.hasTime() && !input->hasTime())
-        {
-            qc = getSimplify(input,&sf);
-            fillPartTable(ui->searchTable_common_part,
-                          qc, &sf);
-        }
-        progress.setValue(i);
-        if (progress.wasCanceled()) {
-            break;
-        }
+         //   omp_set_lock(&lock);
+            sf = id_seq_map[storeId[i]];
 
+            if (sf.hasTime() && input->hasTime())
+            {
+                qc = core.getSimplify(input,&sf);
+                fillPartTable(ui->searchTable_time_part,
+                              qc, &sf);
+            }
+            else if (!sf.hasTime() && !input->hasTime())
+            {
+                qc = core.getSimplify(input,&sf);
+                fillPartTable(ui->searchTable_common_part,
+                              qc, &sf);
+            }
+            progress.setValue(i);
+            if (progress.wasCanceled()) {
+                break;
+            }
+            std::cout<<i<<endl;
+           // omp_unset_lock(&lock);
+        }
+        progress.setValue(storeId.length());
+    }else{
+        if(!seqFlag){
+            searchSeq();
+            sortSeqTable();
+        }
+        progress.setMaximum(storeId.length());
+        for (int i = 0; i <storeId.length(); i++)
+        {
+         //   omp_set_lock(&lock);
+            sf = id_seq_map[storeId[i]];
+
+            if (sf.hasTime() && input->hasTime())
+            {
+                qc = core.getSimplify(input,&sf);
+                fillPartTable(ui->searchTable_time_part,
+                              qc, &sf);
+            }
+            else if (!sf.hasTime() && !input->hasTime())
+            {
+                qc = core.getSimplify(input,&sf);
+                fillPartTable(ui->searchTable_common_part,
+                              qc, &sf);
+            }
+            std::cout<<i<<endl;
+            progress.setValue(i);
+            if (progress.wasCanceled()) {
+                break;
+            }
+           // omp_unset_lock(&lock);
+        }
+        progress.setValue(storeId.length());
     }
-    progress.setValue(tracs->length());
+
+   // omp_destroy_lock(&lock);    
 }
 
 void SearchWin::drawSeq()
@@ -836,18 +900,19 @@ void SearchWin::drawPoints()
 void SearchWin::searchPoint()
 {
     QVector<PointCompare> pVec;
+    Core core;
     for (int i = 0; i < tracs->length(); i++)
     {
         Sequence sf;
         sf = id_seq_map[tracs->at(i)];
         if (sf.hasTime() && input->hasTime())
         {
-            pVec = getNearestPoint(input, &sf);
+            pVec = core.getNearestPoint(input, &sf);
             fillPointTable(ui->searchTable_time_point, pVec, &sf);
         }
         else if (!sf.hasTime() && !input->hasTime())
         {
-            pVec = getNearestPoint(input, &sf);
+            pVec = core.getNearestPoint(input, &sf);
             fillPointTable(ui->searchTable_common_point, pVec, &sf);
         }
     }
@@ -858,15 +923,113 @@ void SearchWin::loadIntoMem()
     string tb = "importtest";
     seqs.append(*input);
     id_seq_map.insert(input->getID(), *input);
+    QProgressDialog* pro= new QProgressDialog(tr("正在处理轨迹数据，请稍候..."), tr("取消"),
+                             0,tracs->length());
+    pro->setWindowModality(Qt::WindowModal);
+    pro->setWindowTitle(tr("Please Wait"));
 
-    for (int i = 0; i < tracs->length(); i++)
+    pro->show();
+//    qApp->processEvents();
+//    int m=0;
+//    #pragma omp parallel for
+//    for (int i = 0; i < tracs->length(); i++)
+//    {
+////        pro->setValue(i);
+////        if (pro->wasCanceled()) {
+////            break;
+////        }
+//        //将轨迹存入内存，便于后期使用
+//        Sequence sf;
+//        db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
+
+//         #pragma omp critical
+//        {
+//            seqs.append(sf);
+//            m++;
+//            pro->setValue(m);
+//            id_seq_map.insert(sf.getID(), sf);
+//        }
+
+//        std::cout<<i<<endl;
+//    }
+
+//    if(m==tracs->length()){
+//           pro->setValue(m);
+//    }
+
+//    if(tracs->length()==seqs.length()){
+//        pro->close();
+//    }
+
+    int m=tracs->length()%10;
+    for (int i = 0; i < tracs->length()-9; i=i+10)
     {
+        pro->setValue(i);
+        if (pro->wasCanceled()) {
+            break;
+        }
         //将轨迹存入内存，便于后期使用
-        Sequence sf;
-        db->getSequenceByID(tb,&sf,QString((*tracs)[i]).toStdString());
-        seqs.append(sf);
-        id_seq_map.insert(sf.getID(), sf);
+        Sequence sf1;
+        db->getSequenceByID(tb,&sf1,QString((*tracs)[i]).toStdString());
+        seqs.append(sf1);
+        id_seq_map.insert(sf1.getID(), sf1);
+
+        Sequence sf2;
+        db->getSequenceByID(tb,&sf2,QString((*tracs)[i+1]).toStdString());
+        seqs.append(sf2);
+        id_seq_map.insert(sf2.getID(), sf2);
+
+
+        Sequence sf3;
+        db->getSequenceByID(tb,&sf3,QString((*tracs)[i+2]).toStdString());
+        seqs.append(sf3);
+        id_seq_map.insert(sf3.getID(), sf3);
+
+         Sequence sf4;
+         db->getSequenceByID(tb,&sf4,QString((*tracs)[i+3]).toStdString());
+         seqs.append(sf4);
+         id_seq_map.insert(sf4.getID(), sf4);
+
+         Sequence sf5;
+         db->getSequenceByID(tb,&sf5,QString((*tracs)[i+4]).toStdString());
+         seqs.append(sf5);
+         id_seq_map.insert(sf5.getID(), sf5);
+
+         Sequence sf6;
+         db->getSequenceByID(tb,&sf6,QString((*tracs)[i+5]).toStdString());
+         seqs.append(sf6);
+         id_seq_map.insert(sf6.getID(), sf6);
+
+
+         Sequence sf7;
+         db->getSequenceByID(tb,&sf7,QString((*tracs)[i+6]).toStdString());
+         seqs.append(sf7);
+         id_seq_map.insert(sf7.getID(), sf7);
+
+          Sequence sf8;
+          db->getSequenceByID(tb,&sf8,QString((*tracs)[i+7]).toStdString());
+          seqs.append(sf8);
+          id_seq_map.insert(sf8.getID(), sf8);
+
+          Sequence sf9;
+          db->getSequenceByID(tb,&sf9,QString((*tracs)[i+8]).toStdString());
+          seqs.append(sf9);
+          id_seq_map.insert(sf9.getID(), sf9);
+
+          Sequence sf10;
+          db->getSequenceByID(tb,&sf10,QString((*tracs)[i+9]).toStdString());
+          seqs.append(sf10);
+          id_seq_map.insert(sf10.getID(), sf10);
+
+         std::cout<<i<<endl;
     }
+    for(int i=0;i<m;i++){
+        Sequence sf4;
+        db->getSequenceByID(tb,&sf4,QString((*tracs)[tracs->length()-1-i]).toStdString());
+        seqs.append(sf4);
+        id_seq_map.insert(sf4.getID(), sf4);
+    }
+    pro->setValue(tracs->length());
 }
 
 void SearchWin::refreshTable()
@@ -948,6 +1111,19 @@ void SearchWin::init()
     ui->searchStackedWidget_time->setCurrentIndex(0);
 }
 
+void SearchWin::initWithOutClear()
+{
+    //    time = false;
+    seqFlag = false;
+    partFlag = false;
+    pointFlag  = false;
+
+    coincide.clear();
+    ui->searchtabWidget->setCurrentIndex(0);
+    ui->searchStackedWidget->setCurrentIndex(0);
+    ui->searchStackedWidget_time->setCurrentIndex(0);
+}
+
 void SearchWin::clearInput()
 {
     if (input->getNum() != 0)
@@ -955,6 +1131,8 @@ void SearchWin::clearInput()
         delete input;
         input = new Sequence();
     }
+    storeId.clear();
+    seqFlag=false;
 }
 
 void SearchWin::openFile()
@@ -995,7 +1173,7 @@ void SearchWin::openFile()
         return;
     }
     ui->searchPathEdit->setText(file_name);
-    init();
+    initWithOutClear();
     if (input->hasTime())
     {
         time = true;
@@ -1009,6 +1187,9 @@ void SearchWin::openFile()
 
 void SearchWin::rankPartOfSeq()
 {
+
+   // pro->setWindowTitle(tr("Please Wait"));
+
     statusPart=1;
     statusPoint=0;
     statusSeq=0;
@@ -1051,8 +1232,8 @@ void SearchWin::rankPartOfSeq()
     }
     if (coincide.length() == 0)
     {
-        searchSeq();
-        sortSeqTable();
+        //searchSeq();
+        //sortSeqTable();
     }
     calSecPart();
     sortPartTable();
@@ -1062,11 +1243,14 @@ void SearchWin::rankPartOfSeq()
 
 void SearchWin::rankSeqClicked()
 {
+
     statusPart=0;
     statusPoint=0;
     statusSeq=1;
 
-    selectedSeqS= getCurrentSeq();
+    if(input->getNum()==0){
+        selectedSeqS= getCurrentSeq();
+    }
 
     if(selectedSeqS.length()>1){
         init();
@@ -1109,6 +1293,8 @@ void SearchWin::rankSeqClicked()
     this->ui->searchMap->initJS();
     this->ui->searchMap->setDefaultCentralPt();
     this->ui->searchMap->reload();
+
+
 
     if (coincide.length() == 0)
     {
@@ -1180,7 +1366,7 @@ void SearchWin::rankSeqPointClicked()
     if (coincide.length() == 0)
     {
         searchSeq();
-        sortSeqTable();
+        //sortSeqTable();
     }
     searchPoint();
     sortPointTable();

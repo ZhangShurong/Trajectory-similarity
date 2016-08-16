@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets sql
+QT       += core gui widgets sql network
 
 TARGET = test
 
@@ -15,8 +15,10 @@ SOURCES += test.cpp \
     ../main/csv.cpp \
     ../main/database.cpp \
     ../main/sequence.cpp \
-    ../main/core.cpp
+    ../main/core.cpp \
+    testqdatastream.cpp
 
 
-HEADERS += 
+HEADERS += \ 
+    testqdatastream.h
 INCLUDEPATH += ../main

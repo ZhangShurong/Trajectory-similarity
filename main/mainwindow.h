@@ -21,6 +21,7 @@
 #include "calwindow.h"
 #include "searchwin.h"
 #include "settingwin.h"
+#include "cloud.h"
 
 #define ROW_NUM 100
 
@@ -76,7 +77,6 @@ private slots:
     void on_exToolButton_clicked();
     void aboutButton_clicked();
     void on_gjToolButton_clicked();
-    void on_clusterToolButton_clicked();
     void openFile();
     void showMap();
     void about();
@@ -99,11 +99,16 @@ private slots:
     void importFinished(int ok, int bad);
  //   void transferImportNumber(int n);
 
+    void cloudBtnClicked();
+    void clusterBtnClicked();
+
 private:
     Ui::MainWindow *ui;
     friend class CalWindow;
     friend class SearchWin;
     SettingWin *settingWin;
+    Cloud *cloudWin;
+    //int showedMap;
     /*
      * 记录窗口位置
      */
@@ -113,6 +118,7 @@ private:
     // Database
     string tName;
     bool search_mode;
+    bool showedInMap;
     DataBase *db;
     Canvas *can;
     // Thread for import file
@@ -135,6 +141,8 @@ private:
     QAction *searchAct;
     QAction *showInMapAct;
     QAction *detailAct;
+
+    QProgressDialog *progress;
 
     Sequence input;
 

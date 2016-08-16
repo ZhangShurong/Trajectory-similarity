@@ -124,6 +124,10 @@ ClusterDemo::~ClusterDemo()
 
 void ClusterDemo::reset()
 {
+    temp.clear();
+    index = 0;
+    pointsNum = 0;
+    res.clear();
     points.clear();
     sequences.clear();
     lines.clear();
@@ -134,11 +138,11 @@ void ClusterDemo::cluster()
 {
     if(sequences.size() != 0)
     {
-        res = clusterAgglomerartive(sequences);
+        Core core;
+        res = core.clusterAgglomerartive(sequences);
         qDebug() << res.size();
         clustered = true;
         update();
     }
-
 }
 

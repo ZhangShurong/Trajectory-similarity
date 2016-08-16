@@ -4,199 +4,37 @@
 #include <QtAlgorithms>
 #include <time.h>
 #include <calwindow.h>
-#include <Eigen>
+#include "ThirdParty/Eigen/Eigen"
 
 using namespace std;
-double **mem = NULL;
-Sequence *p;
-Sequence *q;
-double coef;
-int mX;
-int mY;
 
 
-double computeDiscreteFrechet(Sequence *sa, Sequence *sb)
+
+Core::Core()
 {
-    p = sa;
-    q = sb;
-    if(sa->hasTime()){
-        coef=calCoef();
-    }
-    initMemSpace(sa, sb);
-    return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
-}
 
-double euclideanDistance(Point* a, Point* b)
+    tracsLen=0;
+    coef = 0;
+}
+Core::~Core()
 {
-    double dis = 0;
-    if(a->time.isEmpty()) {
-        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
-              + (a->latitude - b->latitude)*(a->latitude - b->latitude);
-    } else {
-        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
-              + (a->latitude - b->latitude)*(a->latitude - b->latitude)+calTimeDistance(a,b)*coef;
-    }
-    dis = sqrt(dis);
-    return dis;
-}
-
-double calTimeDistance(Point *a,Point *b) {
-    double hourGap;
-
-    if((a->t.year!=b->t.year)||(a->t.month!=b->t.month)) {
-        hourGap=720;
-    } else {
-        hourGap=qAbs((a->t.day*24+a->t.hour+a->t.minute*0.016+a->t.second*0.0002)-(b->t.day*24+b->t.hour+b->t.minute*0.016+b->t.second*0.0002));
-    }
-    return hourGap;
-}
-
-double calCoef() {
-    double x1=p->getMaxX()-p->getMinX();
-    double y1=p->getMaxY()-p->getMinY();
-    double sqr1=sqrt(x1*x1+y1*y1);
-
-    double x2=q->getMaxX()-q->getMinX();
-    double y2=q->getMaxY()-q->getMinY();
-    double sqr2=sqrt(x2*x2+y2*y2);
-
-    double avgSqr=0.5*(sqr1+sqr2);
-
-    double timeGap1=calTimeDistance(&p->pts[p->getNum()-1],&p->pts[0]);
-    double timeGap2=calTimeDistance(&q->pts[q->getNum()-1],&q->pts[0]);
-
-    double timeGapAvg=0.5*(timeGap1+timeGap2);
-
-    if(timeGapAvg==0){
-        timeGapAvg=1;
-    }
-
-    double coef=avgSqr/timeGapAvg;
-    return coef;
-}
-
-
-
-void
-getSquFromFile(Csv *csv, Sequence *se)
-{
-    if (se->getNum() != 0)
+    if(mem != NULL)
     {
-        delete se;
-        Sequence *t = new Sequence();
-        se = t;
-    }
-    se->setID("Input");
-    string line;
-    bool ok;
-    QString xStr;
-    QString yStr;
-    double x;
-    double y;
-
-    QVector<Point*> tContainer;
-    while (csv->getline(line) != 0) {
-        const char *t = line.c_str();
-        if (Csv::notStdAscii(t[0]))
-            continue;
-        xStr = QString::fromStdString(csv->getfield(0));
-        yStr = QString::fromStdString(csv->getfield(1));
-        x = xStr.toDouble(&ok);
-        if (ok)
+        for (int i =0; i < mX; i++)
         {
-            y = yStr.toDouble(&ok);
-            if(ok)
-            {
-                int j =csv->getnfield();
-                if ( j== 2)
-                {
-                    Point *temp = new Point(x,y);
-                    se->appendPt(temp);
-                }
-                else if (j == 3) {
-                    Point *temp = new Point(x,y,QString::fromStdString(csv->getfield(2)));
-                    temp->t=loadToStruct(temp->time);
-                    tContainer.append(temp);
-                }
-                else {
-                    fprintf(stderr, "Wrong\n");
-                    return;
-                }
-            }
+            delete [] mem[i];
+            mem[i] = NULL;
         }
-    }
-    if(!tContainer.isEmpty()) {
-        sort(tContainer.begin(),tContainer.end(),timeCompare);
-        for(int i=0; i<tContainer.size(); i++) {
-            se->appendPt(tContainer[i]);
-        }
-    }
-    double minLongtitude = 73;
-    double maxLongtitude = 136;
-    double minLatitude = 3;
-    double maxLatitude = 54;
-    int type = hardCluster(se,
-               minLongtitude,
-               maxLongtitude,
-               minLatitude,
-               maxLatitude,
-               3
-               );
-    se->setType(QString::number(type));
-    tContainer.clear();
-}
-
-
-Time loadToStruct(QString time) {
-    QString re = "\\d{8}[\\s]+[\\d]+:[\\d]+:[\\d]+";
-    QRegExp rx(re);
-    bool match = rx.exactMatch(time);
-    if(!match)
-    {
-        throw 0;
-    }
-
-    Time t;
-    QStringList tl=time.split(QRegExp(QRegExp("[\\s]+")));
-    t.year=tl[0].mid(0,4).toInt();
-    t.month=tl[0].mid(4,2).toInt();
-    t.day=tl[0].mid(6,2).toInt();
-
-    QStringList tl1=tl[1].split(":");
-    t.hour=tl1[0].toInt();
-    t.minute=tl1[1].toInt();
-    t.second=tl1[2].toInt();
-    return t;
-}
-
-bool timeCompare(Point*p1,Point*p2) {
-    Time* t1=&p1->t;
-    Time* t2=&p2->t;
-
-    if(t1->year<t2->year) {
-        return true;
-    } else if(t1->year==t2->year) {
-        if(t1->month<t2->month) {
-            return true;
-        } else if(t1->month==t2->month) {
-            if(t1->day<t2->day) {
-                return true;
-            } else if(t1->day==t2->day) {
-                int totalSecond1=t1->hour*3600+t1->minute*60+t1->second;
-                int totalSecond2=t2->hour*3600+t2->minute*60+t2->second;
-                return totalSecond1<=totalSecond2;
-            }else{
-                return false;
-            }
-       }else{
-            return false;
-        }
-    }else {
-        return false;
+        delete []mem;
+        mem = NULL;
     }
 }
-
-void initMemSpace(Sequence *p, Sequence *q)
+void Core::initP_Q(Sequence *m, Sequence *n)
+{
+    p = m;
+    q = n;
+}
+void Core::initMemSpace(Sequence *p, Sequence *q)
 {
     if(mem != NULL)
     {
@@ -221,62 +59,131 @@ void initMemSpace(Sequence *p, Sequence *q)
         }
     }
 }
+double Core::computeDiscreteFrechet(Sequence *sa, Sequence *sb)
+{
+    p = sa;
+    q = sb;
+    if(sa->hasTime()){
+        coef=calCoef();
+    }
+    initMemSpace(sa, sb);
+    return computeDFD(sa->getNum()-1,sb->getNum()-1,p,q);
+}
+
+double Core::calCoef() {
+    double x1=p->getMaxX()-p->getMinX();
+    double y1=p->getMaxY()-p->getMinY();
+    double sqr1=sqrt(x1*x1+y1*y1);
+
+    double x2=q->getMaxX()-q->getMinX();
+    double y2=q->getMaxY()-q->getMinY();
+    double sqr2=sqrt(x2*x2+y2*y2);
+
+    double avgSqr=0.5*(sqr1+sqr2);
+
+    double timeGap1=calTimeDistance(&p->pts[p->getNum()-1],&p->pts[0]);
+    double timeGap2=calTimeDistance(&q->pts[q->getNum()-1],&q->pts[0]);
+
+    double timeGapAvg=0.5*(timeGap1+timeGap2);
+
+    if(timeGapAvg==0){
+        timeGapAvg=1;
+    }
+
+    double coef=avgSqr/timeGapAvg;
+    return coef;
+}
+double Core::computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
+{
+    if (mem[i][j] > -1)
+        return mem[i][j];
+    // if top left column, just compute the distance
+    else if (i == 0 && j == 0)
+        mem[i][j] = euclideanDistance(&p_a->pts[i], &q_a->pts[j]);
+    // can either be the actual distance or distance pulled from above
+    else if (i > 0 && j == 0)
+        mem[i][j] = max(computeDFD(i - 1, 0,p_a,q_a), euclideanDistance(&p_a->pts[i], &q_a->pts[j]));
+    // can either be the distance pulled from the left or the actual
+    // distance
+    else if (i == 0 && j > 0)
+        mem[i][j] = max(computeDFD(0, j - 1,p_a,q_a), euclideanDistance(&p_a->pts[i], &q_a->pts[j]));
+    // can be the actual distance, or distance from above or from the left
+    else if (i > 0 && j > 0) {
+        double temp = min(min(computeDFD(i - 1, j,p_a,q_a), computeDFD(i - 1, j - 1,p_a,q_a)), computeDFD(i, j - 1,p_a,q_a));
+        mem[i][j] = max(temp, euclideanDistance(&p_a->pts[i], &q_a->pts[j]));
+    }
+    // infinite
+    else
+        mem[i][j] = 10000;
+
+    // printMemory();
+    // return the DFD
+    return mem[i][j];
+}
+
 
 //分别输入两个轨迹段的起点和终位置
-double  getSecSim(int i1,int j1,int i2,int j2) {
+double  Core::getSecSim(int i1,int j1,int i2,int j2) {
     initMemSpace(p, q);
-
     return computeDFD_new(i1, j1, i2, j2);
 }
 
-QVector<SecCompare> findSimilarSection(Sequence *se_a, Sequence *se_b)
+QVector<SecCompare> Core::findSimilarSection(Sequence *se_a, Sequence *se_b)
 {
     QVector<SecCompare> q1;
     QVector<SecCompare> q2;
-
     p = se_a;
     q = se_b;
-//    initMemSpace(p, q);
+    //    initMemSpace(p, q);
     int totalNum=p->pointsNum+q->pointsNum;
 
     int gap = 1;
     int h = 1;
     double limit=computeDiscreteFrechet(p,q);
-
-    if(totalNum<=200&&totalNum>=0) {
+    //    int tracsLen=SearchWin::tracLeng;
+    if(totalNum<=200&&totalNum>=0&&tracsLen<1000){
         gap=1;
         h=1;
     } else if(totalNum>200) {
         gap=5;
         h=gap;
+    }else if(tracsLen<3000){
+        gap=1;
+        h=2;
+    }else if(tracsLen<5000){
+        gap=2;
+        h=4;
+    }else if(tracsLen<10000){
+        gap=3;
+        h=6;
     }
 
-//#pragma omp parallel for
+    //#pragma omp parallel for
     for(int i=gap; i<gap+6; i++) {
         calculateSec(i,h,q1);
     }
 
-//#pragma omp parallel for
+    //#pragma omp parallel for
     for(int j=gap; j<gap+5; j++) {
         mergeChange(j,q1,q2,limit);
     }
-  //  sort(q2.begin(),q2.end(),compare);
+    //  sort(q2.begin(),q2.end(),compare);
 
-//  #pragma omp parallel for
-  //  clock_t t1 = clock();
+    //  #pragma omp parallel for
+    //  clock_t t1 = clock();
     for(int i=0; i<q2.size(); i++)
     {
         q1.append(q2[i]);
     }
-//    clock_t t2 = clock();
-//    std::cout<<"time: "<<t2-t1<<std::endl;
+    //    clock_t t2 = clock();
+    //    std::cout<<"time: "<<t2-t1<<std::endl;
     sort(q1.begin(),q1.end(),compare);
 
     q2.clear();
     return q1;
 }
 
-QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q) {
+QVector<QVector<int> > Core::getSimplify(Sequence*p,Sequence*q) {
     p->initPainted();
     q->initPainted();
     QVector<QVector<int> >qb;
@@ -287,13 +194,13 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q) {
 
     if (qs1.length() != 0)
     {
-     //   std::cout<<"time: "<<qs1.length()<<std::endl;
+        //   std::cout<<"time: "<<qs1.length()<<std::endl;
         for (int i = 0; i < qs1.length(); i++)
         {
             QString s =   QString::number(qs1[i].beginIndex1)+" "
-                          + QString::number(qs1[i].endIndex1)+" "
-                          + QString::number(qs1[i].beginIndex2)+" "
-                          + QString::number(qs1[i].endIndex2);
+                    + QString::number(qs1[i].endIndex1)+" "
+                    + QString::number(qs1[i].beginIndex2)+" "
+                    + QString::number(qs1[i].endIndex2);
             if(!qst.contains(s))
                 qst.append(s);
         }
@@ -352,105 +259,22 @@ QVector<QVector<int> > getSimplify(Sequence*p,Sequence*q) {
     return qb;
 }
 
-
-QVector<SecCompare> findBest(Sequence*p,Sequence*q) {
+QVector<SecCompare> Core::findBest(Sequence*p,Sequence*q) {
     QVector<SecCompare> temp = getBestSce(findSimilarSection(p, q));
     return temp;
 }
-
 
 bool compare(SecCompare s1,SecCompare s2) {
     return s1.simliarity<s2.simliarity;
 }
 
-//double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
-//{
-//    if (mem[i][j] > -1)
-//        return mem[i][j];
-//    // if top left column, just compute the distance
-//    else if (i == 0 && j == 0)
-//        mem[i][j] = euclideanDistance(p_a->pts[i], q_a->pts[j]);
-//    // can either be the actual distance or distance pulled from above
-//    else if (i > 0 && j == 0)
-//        mem[i][j] = max(computeDFD(i - 1, 0,p_a,q_a), euclideanDistance(p_a->pts[i], q_a->pts[j]));
-//    // can either be the distance pulled from the left or the actual
-//    // distance
-//    else if (i == 0 && j > 0)
-//        mem[i][j] = max(computeDFD(0, j - 1,p_a,q_a), euclideanDistance(p_a->pts[i], q_a->pts[j]));
-//    // can be the actual distance, or distance from above or from the left
-//    else if (i > 0 && j > 0) {
-//        double temp = min(min(computeDFD(i - 1, j,p_a,q_a), computeDFD(i - 1, j - 1,p_a,q_a)), computeDFD(i, j - 1,p_a,q_a));
-//        mem[i][j] = max(temp, euclideanDistance(p_a->pts[i], q_a->pts[j]));
-//    }
-//    // infinite
-//    else
-//        mem[i][j] = 10000;
 
-//    // printMemory();
-//    // return the DFD
-//    return mem[i][j];
-//}
-
-double computeDFD(int i, int j, Sequence *p_a, Sequence *q_a)
-{
-    if (mem[i][j] > -1)
-        return mem[i][j];
-    // if top left column, just compute the distance
-    else if (i == 0 && j == 0)
-        mem[i][j] = euclideanDistance(&p_a->pts[i], &q_a->pts[j]);
-    // can either be the actual distance or distance pulled from above
-    else if (i > 0 && j == 0)
-        mem[i][j] = max(computeDFD(i - 1, 0,p_a,q_a), euclideanDistance(&p_a->pts[i], &q_a->pts[j]));
-    // can either be the distance pulled from the left or the actual
-    // distance
-    else if (i == 0 && j > 0)
-        mem[i][j] = max(computeDFD(0, j - 1,p_a,q_a), euclideanDistance(&p_a->pts[i], &q_a->pts[j]));
-    // can be the actual distance, or distance from above or from the left
-    else if (i > 0 && j > 0) {
-        double temp = min(min(computeDFD(i - 1, j,p_a,q_a), computeDFD(i - 1, j - 1,p_a,q_a)), computeDFD(i, j - 1,p_a,q_a));
-        mem[i][j] = max(temp, euclideanDistance(&p_a->pts[i], &q_a->pts[j]));
-    }
-    // infinite
-    else
-        mem[i][j] = 10000;
-
-    // printMemory();
-    // return the DFD
-    return mem[i][j];
-}
-
-//void calculateSec(int gap, int h, QVector<SecCompare> &q1)
-//{
-//      SecCompare s;
-//      double result;
-//    // int t=0;
-//     clock_t t1 = clock();
-//    #pragma omp parallel for
-//    for(int i=0; i<p->pointsNum-gap; i=i+h) {
-//        for(int j=0; j<q->pointsNum-gap;  j=j+h) {
-//      #pragma omp critical
-//            {
-//            s.beginIndex1=i;
-//            s.endIndex1=i+gap;
-//            s.beginIndex2=j;
-//            s.endIndex2=j+gap;
-//            result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
-//            s.simliarity=result;
-//            q1.append(s);
-//            }
-//        }
-
-//    }
-//      clock_t t2 = clock();
-//      std::cout<<"time: "<<t2-t1<<std::endl;
-//}
-
-void calculateSec(int gap, int h, QVector<SecCompare> &q1)
+void Core::calculateSec(int gap, int h, QVector<SecCompare> &q1)
 {
     SecCompare s;
     double result;
     // int t=0;
-//     clock_t t1 = clock();
+    //     clock_t t1 = clock();
 
     for(int i=0; i<p->pointsNum-gap; i=i+h) {
         for(int j=0; j<q->pointsNum-gap;  j=j+h) {
@@ -464,20 +288,18 @@ void calculateSec(int gap, int h, QVector<SecCompare> &q1)
         }
 
     }
-//    clock_t t2 = clock();
-//    std::cout<<"time: "<<t2-t1<<std::endl;
 }
 
-void mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2,double limit)
+void Core::mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2,double limit)
 {
     limit=limit*0.1;
     SecCompare s;
     double result;
-//     clock_t t1 = clock();
-// #pragma omp parallel for
+    //     clock_t t1 = clock();
+    // #pragma omp parallel for
     for(int i=0; i<q1.size(); i++) {
         if(q1[i].simliarity<=limit) {
-//            #pragma omp parallel for
+            //            #pragma omp parallel for
             for(int j=0; j<q1.size(); j++) {
                 if(q1[j].simliarity<=limit&&q1[j].beginIndex1==q1[i].beginIndex1+gap&&q1[j].beginIndex2==q1[i].beginIndex2+gap) {
 
@@ -492,11 +314,9 @@ void mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2,doubl
             }
         }
     }
-//       clock_t t2 = clock();
-//       std::cout<<"time: "<<t2-t1<<std::endl;
 }
 
-Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres)
+Sequence* Core::longestCommonSeq(Sequence &p, Sequence &q, double thres)
 {
     //Sequence commonSeq[2];
     Sequence *commonSeq = new Sequence[2];
@@ -544,7 +364,7 @@ Sequence* longestCommonSeq(Sequence &p, Sequence &q, double thres)
     return commonSeq;
 }
 
-QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a)
+QVector<SecCompare> Core::getBestSce(QVector<SecCompare> secCompareV_a)
 {
     QVector<SecCompare> t;
     // QVector<SecCompare> t1;
@@ -568,6 +388,42 @@ QVector<SecCompare> getBestSce(QVector<SecCompare> secCompareV_a)
     }
     return t;
 }
+
+
+
+
+bool compareDis(PointCompare p1,PointCompare p2) {
+    return p1.distance<p2.distance;
+}
+
+double Core::computeDFD_new(int startx, int endx, int starty, int endy)
+{
+    if (mem[endx][endy] > -1)
+        return mem[endx][endy];
+    // if top left column, just compute the distance
+    else if (endx == startx && endy == starty)
+        mem[endx][endy] = euclideanDistance(&p->pts[endx],&q->pts[endy]);
+    // can either be the actual distance or distance pulled from above
+    else if (endx > startx && endy == starty)
+        mem[endx][endy] = max(computeDFD_new(startx, endx - 1, starty, endy), euclideanDistance(&p->pts[endx], &q->pts[endy]));
+    // can either be the distance pulled from the left or the actual
+    // distance
+    else if (endx == startx && endy > starty)
+        mem[endx][endy] = max(computeDFD_new(startx, endx, starty ,endy - 1), euclideanDistance(&p->pts[endx], &q->pts[endy]));
+    // can be the actual distance, or distance from above or from the left
+    else if (endx > startx && endy > starty) {
+        double temp = min(min(computeDFD_new(startx, endx - 1, starty ,endy), computeDFD_new(startx, endx - 1,starty,  endy - 1)), computeDFD_new(startx, endx, starty, endy - 1));
+        mem[endx][endy] = max(temp, euclideanDistance(&p->pts[endx], &q->pts[endy]));
+    }
+    // infinite
+    else
+        mem[endx][endy] = 10000;
+    // printMemory();
+    // return the DFD
+    return mem[endx][endy];
+}
+
+
 
 Point getCenterPoint(Sequence *se_a, int num)
 {
@@ -614,90 +470,6 @@ Point getCenterPoint(QVector<Sequence> seqV)
     pt.latitude = pt.latitude/seqV.length();
     return pt;
 }
-
-QVector<PointCompare> getNearestPoint(Sequence *se_a, Sequence *se_b) {
-    QVector<PointCompare>q1;
-    // PointCollection pc;
-    QVector<PointCompare>q2;
-//    PointCompare* p=NULL;
-    PointCompare p;
-    for(int i=0; i<se_a->getNum(); i++) {
-        for(int j=0; j<se_b->getNum(); j++) {
-            p.distance=euclideanDistance(&se_a->pts[i],&se_b->pts[j]);
-            p.index1=i;
-            p.index2=j;
-            q1.append(p);
-        }
-    }
-    sort(q1.begin(),q1.end(),compareDis);
-    double sim=q1[0].distance;
-    for(int i=0; i<q1.size(); i++) {
-        if(q1[i].distance<=sim) {
-            //  pc.p1.append(q1[i].index1);
-            //pc.p2.append(q1[i].index2);
-            q2.append(q1[i]);
-
-        } else {
-            break;
-        }
-    }
-    // return pc;
-    return q2;
-}
-
-bool compareDis(PointCompare p1,PointCompare p2) {
-    return p1.distance<p2.distance;
-}
-
-double computeDFD_new(int startx, int endx, int starty, int endy)
-{
-    if (mem[endx][endy] > -1)
-        return mem[endx][endy];
-    // if top left column, just compute the distance
-    else if (endx == startx && endy == starty)
-        mem[endx][endy] = euclideanDistance(&p->pts[endx],&q->pts[endy]);
-    // can either be the actual distance or distance pulled from above
-    else if (endx > startx && endy == starty)
-        mem[endx][endy] = max(computeDFD_new(startx, endx - 1, starty, endy), euclideanDistance(&p->pts[endx], &q->pts[endy]));
-    // can either be the distance pulled from the left or the actual
-    // distance
-    else if (endx == startx && endy > starty)
-        mem[endx][endy] = max(computeDFD_new(startx, endx, starty ,endy - 1), euclideanDistance(&p->pts[endx], &q->pts[endy]));
-    // can be the actual distance, or distance from above or from the left
-    else if (endx > startx && endy > starty) {
-        double temp = min(min(computeDFD_new(startx, endx - 1, starty ,endy), computeDFD_new(startx, endx - 1,starty,  endy - 1)), computeDFD_new(startx, endx, starty, endy - 1));
-        mem[endx][endy] = max(temp, euclideanDistance(&p->pts[endx], &q->pts[endy]));
-    }
-    // infinite
-    else
-        mem[endx][endy] = 10000;
-
-    // printMemory();
-    // return the DFD
-    return mem[endx][endy];
-}
-
-void initP_Q(Sequence *m, Sequence *n)
-{
-    p = m;
-    q = n;
-}
-
-
-double getDistance(double lng1, double lat1, double lng2, double lat2)
-{
-    double radLat1 = rad(lat1);
-    double radLat2 = rad(lat2);
-    double a = radLat1 - radLat2;
-    double b = rad(lng1) - rad(lng2);
-    double s = 2 * asin(sqrt(pow(sin(a/2),2) +
-                             cos(radLat1)*cos(radLat2)*pow(sin(b/2),2)));
-    s = s * EARTH_RADIUS;
-    s = round(s * 10000) / 10000;
-    return s;
-}
-
-
 int getZoom(QVector<Sequence> seqV)
 {
     double maxLon = seqV[0].getMaxX();
@@ -724,16 +496,19 @@ int getZoom(QVector<Sequence> seqV)
         }
     }
     double res = getDistance(minLon, minLat, maxLon, maxLat);
-
     return calZoomCoef(res);
 }
 
-
-double rad(double d)
+int getZoom(Sequence seq_a)
 {
-    return d * PI / 180.0;
-}
+    double maxLon = seq_a.getMaxX();
+    double maxLat = seq_a.getMaxY();
+    double minLon = seq_a.getMinX();
+    double minLat = seq_a.getMinY();
+    double res = getDistance(minLon, minLat, maxLon, maxLat);
+    return calZoomCoef(res);
 
+}
 int calZoomCoef(double res){
     int dis = res / 8.0;
     if ( dis > 100)
@@ -760,22 +535,14 @@ int calZoomCoef(double res){
     {
         return 16;
     }
+    else if(dis > 0.005)
+    {
+        return 18;
+    }
 
     return 6;
 }
-
-int getZoom(Sequence seq_a)
-{
-    double maxLon = seq_a.getMaxX();
-    double maxLat = seq_a.getMaxY();
-    double minLon = seq_a.getMinX();
-    double minLat = seq_a.getMinY();
-    double res = getDistance(minLon, minLat, maxLon, maxLat);
-
-    return calZoomCoef(res);
-
-}
-double modHausDist(Sequence *sa, Sequence *sb)
+double Core::modHausDist(Sequence *sa, Sequence *sb)
 {
     if(sa == sb)
     {
@@ -830,7 +597,7 @@ double modHausDist(Sequence *sa, Sequence *sb)
         double dist = 9999;//inf
         for(j = 0; j < neighborhoodIdxs.size(); j ++)
         {
-            double newdist = euclideanDistance(&pt1, &(sb->pts[neighborhoodIdxs.at(j)]));
+            double newdist = euDistance(pt1, (sb->pts[neighborhoodIdxs.at(j)]));
             if(newdist < dist)
             {
                 dist = newdist;
@@ -842,9 +609,7 @@ double modHausDist(Sequence *sa, Sequence *sb)
     //FIXME 0.88常数
     return distance[std::min(int(sa->pointsNum * 0.88), sa->pointsNum - 1)];
 }
-
-
-void clusterAgglomerartive(Sequence *seqs, int len)
+void Core::clusterAgglomerartive(Sequence *seqs, int len)
 {
     //createDistanceMatrix
     double distMat[len][len];
@@ -855,9 +620,7 @@ void clusterAgglomerartive(Sequence *seqs, int len)
             distMat[i][j] = 1;
             double dist = modHausDist(&seqs[i], &seqs[j]);
             distMat[i][j] = dist;
-            //std::cout  << distMat[i][j] << "\t";
         }
-       // std::cout << std::endl;
     }
 
     vector<vector<int> > clusters;
@@ -873,13 +636,13 @@ void clusterAgglomerartive(Sequence *seqs, int len)
     {
         double affMat[size][size];
         //TODO 可以用mp加速
-       for(int x = 0; x < size; x++)
-       {
-           for(int y = 0; y < size; y++)
-           {
-               affMat[x][y] = 0;
-           }
-       }
+        for(int x = 0; x < size; x++)
+        {
+            for(int y = 0; y < size; y++)
+            {
+                affMat[x][y] = 0;
+            }
+        }
         for(int r = 0; r < size - 1; r++)
         {
             for(int c = r+1; c < size; c++)
@@ -887,10 +650,10 @@ void clusterAgglomerartive(Sequence *seqs, int len)
                 double dist = 0;
                 vector<int> temp1 = clusters.at(r);
                 vector<int> temp2 = clusters.at(c);
-                for(int i = 0; i < temp1.size();i++)
+                for(uint i = 0; i < temp1.size();i++)
                 {
                     int t1idx = temp1.at(i);
-                    for(int j = 0; j < temp2.size();j++)
+                    for(uint j = 0; j < temp2.size();j++)
                     {
                         int t2idx = temp2.at(j);
                         dist += 1 / ((distMat[t1idx][t2idx] * distMat[t2idx][t1idx]) + 0.000006);
@@ -922,18 +685,16 @@ void clusterAgglomerartive(Sequence *seqs, int len)
             clusters.at(t1idx).push_back(clusters.at(t2idx).at(i));
         }
         vector<vector<int> >temp;
-        for (int i = 0; i < clusters.size(); i++)
+        for (uint i = 0; i < clusters.size(); i++)
         {
             if(i != t2idx)
                 temp.push_back(clusters.at(i));
         }
         clusters = temp;
         size = clusters.size();
-        //clusters[t1idx].extend(clusters[t2idx]);
-        //clusters = [clusters[i] for i in range(len(clusters)) if i != t2idx];
 
     }
-    for(int i = 0; i < clusters.size();i++)
+    for(uint i = 0; i < clusters.size();i++)
     {
         qDebug() << "Type "<< i <<":";
         for(int j = 0; j< clusters.at(i).size(); j++)
@@ -982,10 +743,10 @@ int hardCluster(Sequence * q,double minLongtitude,
             else
             {
 
-//                double min2Longtitude = midLongtitude;
-//                double max2Longtitude = maxLongtitude;
-//                double min2Latitude = midLatitude;
-//                double max2Latitude = maxLatitude;
+                //                double min2Longtitude = midLongtitude;
+                //                double max2Longtitude = maxLongtitude;
+                //                double min2Latitude = midLatitude;
+                //                double max2Latitude = maxLatitude;
                 int res = hardCluster(q, midLongtitude,
                                       maxLongtitude,
                                       midLongtitude,
@@ -1058,10 +819,10 @@ int hardCluster(Sequence * q,double minLongtitude,
             //    double min3Latitude = minLatitude;
             //    double max3Latitude = midLatitude;
             int res = hardCluster(q, minLongtitude,
-                                     midLongtitude,
-                                     minLatitude,
-                                     midLatitude,
-                                     depth);
+                                  midLongtitude,
+                                  minLatitude,
+                                  midLatitude,
+                                  depth);
             if(res != 0)
             {
                 int n = 1 + (int)log10(res);
@@ -1072,12 +833,8 @@ int hardCluster(Sequence * q,double minLongtitude,
         }
     }
     return 0;
-
-
 }
-
-
-bool compareType(QString input_type, QString type)
+bool Core::compareType(QString input_type, QString type)
 {
     if(input_type == type)
     {
@@ -1097,8 +854,7 @@ bool compareType(QString input_type, QString type)
     }
     return false;
 }
-
-void normalize(Sequence &se)
+void Core::normalize(Sequence &se)
 {
     if(se.getMaxX() == se.getMinX())
     {
@@ -1136,111 +892,7 @@ void normalize(Sequence &se)
         }
     }
 }
-
-vector<int> clusterAgglomerartive(vector<Sequence> seqs)
-{
-    int len = seqs.size();
-    double distMat[len][len];
-    for(int i = 0; i < len; i++)
-    {
-        for(int j = 0; j < len; j++)
-        {
-            distMat[i][j] = 1;
-            double dist = modHausDist(&seqs[i], &seqs[j]);
-            distMat[i][j] = dist;
-            //std::cout  << distMat[i][j] << "\t";
-        }
-       // std::cout << std::endl;
-    }
-
-    vector<vector<int> > clusters;
-    for(int i = 0;i < len; i++)
-    {
-        vector<int> temp;
-        temp.push_back(i);
-        clusters.push_back(temp);
-    }
-    int size = len;
-    int cn=3;
-    while(size > cn)
-    {
-        double affMat[size][size];
-        //TODO 可以用mp加速
-       for(int x = 0; x < size; x++)
-       {
-           for(int y = 0; y < size; y++)
-           {
-               affMat[x][y] = 0;
-           }
-       }
-        for(int r = 0; r < size - 1; r++)
-        {
-            for(int c = r+1; c < size; c++)
-            {
-                double dist = 0;
-                vector<int> temp1 = clusters.at(r);
-                vector<int> temp2 = clusters.at(c);
-                for(int i = 0; i < temp1.size();i++)
-                {
-                    int t1idx = temp1.at(i);
-                    for(int j = 0; j < temp2.size();j++)
-                    {
-                        int t2idx = temp2.at(j);
-                        dist += 1 / ((distMat[t1idx][t2idx] * distMat[t2idx][t1idx]) + 0.000006);
-                    }
-                }
-                dist *= 1.0 / (temp1.size() * temp2.size());
-                affMat[r][c] = dist;
-            }
-        }
-        double init = -1;
-        int t1idx = -1;
-        int t2idx = -1;
-        for(int i = 0; i < size; i ++)
-        {
-            for(int j = 0; j < size; j++)
-            {
-                if(affMat[i][j] > init)
-                {
-                    init = affMat[i][j];
-                    t1idx = i;
-                    t2idx = j;
-                }
-            }
-        }
-        for (uint i = 0; i < clusters.at(t2idx).size(); i++)
-        {
-            if(t1idx == t2idx)
-                continue;
-            clusters.at(t1idx).push_back(clusters.at(t2idx).at(i));
-        }
-        vector<vector<int> >temp;
-        for (int i = 0; i < clusters.size(); i++)
-        {
-            if(i != t2idx)
-                temp.push_back(clusters.at(i));
-        }
-        clusters = temp;
-        size = clusters.size();
-        //clusters[t1idx].extend(clusters[t2idx]);
-        //clusters = [clusters[i] for i in range(len(clusters)) if i != t2idx];
-
-    }
-    vector<int> res;
-    for(int i = 0; i < seqs.size();i++)
-    {
-        res.push_back(-1);
-    }
-    for(int i = 0; i < clusters.size();i++)
-    {
-        for(int j = 0; j< clusters.at(i).size(); j++)
-        {
-            res.at(clusters.at(i).at(j)) = i;
-        }
-    }
-    return res;
-}
-void clusterSpectral()
+void Core::clusterSpectral()
 {
     int len = 5;
     //createDistanceMatrix()
@@ -1371,8 +1023,289 @@ void clusterSpectral()
             gMin += 1;
         }
     }
-
-
     int clusters = -1;
     int g = clusters;
+}
+vector<int> Core::clusterAgglomerartive(vector<Sequence> seqs)
+{
+    int len = seqs.size();
+    double distMat[len][len];
+    for(int i = 0; i < len; i++)
+    {
+        for(int j = 0; j < len; j++)
+        {
+            distMat[i][j] = 1;
+            double dist = modHausDist(&seqs[i], &seqs[j]);
+            distMat[i][j] = dist;
+        }
+    }
+
+    vector<vector<int> > clusters;
+    for(int i = 0;i < len; i++)
+    {
+        vector<int> temp;
+        temp.push_back(i);
+        clusters.push_back(temp);
+    }
+    int size = len;
+    int cn=3;
+    while(size > cn)
+    {
+        double affMat[size][size];
+        //TODO 可以用mp加速
+        for(int x = 0; x < size; x++)
+        {
+            for(int y = 0; y < size; y++)
+            {
+                affMat[x][y] = 0;
+            }
+        }
+        for(int r = 0; r < size - 1; r++)
+        {
+            for(int c = r+1; c < size; c++)
+            {
+                double dist = 0;
+                vector<int> temp1 = clusters.at(r);
+                vector<int> temp2 = clusters.at(c);
+                for(uint i = 0; i < temp1.size();i++)
+                {
+                    int t1idx = temp1.at(i);
+                    for(uint j = 0; j < temp2.size();j++)
+                    {
+                        int t2idx = temp2.at(j);
+                        dist += 1 / ((distMat[t1idx][t2idx] * distMat[t2idx][t1idx]) + 0.000006);
+                    }
+                }
+                dist *= 1.0 / (temp1.size() * temp2.size());
+                affMat[r][c] = dist;
+            }
+        }
+        double init = -1;
+        int t1idx = -1;
+        int t2idx = -1;
+        for(int i = 0; i < size; i ++)
+        {
+            for(int j = 0; j < size; j++)
+            {
+                if(affMat[i][j] > init)
+                {
+                    init = affMat[i][j];
+                    t1idx = i;
+                    t2idx = j;
+                }
+            }
+        }
+        for (uint i = 0; i < clusters.at(t2idx).size(); i++)
+        {
+            if(t1idx == t2idx)
+                continue;
+            clusters.at(t1idx).push_back(clusters.at(t2idx).at(i));
+        }
+        vector<vector<int> >temp;
+        for (uint i = 0; i < clusters.size(); i++)
+        {
+            if(i != t2idx)
+                temp.push_back(clusters.at(i));
+        }
+        clusters = temp;
+        size = clusters.size();
+    }
+    vector<int> res;
+    for(uint i = 0; i < seqs.size();i++)
+    {
+        res.push_back(-1);
+    }
+    for(uint i = 0; i < clusters.size();i++)
+    {
+        for(uint j = 0; j< clusters.at(i).size(); j++)
+        {
+            res.at(clusters.at(i).at(j)) = i;
+        }
+    }
+    return res;
+}
+void getSquFromFile(Csv *csv, Sequence *se)
+{
+    if (se->getNum() != 0)
+    {
+        delete se;
+        Sequence *t = new Sequence();
+        se = t;
+    }
+    se->setID("Input");
+    string line;
+    bool ok;
+    QString xStr;
+    QString yStr;
+    double x;
+    double y;
+
+    QVector<Point*> tContainer;
+    while (csv->getline(line) != 0) {
+        const char *t = line.c_str();
+        if (Csv::notStdAscii(t[0]))
+            continue;
+        xStr = QString::fromStdString(csv->getfield(0));
+        yStr = QString::fromStdString(csv->getfield(1));
+        x = xStr.toDouble(&ok);
+        if (ok)
+        {
+            y = yStr.toDouble(&ok);
+            if(ok)
+            {
+                int j =csv->getnfield();
+                if ( j== 2)
+                {
+                    Point *temp = new Point(x,y);
+                    se->appendPt(temp);
+                }
+                else if (j == 3) {
+                    Point *temp = new Point(x,y,QString::fromStdString(csv->getfield(2)));
+                    temp->t=loadToStruct(temp->time);
+                    tContainer.append(temp);
+                }
+                else {
+                    fprintf(stderr, "Wrong\n");
+                    return;
+                }
+            }
+        }
+    }
+    if(!tContainer.isEmpty()) {
+        sort(tContainer.begin(),tContainer.end(),timeCompare);
+        for(int i=0; i<tContainer.size(); i++) {
+            se->appendPt(tContainer[i]);
+        }
+    }
+    double minLongtitude = 73;
+    double maxLongtitude = 136;
+    double minLatitude = 3;
+    double maxLatitude = 54;
+    int type = hardCluster(se,
+                           minLongtitude,
+                           maxLongtitude,
+                           minLatitude,
+                           maxLatitude,
+                           3
+                           );
+    se->setType(QString::number(type));
+    tContainer.clear();
+}
+Time loadToStruct(QString time) {
+    QString re = "\\d{8}[\\s]+[\\d]+:[\\d]+:[\\d]+";
+    QRegExp rx(re);
+    bool match = rx.exactMatch(time);
+    if(!match)
+    {
+        throw 0;
+    }
+
+    Time t;
+    QStringList tl=time.split(QRegExp(QRegExp("[\\s]+")));
+    t.year=tl[0].mid(0,4).toInt();
+    t.month=tl[0].mid(4,2).toInt();
+    t.day=tl[0].mid(6,2).toInt();
+
+    QStringList tl1=tl[1].split(":");
+    t.hour=tl1[0].toInt();
+    t.minute=tl1[1].toInt();
+    t.second=tl1[2].toInt();
+    return t;
+}
+double Core::calTimeDistance(Point *a,Point *b) {
+    double hourGap;
+    if((a->t.year!=b->t.year)||(a->t.month!=b->t.month)) {
+        hourGap=720;
+    } else {
+        hourGap=qAbs((a->t.day*24+a->t.hour+a->t.minute*0.016+a->t.second*0.0002)-(b->t.day*24+b->t.hour+b->t.minute*0.016+b->t.second*0.0002));
+    }
+    return hourGap;
+}
+bool timeCompare(Point*p1,Point*p2) {
+    Time* t1=&p1->t;
+    Time* t2=&p2->t;
+
+    if(t1->year<t2->year) {
+        return true;
+    } else if(t1->year==t2->year) {
+        if(t1->month<t2->month) {
+            return true;
+        } else if(t1->month==t2->month) {
+            if(t1->day<t2->day) {
+                return true;
+            } else if(t1->day==t2->day) {
+                int totalSecond1=t1->hour*3600+t1->minute*60+t1->second;
+                int totalSecond2=t2->hour*3600+t2->minute*60+t2->second;
+                return totalSecond1<=totalSecond2;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }else {
+        return false;
+    }
+}
+QVector<PointCompare> Core::getNearestPoint(Sequence *se_a, Sequence *se_b) {
+    QVector<PointCompare>q1;
+    QVector<PointCompare>q2;
+    PointCompare p;
+    for(int i=0; i<se_a->getNum(); i++) {
+        for(int j=0; j<se_b->getNum(); j++) {
+            p.distance=euclideanDistance(&se_a->pts[i],&se_b->pts[j]);
+            p.index1=i;
+            p.index2=j;
+            q1.append(p);
+        }
+    }
+    sort(q1.begin(),q1.end(),compareDis);
+    double sim=q1[0].distance;
+    for(int i=0; i<q1.size(); i++) {
+        if(q1[i].distance<=sim) {
+            q2.append(q1[i]);
+
+        } else {
+            break;
+        }
+    }
+    return q2;
+}
+double rad(double d)
+{
+    return d * PI / 180.0;
+}
+double getDistance(double lng1, double lat1, double lng2, double lat2)
+{
+    double radLat1 = rad(lat1);
+    double radLat2 = rad(lat2);
+    double a = radLat1 - radLat2;
+    double b = rad(lng1) - rad(lng2);
+    double s = 2 * asin(sqrt(pow(sin(a/2),2) +
+                             cos(radLat1)*cos(radLat2)*pow(sin(b/2),2)));
+    s = s * EARTH_RADIUS;
+    s = round(s * 10000) / 10000;
+    return s;
+}
+double Core::euclideanDistance(Point* a, Point* b)
+{
+    double dis = 0;
+    if(a->time.isEmpty()) {
+        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
+                + (a->latitude - b->latitude)*(a->latitude - b->latitude);
+    } else {
+        dis = (a->longitude - b->longitude)*(a->longitude - b->longitude)
+                + (a->latitude - b->latitude)*(a->latitude - b->latitude)+calTimeDistance(a,b)*coef;
+    }
+    //    dis = sqrt(dis);
+    return dis;
+}
+
+double euDistance(Point a, Point b)
+{
+    double dis = 0;
+    dis = (a.longitude - b.longitude)*(a.longitude - b.longitude)
+            + (a.latitude - b.latitude)*(a.latitude - b.latitude);
+    //    dis = sqrt(dis);
+    return dis;
 }

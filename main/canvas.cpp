@@ -56,7 +56,7 @@ void Canvas::changeRES(int width, int height)
 
 }
 
-void Canvas::drawSeq(Sequence *se_a)
+void Canvas::drawSeq(Sequence *se_a,int i)
 {
     if(se_a->getNum() == 0)
     {
@@ -64,7 +64,11 @@ void Canvas::drawSeq(Sequence *se_a)
     }
     getRange();
     QVector<QPoint> points;
-    pen->setColor(Qt::gray);
+    if(i==0){
+         pen->setColor(Qt::gray);
+    }else{
+         pen->setColor(Qt::blue);
+    }
     pen->setWidth(3);
     pen->setJoinStyle(Qt::MiterJoin);
     pen->setStyle(Qt::SolidLine);
@@ -232,7 +236,7 @@ void Canvas::paintEvent(QPaintEvent *)
     drawGrid();
     for (int i = 0; i<se_num; i++)
     {
-        drawSeq(&se_draw[i]);
+        drawSeq(&se_draw[i],i);
     }
 }
 

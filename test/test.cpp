@@ -5,7 +5,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <cmath>
-
+#include "testqdatastream.h"
 
 void openfile(Sequence *p, string file_name)
 {
@@ -31,20 +31,10 @@ void openfile(Sequence *p, string file_name)
     fin.close();
 }
 
-//double minLongtitude = 73;
-//double maxLongtitude = 136;
-//double minLatitude = 3;
-//double maxLatitude = 54;
-
-
-
-
-int main(int argc, char *argv[])
+void testCluster()
 {
-    QApplication a(argc, argv);
     Sequence seqs[6];
 
-//    openfile(&seqs[0],"./data/y=1.5x2.csv");
     openfile(&seqs[5],"./data/test.csv");
     openfile(&seqs[1],"./data/y=x2.csv");
     openfile(&seqs[2],"./data/y=0.csv");
@@ -52,9 +42,9 @@ int main(int argc, char *argv[])
     openfile(&seqs[4],"./data/y=sinx.csv");
     openfile(&seqs[3],"./data/y=x.csv");
 
-    //double res =  modHausDist(&seqs[0],&seqs[3]);
-    clusterAgglomerartive(seqs,6);
-    //qDebug() << (int)res;
+    Core core;
+    core.clusterAgglomerartive(seqs,6);
+
 
     double minLongtitude = 73;
     double maxLongtitude = 136;
@@ -67,5 +57,50 @@ int main(int argc, char *argv[])
             maxLatitude,
             3
             );
+}
+void testQdata()
+{
+    TestQdataStream testQdataStream;
+    testQdataStream.a = 1;
+    testQdataStream.b = 4;
+    testQdataStream.c = 5;
+    qDebug() << testQdataStream.getSum();
+    QFile f( "file.dat" );
+    f.open(QIODevice::WriteOnly );
+    QDataStream out(&f);
+    out << testQdataStream;
+    f.close();
+
+    f.open(QIODevice::ReadOnly);
+    TestQdataStream t;
+    QDataStream in(&f);
+    in >> t;
+    qDebug()<<t.getSum();
+    f.close();
+
+    Sequence t1;
+    qDebug() << t1.getNum();
+    openfile(&t1, "./data/test_1.csv");
+
+    QFile sef("test.csv");
+    sef.open(QIODevice::WriteOnly);
+    QDataStream se(&sef);
+    se << t1;
+    sef.close();
+
+    Sequence t2;
+    sef.open(QIODevice::ReadOnly);
+    QDataStream se2(&sef);
+    se2 >> t2;
+    sef.close();
+    qDebug() << t2.getNum();
+
+}
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    testQdata();
+    qDebug() << "Hello World";
     return a.exec();
 }

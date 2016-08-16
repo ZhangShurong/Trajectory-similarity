@@ -258,7 +258,7 @@ void Sequence::buildPrefixSum()
     for(int i = 0; i < pointsNum; i++)
     {
         prefixSum.push_back(prefixSum[prefixSum.size() - 1] +
-                euclideanDistance(pts + prefixSum.size() - 1, pts + prefixSum.size()));
+                euDistance(pts[prefixSum.size() - 1], pts[prefixSum.size()]));
     }
 }
 

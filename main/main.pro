@@ -14,8 +14,6 @@ QMAKE_CXXFLAGS += -fopenmp
 
 LIBS += -lgomp -lpthread
 
-INCLUDEPATH += ./ThirdParty/eigen/Eigen
-
 SOURCES += main.cpp \
     csv.cpp \
     database.cpp \
@@ -32,7 +30,9 @@ SOURCES += main.cpp \
     netstatindicator.cpp \
     partdetail.cpp \
     pointdetail.cpp \
-    clusterdemo.cpp
+    clusterdemo.cpp \
+    cloud.cpp \
+    client.cpp
 
 HEADERS += \
     csv.h \
@@ -51,7 +51,9 @@ HEADERS += \
     netstatindicator.h \
     partdetail.h \
     pointdetail.h \
-    clusterdemo.h
+    clusterdemo.h \
+    cloud.h \
+    client.h
 
 RESOURCES += \
     res.qrc \
