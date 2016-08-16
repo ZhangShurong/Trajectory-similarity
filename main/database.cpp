@@ -372,25 +372,6 @@ vector<Sequence> DataBase::getNSequences(int n, string tableName)
     QSqlQuery query(db);
     QString qstr = "select * from " +QString::fromStdString(tableName) + " ";
 
-    //build sequence
-    QStringList *allTascID = getAllTracID(tableName);
-    int num = allTascID->length();
-    string id;
-    Sequence *all;
-    if (n<0 || n >num)
-    {
-        all = new Sequence[num];
-        n = num;
-    }
-    else
-        all = new Sequence[n];
-    for (int i = 0; i<n; i++)
-    {
-
-        id = QString((*allTascID)[i]).toStdString();
-        getSequenceByID(tableName,&all[i],id);
-    }
-    delete allTascID;
     vector<Sequence>  res;
     return res;
 }
