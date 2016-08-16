@@ -90,6 +90,10 @@ void TcpSocket::readData()
     {
         search();
     }
+    if(requestType == 'R')
+    {
+
+    }
     nextBlockSize = 0;
     /*
     QByteArray block;

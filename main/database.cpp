@@ -366,8 +366,13 @@ void DataBase::createTable(string tableName)
     query.exec("create table "+QString::fromStdString(tableName)+"(tid varchar,pt varchar,time datetime,id integer primary key, type int)");
 }
 
-Sequence * DataBase::getNSequences(int &n, string tableName)
+vector<Sequence> DataBase::getNSequences(int n, string tableName)
 {
+    //loadinto memory
+    QSqlQuery query(db);
+    QString qstr = "select * from " +QString::fromStdString(tableName) + " ";
+
+    //build sequence
     QStringList *allTascID = getAllTracID(tableName);
     int num = allTascID->length();
     string id;
@@ -386,7 +391,8 @@ Sequence * DataBase::getNSequences(int &n, string tableName)
         getSequenceByID(tableName,&all[i],id);
     }
     delete allTascID;
-    return all;
+    vector<Sequence>  res;
+    return res;
 }
 
 bool DataBase::hasTime(string ID,string tableName)

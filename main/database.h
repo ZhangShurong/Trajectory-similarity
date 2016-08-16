@@ -44,7 +44,7 @@ public:
     int getRecordNum(string tableName);
     int getDimension(string tableName, string ID);
     void createTable(string tableName);
-    Sequence *getNSequences(int &n, string tableName);
+    vector<Sequence> getNSequences(int n, string tableName);
     bool hasTime(string ID, string tableName);
     void delSeq(string ID,string tableName);
     void closeConnection(QString connName="");
