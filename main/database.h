@@ -48,6 +48,7 @@ public:
     bool hasTime(string ID, string tableName);
     void delSeq(string ID,string tableName);
     void closeConnection(QString connName="");
+    void getNSequences(QMap<QString, Sequence> &id_seq,int n, string tableName);
 };
 
 #endif // DATABASE_H

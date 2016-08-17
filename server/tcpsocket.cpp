@@ -3,6 +3,7 @@
 #include <QHostAddress>
 #include <QDebug>
 #include <chrono>
+#include "core.h"
 
 
 
@@ -223,13 +224,32 @@ void TcpSocket::search()
     }
     Sequence temp;
     in >> temp;
-    searchInDB(temp);
-    vector<Sequence> seq;
-    loadIntoMemory(seq,-1);
+    //vector<Sequence> seq;
+    //loadIntoMemory(seq,-1);
+    QMap<QString, Sequence> seqs;
+    db->getNSequences(seqs,-1,"Server");
+    searchInDB(temp, &seqs);
+
 }
 
-void TcpSocket::searchInDB(Sequence sequence)
+void TcpSocket::searchInDB(Sequence sequence, QMap<QString, Sequence> *seq)
 {
+    Core core;
+    QMap<double, QString> res_id;
+    QMap<QString, Sequence>::iterator it1;
+    for(it1 = seq->begin(); it1 != seq->end(); it1++)
+    {
+        double res = core.computeDiscreteFrechet(&sequence, &(it1.value()));
+        res_id.insert(res,it1.value().getID());
+    }
+
+    QMap<double, QString>::iterator it;
+    vector<Sequence> res;
+    for(it = res_id.begin(); it != res_id.end(); it++)
+    {
+        res.push_back((*seq)[it.value()]);
+    }
+    returnRefresh(res);
 
 }
 
