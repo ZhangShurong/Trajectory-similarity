@@ -283,11 +283,11 @@ void TcpSocket::refresh()
         return;
     }
     vector<Sequence> sequences;
-    loadIntoMemory(sequences, 100);
-    if(sequences.size() == 100)
-    {
+    loadIntoMemory(sequences, -1);
+    //if(sequences.size() == 100)
+    //{
         returnInsert(sequences);
-    }
+    //}
 }
 /*
 void TcpSocket::returnRefresh(vector<Sequence> sequences)

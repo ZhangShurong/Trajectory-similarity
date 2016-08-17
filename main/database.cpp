@@ -372,7 +372,14 @@ vector<Sequence> DataBase::getNSequences(int n, string tableName)
     QString qstr;
     if(n <= 0)
     {
-         qstr= "select max(id) from " +QString::fromStdString(tableName) + " where tid <> ''";
+        qstr= "select count(tid) from " +QString::fromStdString(tableName) + " where tid <> ''";
+        query.exec(qstr);
+        while(query.next())
+        {
+             n = query.value(0).toInt();
+        }
+        query.clear();
+        qstr= "select max(id) from " +QString::fromStdString(tableName) + " where tid <> ''";
     }
     else
     {
