@@ -418,13 +418,13 @@ color:white;
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="aboutBtn">
+         <widget class="QToolButton" name="clusterBtn">
           <property name="text">
-           <string>关于</string>
+           <string> 聚类</string>
           </property>
           <property name="icon">
            <iconset resource="res.qrc">
-            <normaloff>:/images/ico_diannaomenzhen.png</normaloff>:/images/ico_diannaomenzhen.png</iconset>
+            <normaloff>:/images/ico_SpeedupOpt.png</normaloff>:/images/ico_SpeedupOpt.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -444,13 +444,13 @@ color:white;
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="exToolButton">
+         <widget class="QToolButton" name="cloudBtn">
           <property name="text">
-           <string>帮助</string>
+           <string>云端</string>
           </property>
           <property name="icon">
            <iconset resource="res.qrc">
-            <normaloff>:/images/ico_expert.png</normaloff>:/images/ico_expert.png</iconset>
+            <normaloff>:/images/cloud1.png</normaloff>:/images/cloud1.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -496,13 +496,13 @@ color:white;
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="clusterBtn">
+         <widget class="QToolButton" name="aboutBtn">
           <property name="text">
-           <string> 聚类</string>
+           <string>关于</string>
           </property>
           <property name="icon">
            <iconset resource="res.qrc">
-            <normaloff>:/images/ico_SpeedupOpt.png</normaloff>:/images/ico_SpeedupOpt.png</iconset>
+            <normaloff>:/images/about.png</normaloff>:/images/about.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -522,13 +522,13 @@ color:white;
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="cloudBtn">
+         <widget class="QToolButton" name="exToolButton">
           <property name="text">
-           <string>云端</string>
+           <string>帮助</string>
           </property>
           <property name="icon">
            <iconset resource="res.qrc">
-            <normaloff>:/images/ico_SpeedupOpt.png</normaloff>:/images/ico_SpeedupOpt.png</iconset>
+            <normaloff>:/images/ico_expert.png</normaloff>:/images/ico_expert.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -586,7 +586,7 @@ color:white;
        <string notr="true">font-family:'微软雅黑';</string>
       </property>
       <property name="currentIndex">
-       <number>9</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -2127,7 +2127,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset resource="res.qrc">
-              <normaloff>:/images/ico_SpeedupOpt.png</normaloff>:/images/ico_SpeedupOpt.png</iconset>
+              <normaloff>:/images/upload.png</normaloff>:/images/upload.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -2153,7 +2153,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset resource="res.qrc">
-              <normaloff>:/images/ico_SpeedupOpt.png</normaloff>:/images/ico_SpeedupOpt.png</iconset>
+              <normaloff>:/images/refresh.png</normaloff>:/images/refresh.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -2179,7 +2179,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset resource="res.qrc">
-              <normaloff>:/images/ico_SpeedupOpt.png</normaloff>:/images/ico_SpeedupOpt.png</iconset>
+              <normaloff>:/images/download.png</normaloff>:/images/download.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -2205,7 +2205,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset resource="res.qrc">
-              <normaloff>:/images/ico_SpeedupOpt.png</normaloff>:/images/ico_SpeedupOpt.png</iconset>
+              <normaloff>:/images/search1.png</normaloff>:/images/search1.png</iconset>
             </property>
             <property name="iconSize">
              <size>

@@ -38,6 +38,14 @@
         <file>images/window_shadow.png</file>
         <file>images/background_mainwnd.png</file>
         <file>images/logo.png</file>
+        <file>images/cloud1.png</file>
+        <file>images/cloud2.png</file>
+        <file>images/about.png</file>
+        <file>images/roundabout.gif</file>
+        <file>images/download.png</file>
+        <file>images/refresh.png</file>
+        <file>images/search1.png</file>
+        <file>images/upload.png</file>
     </qresource>
     <qresource prefix="/css">
         <file>mainWin.qss</file>

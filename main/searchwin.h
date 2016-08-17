@@ -44,12 +44,12 @@ public:
     void loadIntoMem();
     QVector<Sequence> getCurrentSeq();
     ~SearchWin();
+     DataBase *db;
 
 private:
     Ui::MainWindow *ui;
     Sequence *input;
-    DataBase *db;
-    QVector<Sequence> seqs;
+//    QVector<Sequence> seqs;
     int numOfSeqs;
     bool time;//表示是否有时间
     bool distinct;
@@ -79,7 +79,6 @@ private:
 */
     QStringList *tracs;
     QStringList coincide;//专门存储轨迹id
-    QProgressDialog *pro;
 
     void initTable(QTableWidget *table);
     void initSeqPartTable(QTableWidget *table);

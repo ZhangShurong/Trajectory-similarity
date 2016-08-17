@@ -376,14 +376,14 @@ vector<Sequence> DataBase::getNSequences(int n, string tableName)
         query.exec(qstr);
         while(query.next())
         {
-             n = query.value(0).toInt();
+            n = query.value(0).toInt();
         }
         query.clear();
         qstr= "select max(id) from " +QString::fromStdString(tableName) + " where tid <> ''";
     }
     else
     {
-         qstr= "select id from " +QString::fromStdString(tableName) + " where tid <> '' limit " + QString::number(n);
+        qstr= "select id from " +QString::fromStdString(tableName) + " where tid <> '' limit " + QString::number(n);
     }
     //loadinto memory
 
@@ -393,7 +393,7 @@ vector<Sequence> DataBase::getNSequences(int n, string tableName)
     QString maxid;
     while(query.next())
     {
-         maxid = query.value(0).toString();
+        maxid = query.value(0).toString();
     }
 
     query.clear();
@@ -495,14 +495,14 @@ void DataBase::getNSequences(QMap<QString, Sequence> &id_seq,int n, string table
         query.exec(qstr);
         while(query.next())
         {
-             n = query.value(0).toInt();
+            n = query.value(0).toInt();
         }
         query.clear();
         qstr= "select max(id) from " +QString::fromStdString(tableName) + " where tid <> ''";
     }
     else
     {
-         qstr= "select id from " +QString::fromStdString(tableName) + " where tid <> '' limit " + QString::number(n);
+        qstr= "select id from " +QString::fromStdString(tableName) + " where tid <> '' limit " + QString::number(n);
     }
     //loadinto memory
 
@@ -512,7 +512,7 @@ void DataBase::getNSequences(QMap<QString, Sequence> &id_seq,int n, string table
     QString maxid;
     while(query.next())
     {
-         maxid = query.value(0).toString();
+        maxid = query.value(0).toString();
     }
 
     query.clear();
@@ -546,5 +546,63 @@ void DataBase::getNSequences(QMap<QString, Sequence> &id_seq,int n, string table
         }
         // qDebug() << pt + time + id;
     }
+}
+QVector<Sequence> DataBase::getAllSequences(string tableName){
+    QSqlQuery query(db);
+
+    QString qstr;
+    qstr= "select count(tid) from " +QString::fromStdString(tableName) + " where tid <> ''";
+    query.exec(qstr);
+
+    query.next();
+
+    int n= query.value(0).toInt();
+
+    query.clear();
+
+    qstr= "select max(id) from " +QString::fromStdString(tableName) + " where tid <> ''";
+
+    query.exec(qstr);
+
+    query.next();
+
+    QString maxid = query.value(0).toString();
+
+    query.clear();
+
+    qstr = "select * from "+QString::fromStdString(tableName)+" where id <= " + maxid;
+
+    query.exec(qstr);
+
+    QString tid;
+    QString pt;
+    QString time;
+
+    QString id ;
+    QVector<Sequence>  res;
+
+    Sequence t[n];
+
+    int i = 0;
+
+    while (query.next()) {
+        Point temp;
+        tid = query.value(0).toString();
+        if(tid.isEmpty())
+        {
+            pt = query.value(1).toString();
+            time = query.value(2).toString();
+            id = query.value(3).toString();
+            temp.buildPoint(pt,time,id);
+            t[i].appendPt(&temp);
+        }
+        else
+        {
+            t[i].setID(tid);
+            res.append(t[i]);
+            i++;
+        }
+    }
+    return res;
 }
 

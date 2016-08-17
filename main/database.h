@@ -37,7 +37,7 @@ public:
     bool isTableExist(string tableName);
     string insertData(Csv *csv, string tbName);
     string insertData(Sequence sequence, string tbName);
- //   string insertData(Sequence *seq_a, string tbName);
+    //   string insertData(Sequence *seq_a, string tbName);
     void getSequenceByID(string tableName, Sequence *squ, string ID);
     int getPointNumByID(string ID);
     QStringList *getAllTracID(string tableName);
@@ -49,6 +49,8 @@ public:
     void delSeq(string ID,string tableName);
     void closeConnection(QString connName="");
     void getNSequences(QMap<QString, Sequence> &id_seq,int n, string tableName);
+    QVector<Sequence> getAllSequences(string tableName);
+
 };
 
 #endif // DATABASE_H

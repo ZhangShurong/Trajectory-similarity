@@ -47,13 +47,13 @@ MainWindow::MainWindow(QWidget *parent) :
     initCan();
     initTable();
 
-//    searchWin->setDB(db);
     searchMode(false);
 }
 
 void MainWindow::setDb(DataBase *database)
 {
     db = database;
+    searchWin->setDB(database);
 }
 
 QVector<Sequence> MainWindow::getCurrentSeqs()
@@ -77,10 +77,6 @@ QVector<Sequence> MainWindow::getCurrentSeqs()
 
 MainWindow::~MainWindow()
 {
-    if(!tracs)
-    {
-        delete tracs;
-    }
     delete ui;
 }
 

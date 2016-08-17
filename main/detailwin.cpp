@@ -6,6 +6,7 @@ detailWin::detailWin(QWidget *parent) :
     ui(new Ui::detailWin)
 {
     ui->setupUi(this);
+    this->setWindowTitle("轨迹详情");
     initTable();
 }
 

@@ -141,21 +141,12 @@ QVector<SecCompare> Core::findSimilarSection(Sequence *se_a, Sequence *se_b)
     int h = 1;
     double limit=computeDiscreteFrechet(p,q);
     //    int tracsLen=SearchWin::tracLeng;
-    if(totalNum<=200&&totalNum>=0&&tracsLen<1000){
+    if(totalNum<=200&&totalNum>=0){
         gap=1;
         h=1;
-    } else if(totalNum>200) {
+    } else {
         gap=5;
         h=gap;
-    }else if(tracsLen<3000){
-        gap=1;
-        h=2;
-    }else if(tracsLen<5000){
-        gap=2;
-        h=4;
-    }else if(tracsLen<10000){
-        gap=3;
-        h=6;
     }
 
     //#pragma omp parallel for

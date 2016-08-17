@@ -18,6 +18,9 @@ ClusterDemo::ClusterDemo(QWidget *parent) : QWidget(parent)
 void ClusterDemo::paintEvent(QPaintEvent *p)
 {
     QPainter painter(this);
+
+
+    painter.drawPixmap(0,0,1400,600,QPixmap("images/roundabout.gif"));
     QPen pen;                                 //创建一个画笔
     pen.setColor(Qt::black);
     pen.setWidth(5);
@@ -38,7 +41,7 @@ void ClusterDemo::paintEvent(QPaintEvent *p)
     {
         for(uint i = 0; i < sequences.size(); i++)
         {
-            pen.setWidth(10);
+            pen.setWidth(5);
             if(res.at(i) == 0)
             {
                 pen.setColor(Qt::red);
