@@ -507,7 +507,6 @@ void DataBase::getNSequences(QMap<QString, Sequence> &id_seq,int n, string table
     //loadinto memory
 
     //select id from Server where tid <> "" limit 10;
-
     query.exec(qstr);
     QString maxid;
     while(query.next())
@@ -549,29 +548,20 @@ void DataBase::getNSequences(QMap<QString, Sequence> &id_seq,int n, string table
 }
 QVector<Sequence> DataBase::getAllSequences(string tableName){
     QSqlQuery query(db);
-
     QString qstr;
+
     qstr= "select count(tid) from " +QString::fromStdString(tableName) + " where tid <> ''";
     query.exec(qstr);
-
     query.next();
-
     int n= query.value(0).toInt();
-
     query.clear();
 
     qstr= "select max(id) from " +QString::fromStdString(tableName) + " where tid <> ''";
-
     query.exec(qstr);
-
     query.next();
-
     QString maxid = query.value(0).toString();
-
     query.clear();
-
     qstr = "select * from "+QString::fromStdString(tableName)+" where id <= " + maxid;
-
     query.exec(qstr);
 
     QString tid;
@@ -582,9 +572,7 @@ QVector<Sequence> DataBase::getAllSequences(string tableName){
     QVector<Sequence>  res;
 
     Sequence t[n];
-
     int i = 0;
-
     while (query.next()) {
         Point temp;
         tid = query.value(0).toString();
@@ -604,5 +592,46 @@ QVector<Sequence> DataBase::getAllSequences(string tableName){
         }
     }
     return res;
+}
+
+void DataBase::createResTable()
+{
+    QSqlQuery query(db);
+    /*
+     *  _________________________
+     * |tid|pyNum|time|id(PK)|res|
+     *
+     *
+     */
+    query.exec("create table res(tid varchar,ptNum integer,time integer,id integer primary key, res double, demo vachar)");
+}
+
+void DataBase::insertIntoResTable(int n, vector<Sequence> sequences, double *res)
+{
+    if(n != sequences.size())
+    {
+        return;
+    }
+    db.transaction();
+    QSqlQuery query(db);
+    for(int i = 0; i < n; i++)
+    {
+        int time = 0;
+        if(sequences[i].hasTime()) {
+            time = 1;
+        }
+
+        QString str = "insert into table res value(";
+        str += sequences[i].getID() + ","
+                + QString::number(sequences[i].getNum())
+                + ","
+                + QString::number(time)
+                + ","
+                + "NULL,"
+                + QString::number(res[i])
+                + ",'')";
+        query.exec(str);
+    }
+    db.commit();
 }
 

@@ -45,7 +45,7 @@ private:
     void returnInsert(vector<Sequence> sequences);
 
     void search();
-    void searchInDB(Sequence sequence, QMap<QString, Sequence> *seq);
+    void searchInDB(Sequence sequence, vector<Sequence> *seq);
 
     void loadIntoMemory(vector<Sequence> &seq, int n);
 

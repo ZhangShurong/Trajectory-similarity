@@ -20,11 +20,8 @@ private:
     void searchInDB(Sequence sequence);
     void search();
     void searchResult();
-    void loadIntoMemory(vector<Sequence> &seq);
 
     void download();
-
-    void closeConnection();
     quint16 nextBlockSize;
     DataBase *db;
 };

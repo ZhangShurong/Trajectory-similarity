@@ -224,32 +224,24 @@ void TcpSocket::search()
     }
     Sequence temp;
     in >> temp;
-    //vector<Sequence> seq;
-    //loadIntoMemory(seq,-1);
-    QMap<QString, Sequence> seqs;
-    db->getNSequences(seqs,-1,"Server");
+    vector<Sequence> seqs;
+    loadIntoMemory(seqs,-1);
+//    QMap<QString, Sequence> seqs;
+//    db->getNSequences(seqs,-1,"Server");
     searchInDB(temp, &seqs);
-
 }
 
-void TcpSocket::searchInDB(Sequence sequence, QMap<QString, Sequence> *seq)
+void TcpSocket::searchInDB(Sequence sequence, vector<Sequence> *seq)
 {
     Core core;
-    QMap<double, QString> res_id;
-    QMap<QString, Sequence>::iterator it1;
-    for(it1 = seq->begin(); it1 != seq->end(); it1++)
+    double resarr[seq->size()];
+    for(int i = 0; i < seq->size(); i++)
     {
-        double res = core.computeDiscreteFrechet(&sequence, &(it1.value()));
-        res_id.insert(res,it1.value().getID());
+        double res = core.computeDiscreteFrechet(&sequence, &(seq->at(i)));
+        resarr[i] = res;
     }
-
-    QMap<double, QString>::iterator it;
-    vector<Sequence> res;
-    for(it = res_id.begin(); it != res_id.end(); it++)
-    {
-        res.push_back((*seq)[it.value()]);
-    }
-    returnRefresh(res);
+    db->createResTable();
+    db->insertIntoResTable(seq->size(), *seq, resarr);
 
 }
 
