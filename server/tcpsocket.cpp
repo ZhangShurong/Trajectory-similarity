@@ -96,6 +96,10 @@ void TcpSocket::readData()
     {
         refresh();
     }
+    else if(requestType == 'D')
+    {
+        download();
+    }
     else
     {
         std::cerr << "Not identified request, Error!!!!!\n";
@@ -255,8 +259,8 @@ void TcpSocket::loadIntoMemory(vector<Sequence> &seq,int n)
     auto end   = std::chrono::system_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     std::cout <<  "Cost"
-         << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den
-         << "S" << endl;
+               << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den
+               << "S" << endl;
     std::cout<< seq.size();
     std::cout.flush();
     /*
@@ -283,11 +287,71 @@ void TcpSocket::refresh()
         return;
     }
     vector<Sequence> sequences;
+    loadIntoMemory(sequences, 100);
+    if(sequences.size() == 100)
+    {
+        returnRefresh(sequences);
+    }
+}
+
+void TcpSocket::returnRefresh(vector<Sequence> sequences)
+{
+    std::cout << "In refresh insert:\n";
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+    /* _______________________________________________________
+     * |             |                  |           |        |
+     * |size(quint16)|requestType(qint8)|num(qint16)|Sequence|
+     * |_____________|__________________|___________|________|
+     */
+    qint16 num(sequences.size());
+    out << quint32(0) << qint8('R') << num ;
+    for(uint i = 0; i < sequences.size(); i++)
+    {
+        out << sequences[i];
+    }
+    out.device()->seek(0);
+    out << quint32(block.size() - sizeof(quint32));
+    this->write(block);
+}
+
+void TcpSocket::download()
+{
+    QDataStream in(this);
+    qint16 num;
+    in >> num;
+    if(num != -1)
+    {
+        std::cerr << "Error\n";
+        //TODO Error report
+        return;
+    }
+    vector<Sequence> sequences;
     loadIntoMemory(sequences, -1);
-    //if(sequences.size() == 100)
-    //{
-        returnInsert(sequences);
-    //}
+    returnDownload(sequences);
+}
+
+void TcpSocket::returnDownload(vector<Sequence> sequences)
+{
+    std::cout << "In refresh insert:\n";
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+    /* _______________________________________________________
+     * |             |                  |           |        |
+     * |size(quint16)|requestType(qint8)|num(qint16)|Sequence|
+     * |_____________|__________________|___________|________|
+     */
+    qint16 num(sequences.size());
+    out << quint32(0) << qint8('R') << num ;
+    for(uint i = 0; i < sequences.size(); i++)
+    {
+        out << sequences[i];
+    }
+    out.device()->seek(0);
+    out << quint32(block.size() - sizeof(quint32));
+    this->write(block);
 }
 /*
 void TcpSocket::returnRefresh(vector<Sequence> sequences)

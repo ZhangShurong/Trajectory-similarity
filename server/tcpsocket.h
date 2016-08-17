@@ -39,13 +39,22 @@ private:
     DataBase *db;
     quint32 nextBlockSize;
     void echo(QString msg);
+
     void insert();
+    void insertIntoDB(vector<Sequence> sequences);
     void returnInsert(vector<Sequence> sequences);
+
     void search();
     void searchInDB(Sequence sequence);
-    void insertIntoDB(vector<Sequence> sequences);
+
     void loadIntoMemory(vector<Sequence> &seq, int n);
+
     void refresh();
+    void returnRefresh(vector<Sequence> sequences);
+
+    void download();
+    void returnDownload(vector<Sequence> sequences);
+
     //void returnRefresh(vector<Sequence> sequences);
 };
 

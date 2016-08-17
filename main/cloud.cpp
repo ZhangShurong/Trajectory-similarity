@@ -17,6 +17,7 @@ Cloud::Cloud(Ui::MainWindow *ui, QWidget *parent)
     connect(ui->searchInServerBtn, SIGNAL(clicked(bool)), this, SLOT(openfile()));
     connect(ui->connectPushBtn, SIGNAL(clicked()), this, SLOT(connectPushBtnClicked()));
     connect(ui->refreshBtn, SIGNAL(clicked(bool)), this, SLOT(refreshBtnClicked()));
+    connect(ui->dowmloadBtn, SIGNAL(clicked(bool)), this, SLOT(downloadPushBtnClicked()));
 
     connect(client, SIGNAL(connected()), this, SLOT(connectedMsg()));
     connect(client, SIGNAL(disconnected()), this, SLOT(connectionClosedByServer()));
@@ -103,6 +104,11 @@ void Cloud::connectPushBtnClicked()
 
 }
 
+void Cloud::downloadPushBtnClicked()
+{
+    client->download();
+}
+
 void Cloud::connectedMsg()
 {
     ui->connectPushBtn->setText("断开");
@@ -170,7 +176,8 @@ void Cloud::readData()
         }
         if(returnType == 'D')
         {
-
+            vector<Sequence> res = getSequences();
+            display(res);
         }
         if(returnType == 'S')
         {

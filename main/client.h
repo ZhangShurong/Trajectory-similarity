@@ -23,6 +23,7 @@ public:
     void search(Sequence sequence);
     void echo(QString msg);
     void refresh();
+    void download();
 };
 
 #endif // CLIENT_H

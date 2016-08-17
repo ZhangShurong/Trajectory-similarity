@@ -20,6 +20,7 @@ private slots:
     void openfile();//For search
     void refreshBtnClicked();
     void connectPushBtnClicked();
+    void downloadPushBtnClicked();
 
     //for socket
     void connectedMsg();
