@@ -44,7 +44,9 @@ private:
     void search();
     void searchInDB(Sequence sequence);
     void insertIntoDB(vector<Sequence> sequences);
-    void loadIntoMemory(vector<Sequence> &seq);
+    void loadIntoMemory(vector<Sequence> &seq, int n);
+    void refresh();
+    //void returnRefresh(vector<Sequence> sequences);
 };
 
 #endif // TCPSOCKET_H

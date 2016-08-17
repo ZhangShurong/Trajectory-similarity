@@ -16,7 +16,7 @@ Cloud::Cloud(Ui::MainWindow *ui, QWidget *parent)
     connect(ui->uploadBtn, SIGNAL(clicked()), this, SLOT(openfiles()));
     connect(ui->searchInServerBtn, SIGNAL(clicked(bool)), this, SLOT(openfile()));
     connect(ui->connectPushBtn, SIGNAL(clicked()), this, SLOT(connectPushBtnClicked()));
-
+    connect(ui->refreshBtn, SIGNAL(clicked(bool)), this, SLOT(refreshBtnClicked()));
 
     connect(client, SIGNAL(connected()), this, SLOT(connectedMsg()));
     connect(client, SIGNAL(disconnected()), this, SLOT(connectionClosedByServer()));
@@ -83,7 +83,7 @@ void Cloud::openfile()
 
 void Cloud::refreshBtnClicked()
 {
-
+    client->refresh();
 }
 
 void Cloud::connectPushBtnClicked()
@@ -165,7 +165,8 @@ void Cloud::readData()
         }
         if(returnType == 'R')
         {
-
+            vector<Sequence> res = getSequences();
+            display(res);
         }
         if(returnType == 'D')
         {
@@ -234,7 +235,10 @@ void Cloud::display(vector<Sequence> sequences)
             ui->tableWidget->setRowCount(ROW_NUM + 10);
         }
         for(int i = 0; i < sequences.size(); i++) {
-            ui->tableWidget->setItem(i,0, new QTableWidgetItem(QString::number(i));
+            if(sequences.at(i).getID() == "Input")
+                ui->tableWidget->setItem(i,0, new QTableWidgetItem(QString::number(i)));
+            else
+                ui->tableWidget->setItem(i,0, new QTableWidgetItem(sequences.at(i).getID()));
             ui->tableWidget->setItem(i,1,
                                    new QTableWidgetItem(QString::number(sequences.at(i).getNum())));
         }

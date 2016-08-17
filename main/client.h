@@ -22,6 +22,7 @@ public:
     void upload(vector<Sequence> sequences);
     void search(Sequence sequence);
     void echo(QString msg);
+    void refresh();
 };
 
 #endif // CLIENT_H

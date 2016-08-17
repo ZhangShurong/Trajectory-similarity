@@ -84,3 +84,21 @@ void Client::echo(QString msg)
     this->write(block);
     std::cout << "echo over";
 }
+
+void Client::refresh()
+{
+    std::cout << "In insert:\n";
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+    /* _______________________________________________________
+     * |             |                  |           |        |
+     * |size(quint16)|requestType(qint8)|num(qint16)|Sequence|
+     * |_____________|__________________|___________|________|
+     */
+    qint16 num(-1);
+    out << quint32(0) << qint8('R') << num ;
+    out.device()->seek(0);
+    out << quint32(block.size() - sizeof(quint32));
+    this->write(block);
+}

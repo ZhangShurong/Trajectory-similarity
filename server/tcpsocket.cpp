@@ -94,7 +94,7 @@ void TcpSocket::readData()
     }
     else if(requestType == 'R')
     {
-
+        refresh();
     }
     else
     {
@@ -162,7 +162,7 @@ void TcpSocket::echo(QString msg)
 void TcpSocket::insert()
 {
     QDataStream in(this);
-    quint16 num;
+    qint16 num;
     in >> num;
     if(num <= 0)
     {
@@ -210,7 +210,7 @@ void TcpSocket::returnInsert(vector<Sequence> sequences)
 void TcpSocket::search()
 {
     QDataStream in(this);
-    quint16 num;
+    qint16 num;
     in >> num;
     if(num != 1)
     {
@@ -221,7 +221,7 @@ void TcpSocket::search()
     in >> temp;
     searchInDB(temp);
     vector<Sequence> seq;
-    loadIntoMemory(seq);
+    loadIntoMemory(seq,-1);
 }
 
 void TcpSocket::searchInDB(Sequence sequence)
@@ -248,12 +248,10 @@ void TcpSocket::insertIntoDB(vector<Sequence> sequences)
     }
 }
 
-void TcpSocket::loadIntoMemory(vector<Sequence> &seq)
+void TcpSocket::loadIntoMemory(vector<Sequence> &seq,int n)
 {
-
     auto start = std::chrono::system_clock::now();
-    // do something...
-    seq = db->getNSequences(10000,"Server");
+    seq = db->getNSequences(n,"Server");
     auto end   = std::chrono::system_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     std::cout <<  "Cost"
@@ -272,3 +270,28 @@ void TcpSocket::loadIntoMemory(vector<Sequence> &seq)
     delete tracIds;
     */
 }
+
+void TcpSocket::refresh()
+{
+    QDataStream in(this);
+    qint16 num;
+    in >> num;
+    if(num != -1)
+    {
+        std::cerr << "Error\n";
+        //TODO Error report
+        return;
+    }
+    vector<Sequence> sequences;
+    loadIntoMemory(sequences, 100);
+    if(sequences.size() == 100)
+    {
+        returnInsert(sequences);
+    }
+}
+/*
+void TcpSocket::returnRefresh(vector<Sequence> sequences)
+{
+
+}
+*/

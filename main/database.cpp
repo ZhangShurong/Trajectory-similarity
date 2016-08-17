@@ -368,10 +368,20 @@ void DataBase::createTable(string tableName)
 
 vector<Sequence> DataBase::getNSequences(int n, string tableName)
 {
-    //loadinto memory
     QSqlQuery query(db);
+    QString qstr;
+    if(n <= 0)
+    {
+         qstr= "select max(id) from " +QString::fromStdString(tableName) + " where tid <> ''";
+    }
+    else
+    {
+         qstr= "select id from " +QString::fromStdString(tableName) + " where tid <> '' limit " + QString::number(n);
+    }
+    //loadinto memory
+
     //select id from Server where tid <> "" limit 10;
-    QString qstr = "select id from " +QString::fromStdString(tableName) + " where tid <> '' limit " + QString::number(n);
+
     query.exec(qstr);
     QString maxid;
     while(query.next())
