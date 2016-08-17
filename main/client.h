@@ -10,7 +10,7 @@ class Client:public QTcpSocket
     Q_OBJECT
 public:
 
-    quint16 nextBlockSize;
+    quint32 nextBlockSize;
     quint8 requestType;
 
     explicit Client();

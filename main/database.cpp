@@ -370,12 +370,16 @@ vector<Sequence> DataBase::getNSequences(int n, string tableName)
 {
     //loadinto memory
     QSqlQuery query(db);
-    //select id from Server  where tid <> "" limit 10;
-    QString qstr = "select id from " +QString::fromStdString(tableName) + "where tid <> '' limit " + n;
+    //select id from Server where tid <> "" limit 10;
+    QString qstr = "select id from " +QString::fromStdString(tableName) + " where tid <> '' limit " + QString::number(n);
     query.exec(qstr);
-    query.next();
+    QString maxid;
+    while(query.next())
+    {
+         maxid = query.value(0).toString();
+    }
+
     query.clear();
-    QString maxid = query.value(0).toString();
     qstr = "select * from Server  where id <= " + maxid;
     //tid,pt,time,id,type
     query.exec(qstr);
@@ -384,10 +388,12 @@ vector<Sequence> DataBase::getNSequences(int n, string tableName)
     QString time;
     QString id ;
 
-    Point temp;
-    Sequence t;
+
     vector<Sequence>  res;
+    Sequence t[n];
+    int i = 0;
     while (query.next()) {
+        Point temp;
         tid = query.value(0).toString();
         if(tid.isEmpty())
         {
@@ -395,15 +401,14 @@ vector<Sequence> DataBase::getNSequences(int n, string tableName)
             time = query.value(2).toString();
             id = query.value(3).toString();
             temp.buildPoint(pt,time,id);
-            t.appendPt(&temp);
+            t[i].appendPt(&temp);
         }
         else
         {
-            t.setID(tid);
-            res.push_back(t);
-            t.clear();
+            t[i].setID(tid);
+            res.push_back(t[i]);
+            i++;
         }
-        query.next();
         // qDebug() << pt + time + id;
     }
     return res;

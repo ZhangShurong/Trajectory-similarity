@@ -2,6 +2,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QHostAddress>
 #include <QDebug>
+#include <chrono>
 
 
 
@@ -66,7 +67,7 @@ void TcpSocket::readData()
     if(nextBlockSize == 0)
     {
         //?????
-        if(bytesAvailable() < sizeof(quint16))
+        if(bytesAvailable() < sizeof(quint32))
             return;
         in >> nextBlockSize;
     }
@@ -75,24 +76,29 @@ void TcpSocket::readData()
     quint8 requestType;
     QString msg;
     in >> requestType;
-    std::cout << "Request type is " << requestType << std::endl;
+    std::cout << "Request type is " << requestType
+              << " And the blocksize is " << nextBlockSize << std::endl;
     if(requestType == 'E')
     {
         in >> msg;
         std::cout << "Message is " <<msg.toStdString() << std::endl;
         echo(msg);
     }
-    if(requestType == 'I')
+    else if(requestType == 'I')
     {
         insert();
     }
-    if(requestType == 'S')
+    else  if(requestType == 'S')
     {
         search();
     }
-    if(requestType == 'R')
+    else if(requestType == 'R')
     {
 
+    }
+    else
+    {
+        std::cerr << "Not identified request, Error!!!!!\n";
     }
     nextBlockSize = 0;
     /*
@@ -146,10 +152,10 @@ void TcpSocket::echo(QString msg)
     out.setVersion(QDataStream::Qt_5_4);
     quint8 returnType;
     returnType = 'E';
-    out<< quint16(0) << returnType
+    out<< quint32(0) << returnType
        << msg;
     out.device()->seek(0);
-    out << quint16(block.size() - sizeof(quint16));
+    out << quint32(block.size() - sizeof(quint32));
     write(block);
 }
 
@@ -173,8 +179,32 @@ void TcpSocket::insert()
     if(sequences.size() == num)
     {
         insertIntoDB(sequences);
-        echo(QString("Got sequences in insert"));
+        QString msg = "Got sequences in insert and the num is " + QString::number(sequences.size());
+        qDebug() << msg;
+        returnInsert(sequences);
     }
+}
+
+void TcpSocket::returnInsert(vector<Sequence> sequences)
+{
+    std::cout << "In return insert:\n";
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+    /* _______________________________________________________
+     * |             |                  |           |        |
+     * |size(quint16)|requestType(qint8)|num(qint16)|Sequence|
+     * |_____________|__________________|___________|________|
+     */
+    qint16 num(sequences.size());
+    out << quint32(0) << qint8('I') << num ;
+    for(uint i = 0; i < sequences.size(); i++)
+    {
+        out << sequences[i];
+    }
+    out.device()->seek(0);
+    out << quint32(block.size() - sizeof(quint32));
+    this->write(block);
 }
 
 void TcpSocket::search()
@@ -189,19 +219,14 @@ void TcpSocket::search()
     }
     Sequence temp;
     in >> temp;
-    echo(QString("Got sequences in search\n"));
     searchInDB(temp);
     vector<Sequence> seq;
     loadIntoMemory(seq);
-    QString msg = "In databasem, there is " + QString::number(seq.size()) + " Sequences\n";
-    echo(msg);
 }
 
 void TcpSocket::searchInDB(Sequence sequence)
 {
-    QString msg = "Server got the sequence and the points number is "+ QString::number(sequence.getNum())
-            + "\n";
-    echo(msg);
+
 }
 
 void TcpSocket::insertIntoDB(vector<Sequence> sequences)
@@ -219,13 +244,21 @@ void TcpSocket::insertIntoDB(vector<Sequence> sequences)
     db->db.commit();
     if(stringList.size() == sequences.size())
     {
-        echo("Insert sucess and the first id is "+ QString::fromStdString(stringList.at(0)));
+        qDebug() << "Insert sucess and the first id is "+ QString::fromStdString(stringList.at(0));
     }
 }
 
 void TcpSocket::loadIntoMemory(vector<Sequence> &seq)
 {
-    seq = db->getNSequences(10,"Server");
+
+    auto start = std::chrono::system_clock::now();
+    // do something...
+    seq = db->getNSequences(10000,"Server");
+    auto end   = std::chrono::system_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout <<  "Cost"
+         << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den
+         << "S" << endl;
     std::cout<< seq.size();
     std::cout.flush();
     /*

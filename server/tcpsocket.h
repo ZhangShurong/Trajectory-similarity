@@ -37,9 +37,10 @@ private:
     QMetaObject::Connection dis;
 
     DataBase *db;
-    quint16 nextBlockSize;
+    quint32 nextBlockSize;
     void echo(QString msg);
     void insert();
+    void returnInsert(vector<Sequence> sequences);
     void search();
     void searchInDB(Sequence sequence);
     void insertIntoDB(vector<Sequence> sequences);

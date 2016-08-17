@@ -18,6 +18,7 @@ public:
 private slots:
     void openfiles();
     void openfile();//For search
+    void refreshBtnClicked();
     void connectPushBtnClicked();
 
     //for socket
@@ -36,6 +37,9 @@ private:
     void disconnectServer();
 
     void initTable();
+    void display(vector<Sequence> sequences);
+
+    vector<Sequence> getSequences();
 
 };
 

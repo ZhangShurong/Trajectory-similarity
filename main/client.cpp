@@ -40,12 +40,12 @@ void Client::search(Sequence sequence)
      * |_____________|__________________|___________|________|
      */
     qint16 num(1);
-    out << qint16(0) << qint8('S') << num ;
+    out << quint32(0) << qint8('S') << num ;
     out << sequence;
     out.device()->seek(0);
-    out << qint16(block.size() - sizeof(quint16));
+    out << quint32(block.size() - sizeof(quint32));
     this->write(block);
-    std::cout << "send over";
+    std::cout << "send over and blocksize is " << quint32(block.size() - sizeof(quint32));
     std::cout.flush();
 }
 
@@ -61,13 +61,13 @@ void Client::upload(vector<Sequence> sequences)
      * |_____________|__________________|___________|________|
      */
     qint16 num(sequences.size());
-    out << qint16(0) << qint8('I') << num ;
+    out << quint32(0) << qint8('I') << num ;
     for(uint i = 0; i < sequences.size(); i++)
     {
         out << sequences[i];
     }
     out.device()->seek(0);
-    out << qint16(block.size() - sizeof(quint16));
+    out << quint32(block.size() - sizeof(quint32));
     this->write(block);
     qDebug() << "Insert over";
 }
@@ -78,9 +78,9 @@ void Client::echo(QString msg)
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
-    out << qint16(0) << qint8('E') << msg;
+    out << quint32(0) << qint8('E') << msg;
     out.device()->seek(0);
-    out << qint16(block.size() - sizeof(quint16));
+    out << quint32(block.size() - sizeof(quint32));
     this->write(block);
     std::cout << "echo over";
 }

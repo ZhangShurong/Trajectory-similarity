@@ -1,6 +1,7 @@
 #include "cloud.h"
 #include "core.h"
 #include "ui_mainwindow.h"
+#define ROW_NUM 100
 
 Cloud::Cloud(Ui::MainWindow *ui, QWidget *parent)
 :QMainWindow(parent)
@@ -15,6 +16,7 @@ Cloud::Cloud(Ui::MainWindow *ui, QWidget *parent)
     connect(ui->uploadBtn, SIGNAL(clicked()), this, SLOT(openfiles()));
     connect(ui->searchInServerBtn, SIGNAL(clicked(bool)), this, SLOT(openfile()));
     connect(ui->connectPushBtn, SIGNAL(clicked()), this, SLOT(connectPushBtnClicked()));
+
 
     connect(client, SIGNAL(connected()), this, SLOT(connectedMsg()));
     connect(client, SIGNAL(disconnected()), this, SLOT(connectionClosedByServer()));
@@ -79,6 +81,11 @@ void Cloud::openfile()
     client->search(sequence);
 }
 
+void Cloud::refreshBtnClicked()
+{
+
+}
+
 void Cloud::connectPushBtnClicked()
 {
     if ("连接" == this->ui->connectPushBtn->text())
@@ -129,7 +136,7 @@ void Cloud::readData()
     {
         if(client->nextBlockSize == 0)
         {
-            if(client->bytesAvailable() < sizeof(qint16))
+            if(client->bytesAvailable() < sizeof(quint32))
                 break;
             in >> client->nextBlockSize;
         }
@@ -153,7 +160,8 @@ void Cloud::readData()
         }
         if(returnType == 'I')
         {
-
+            vector<Sequence> res = getSequences();
+            display(res);
         }
         if(returnType == 'R')
         {
@@ -205,6 +213,56 @@ void Cloud::initTable()
            << tr("备注");
     ui->tableWidget->setHorizontalHeaderLabels(header);
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+}
+
+void Cloud::display(vector<Sequence> sequences)
+{
+    ui->tableWidget->clearContents();
+    QStringList header;
+    header << "轨迹ID"
+           << "轨迹点数"
+           << "Frechet Distance"
+           << "相似度";
+    ui->tableWidget->setHorizontalHeaderLabels(header);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    if (sequences.size() == 0)
+        ui->tableWidget->clear();
+    else {
+        if (sequences.size() > ROW_NUM) {
+            ui->tableWidget->setRowCount(sequences.size() + 10);
+        } else {
+            ui->tableWidget->setRowCount(ROW_NUM + 10);
+        }
+        for(int i = 0; i < sequences.size(); i++) {
+            ui->tableWidget->setItem(i,0, new QTableWidgetItem(QString::number(i));
+            ui->tableWidget->setItem(i,1,
+                                   new QTableWidgetItem(QString::number(sequences.at(i).getNum())));
+        }
+    }
+}
+
+vector<Sequence> Cloud::getSequences()
+{
+    QDataStream in(this->client);
+    quint16 num;
+    in >> num;
+    if(num <= 0)
+    {
+        //TODO Error report
+        ;
+    }
+    vector<Sequence> sequences;
+    for(uint i = 0; i < num; i++)
+    {
+        Sequence temp;
+        in >> temp;
+        sequences.push_back(temp);
+    }
+    if(sequences.size() == num)
+    {
+
+    }
+    return sequences;
 }
 
 void Cloud::disconnectServer()
