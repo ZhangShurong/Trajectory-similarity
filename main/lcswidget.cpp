@@ -1,16 +1,18 @@
-#include "lcmwidget.h"
+#include "lcswidget.h"
 
-lcmWidget::lcmWidget(QWidget *parent) : QWidget(parent)
+LcsWidget::LcsWidget(QWidget *parent) : QWidget(parent)
 {
     raw_seq[0] = raw_seq[1] = common_seq[0] = common_seq[1] = NULL;
     setupUi();
     setupActions();
 }
 
-void lcmWidget::setupUi()
+void LcsWidget::setupUi()
 {
-    QLabel      *lowerLimLabel = new QLabel;
-    QLabel      *upperLimLabel = new QLabel;
+    groupBox = new QGroupBox;
+
+    QLabel *lowerLimLabel = new QLabel;
+    QLabel *upperLimLabel = new QLabel;
     lowerLimBox = new QSpinBox;
     upperLimBox = new QSpinBox;
     lowerLimBox->setValue(0);
@@ -22,16 +24,20 @@ void lcmWidget::setupUi()
     thresholdLabel = new QLabel;
     refreshButton = new QPushButton;
     refreshButton->setText(tr("开始分析"));
-    QHBoxLayout *adjustBarLayout = new QHBoxLayout;
-    adjustBarLayout->addWidget(lowerLimLabel);
-    adjustBarLayout->addWidget(lowerLimBox);
-    adjustBarLayout->addWidget(upperLimLabel);
-    adjustBarLayout->addWidget(upperLimBox);
-    adjustBarLayout->addWidget(thresholdLabel);
-    adjustBarLayout->addSpacing(10);
-    adjustBarLayout->addWidget(refreshButton);
+    thresholdSlider = new QSlider(Qt::Horizontal);
+    thresholdSlider->setValue(10);
+    QHBoxLayout *adjustLayout = new QHBoxLayout;
+    adjustLayout->addWidget(lowerLimLabel);
+    adjustLayout->addWidget(lowerLimBox);
+    adjustLayout->addWidget(thresholdSlider);
+    adjustLayout->addWidget(upperLimLabel);
+    adjustLayout->addWidget(upperLimBox);
+    adjustLayout->addWidget(thresholdLabel);
+    adjustLayout->addSpacing(10);
+    adjustLayout->addWidget(refreshButton);
+//    adjustLayout->addWidget(groupBox);
 
-    QHBoxLayout *fileBarLayout = new QHBoxLayout;
+    QHBoxLayout *fileLayout = new QHBoxLayout;
     for (int i = 0; i < 2; ++i) {
         fileNameLabel[i] = new QLabel;
         fileNameLabel[i]->setText(tr("未选择文件"));
@@ -39,11 +45,11 @@ void lcmWidget::setupUi()
         fileOpenButtion[i] = new QPushButton;
         fileOpenButtion[i]->setText(tr("打开文件 ") + QString::number(i + 1));
 
-        fileBarLayout->addWidget(fileNameLabel[i]);
-        fileBarLayout->addWidget(fileOpenButtion[i]);
+        fileLayout->addWidget(fileNameLabel[i]);
+        fileLayout->addWidget(fileOpenButtion[i]);
 
         if (i == 0) {
-            fileBarLayout->addSpacing(0);
+            fileLayout->addSpacing(0);
         }
     }
 
@@ -54,21 +60,19 @@ void lcmWidget::setupUi()
     map->setDefaultCentralPt();
     map->reload();
 
-    thresholdSlider = new QSlider;
-    thresholdSlider->setValue(10);
-    QHBoxLayout *mapLayout = new QHBoxLayout;
-    mapLayout->addWidget(map);
-    mapLayout->addWidget(thresholdSlider);
+    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    bottomLayout->addWidget(map);
+    //bottomLayout->addWidget(thresholdSlider);
     updateThreshold();
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addLayout(fileBarLayout);
-    mainLayout->addLayout(adjustBarLayout);
-    mainLayout->addLayout(mapLayout);
+    mainLayout->addLayout(fileLayout);
+    mainLayout->addLayout(adjustLayout);
+    mainLayout->addLayout(bottomLayout);
     this->setLayout(mainLayout);
 }
 
-void lcmWidget::setupActions()
+void LcsWidget::setupActions()
 {
     /** 关联 打开按钮 和 打开动作 **/
     QSignalMapper *signalMapper = new QSignalMapper(this);
@@ -85,7 +89,7 @@ void lcmWidget::setupActions()
     connect(refreshButton, SIGNAL(pressed()), this, SLOT(onRefreshButtonClicked()));
 }
 
-void lcmWidget::openFile(int i)
+void LcsWidget::openFile(int i)
 {
     QString fileName = QFileDialog::getOpenFileName(NULL,tr("打开文件"),
                        "", "CSV Files(*.csv)", 0);
@@ -106,7 +110,7 @@ void lcmWidget::openFile(int i)
     raw_seq[i]->setID(QString::number(i + 1));
 }
 
-void lcmWidget::calcLcmSequence()
+void LcsWidget::calcLcmSequence()
 {
     for (int i = 0; i < 2; ++i) {
         if (common_seq[i] != NULL) {
@@ -162,7 +166,7 @@ void lcmWidget::calcLcmSequence()
     }
 }
 
-void lcmWidget::drawSequences()
+void LcsWidget::drawSequences()
 {
     QPair<double, double> centralPoint(0.0, 0.0);
     Sequence *seqs[] = {raw_seq[0], raw_seq[1]/*, common_seq[0], common_seq[1]*/};
@@ -194,7 +198,7 @@ void lcmWidget::drawSequences()
     map->drawSequences(seq_vec);
 }
 
-void lcmWidget::onLowerLimChanged(int value)
+void LcsWidget::onLowerLimChanged(int value)
 {
     if (++value >= 90) {
         upperLimBox->setMinimum(value);
@@ -202,7 +206,7 @@ void lcmWidget::onLowerLimChanged(int value)
     updateThreshold();
 }
 
-void lcmWidget::onUpperLimChanged(int value)
+void LcsWidget::onUpperLimChanged(int value)
 {
     if (--value >= 0) {
         lowerLimBox->setMaximum(value);
@@ -210,7 +214,7 @@ void lcmWidget::onUpperLimChanged(int value)
     updateThreshold();
 }
 
-void lcmWidget::onRefreshButtonClicked()
+void LcsWidget::onRefreshButtonClicked()
 {
     if (raw_seq[0] == NULL || raw_seq[1] == NULL) {
         QMessageBox::warning(this, tr("缺少计算对象"),
@@ -224,7 +228,7 @@ void lcmWidget::onRefreshButtonClicked()
     drawSequences();// */
 }
 
-void lcmWidget::updateThreshold()
+void LcsWidget::updateThreshold()
 {
     double rangeLength = upperLimBox->value() - lowerLimBox->value();
     threshold = lowerLimBox->value() + rangeLength *

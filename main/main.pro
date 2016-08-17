@@ -26,13 +26,13 @@ SOURCES += main.cpp \
     calwindow.cpp \
     searchwin.cpp \
     settingwin.cpp \
-    lcmwidget.cpp \
     netstatindicator.cpp \
     partdetail.cpp \
     pointdetail.cpp \
     clusterdemo.cpp \
     cloud.cpp \
-    client.cpp
+    client.cpp \
+    lcswidget.cpp
 
 HEADERS += \
     csv.h \
@@ -47,13 +47,13 @@ HEADERS += \
     calwindow.h \
     searchwin.h \
     settingwin.h \
-    lcmwidget.h \
     netstatindicator.h \
     partdetail.h \
     pointdetail.h \
     clusterdemo.h \
     cloud.h \
-    client.h
+    client.h \
+    lcswidget.h
 
 RESOURCES += \
     res.qrc \

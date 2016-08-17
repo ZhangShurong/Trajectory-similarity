@@ -6,19 +6,43 @@
   *   文件功能概述：简易轨迹段匹配
   */
 
-#ifndef LCMWIDGET_H
-#define LCMWIDGET_H
+#ifndef LCSWIDGET_H
+#define LCSWIDGET_H
 
 #include <QWidget>
 #include <QSpinBox>
 #include <QLayout>
+#include <QGroupBox>
+#include <QLineEdit>
 #include "mapwindow.h"
 
-class lcmWidget : public QWidget
+class AttrEdit : public QWidget
 {
     Q_OBJECT
 public:
-    explicit lcmWidget(QWidget *parent = 0);
+    QLabel 		*attrLabel;
+    QLineEdit 	*valLineEdit;
+
+    explicit AttrEdit(QWidget *parent, const QString &attrName = "")
+        : QWidget(parent) {
+        QHBoxLayout *mainLayout = new QHBoxLayout;
+        attrLabel = new QLabel(attrName);
+        valLineEdit = new QLineEdit;
+        mainLayout->addWidget(attrLabel);
+        mainLayout->addWidget(valLineEdit);
+        this->setLayout(mainLayout);
+    }
+
+    void setLabelText(const QString &str) {
+        attrLabel->setText(str);
+    }
+};
+
+class LcsWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit LcsWidget(QWidget *parent = 0);
 
 private:
     void setupUi();
@@ -29,6 +53,7 @@ private:
     QSlider     *thresholdSlider;
     QLabel      *thresholdLabel;
     QPushButton *refreshButton;
+    QGroupBox   *groupBox;
 
     QSpinBox    *upperLimBox;
     QSpinBox    *lowerLimBox;
@@ -53,4 +78,4 @@ public slots:
 };
 
 
-#endif // LCMWIDGET_H
+#endif // LCSWIDGET_H
