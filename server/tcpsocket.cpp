@@ -335,7 +335,7 @@ void TcpSocket::refresh()
     }
     vector<Sequence> sequences;
     loadIntoMemory(sequences, 100);
-    if(sequences.size() == 100)
+    if(sequences.size() <= 100)
     {
         returnRefresh(sequences);
     }
@@ -391,7 +391,7 @@ void TcpSocket::returnDownload(vector<Sequence> sequences)
      * |_____________|__________________|___________|________|
      */
     qint16 num(sequences.size());
-    out << quint32(0) << qint8('R') << num ;
+    out << quint32(0) << qint8('D') << num ;
     for(uint i = 0; i < sequences.size(); i++)
     {
         out << sequences[i];
@@ -399,6 +399,11 @@ void TcpSocket::returnDownload(vector<Sequence> sequences)
     out.device()->seek(0);
     out << quint32(block.size() - sizeof(quint32));
     this->write(block);
+}
+
+void TcpSocket::process()
+{
+
 }
 /*
 void TcpSocket::returnRefresh(vector<Sequence> sequences)

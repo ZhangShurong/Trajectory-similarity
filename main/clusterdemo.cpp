@@ -20,7 +20,7 @@ void ClusterDemo::paintEvent(QPaintEvent */*p*/)
     QPainter painter(this);
 
 
-    painter.drawPixmap(0,0,1400,600,QPixmap("images/roundabout.gif"));
+    painter.drawPixmap(0,0,1400,600,QPixmap(":/images/roundabout.gif"));
     QPen pen;                                 //创建一个画笔
     pen.setColor(Qt::black);
     pen.setWidth(5);
