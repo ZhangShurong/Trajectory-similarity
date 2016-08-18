@@ -53,7 +53,11 @@ private:
     QSlider     *thresholdSlider;
     QLabel      *thresholdLabel;
     QPushButton *refreshButton;
+
     QGroupBox   *groupBox;
+    AttrEdit	*attrSimilarity;
+    AttrEdit	*attrOriginPointCount[2];
+    AttrEdit    *attrThreshold;
 
     QSpinBox    *upperLimBox;
     QSpinBox    *lowerLimBox;

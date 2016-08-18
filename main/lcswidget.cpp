@@ -9,8 +9,6 @@ LcsWidget::LcsWidget(QWidget *parent) : QWidget(parent)
 
 void LcsWidget::setupUi()
 {
-    groupBox = new QGroupBox;
-
     QLabel *lowerLimLabel = new QLabel;
     QLabel *upperLimLabel = new QLabel;
     lowerLimBox = new QSpinBox;
@@ -22,8 +20,6 @@ void LcsWidget::setupUi()
     lowerLimLabel->setAlignment(Qt::AlignRight);
     upperLimLabel->setAlignment(Qt::AlignRight);
     thresholdLabel = new QLabel;
-    refreshButton = new QPushButton;
-    refreshButton->setText(tr("开始分析"));
     thresholdSlider = new QSlider(Qt::Horizontal);
     thresholdSlider->setValue(10);
     QHBoxLayout *adjustLayout = new QHBoxLayout;
@@ -34,7 +30,6 @@ void LcsWidget::setupUi()
     adjustLayout->addWidget(upperLimBox);
     adjustLayout->addWidget(thresholdLabel);
     adjustLayout->addSpacing(10);
-    adjustLayout->addWidget(refreshButton);
 //    adjustLayout->addWidget(groupBox);
 
     QHBoxLayout *fileLayout = new QHBoxLayout;
@@ -60,8 +55,21 @@ void LcsWidget::setupUi()
     map->setDefaultCentralPt();
     map->reload();
 
+    refreshButton = new QPushButton;
+    refreshButton->setText(tr("开始分析"));
+    QHBoxLayout *calcLayout = new QHBoxLayout;
+    calcLayout->addSpacing(110);
+    calcLayout->addWidget(refreshButton);
+    calcLayout->addSpacing(110);
+
+    groupBox = new QGroupBox(tr("详细信息"));
+    QVBoxLayout *sideLayout = new QVBoxLayout;
+    sideLayout->addWidget(groupBox);
+    sideLayout->addLayout(calcLayout);
+
     QHBoxLayout *bottomLayout = new QHBoxLayout;
     bottomLayout->addWidget(map);
+    bottomLayout->addLayout(sideLayout);
     //bottomLayout->addWidget(thresholdSlider);
     updateThreshold();
 
