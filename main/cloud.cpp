@@ -181,7 +181,8 @@ void Cloud::readData()
         }
         if(returnType == 'S')
         {
-
+            vector<Result> resSet = getResSet();
+            displayRes(resSet);
         }
 
         client->nextBlockSize = 0;
@@ -252,6 +253,33 @@ void Cloud::display(vector<Sequence> sequences)
     }
 }
 
+void Cloud::displayRes(vector<Result> resSet)
+{
+    ui->tableWidget->clearContents();
+    QStringList header;
+    header << "轨迹ID"
+           << "轨迹点数"
+           << "Frechet Distance"
+           << "demo";
+    ui->tableWidget->setHorizontalHeaderLabels(header);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    if (resSet.size() == 0)
+        ui->tableWidget->clear();
+    else {
+        if (resSet.size() > ROW_NUM) {
+            ui->tableWidget->setRowCount(resSet.size() + 10);
+        } else {
+            ui->tableWidget->setRowCount(ROW_NUM + 10);
+        }
+        for(size_t i = 0; i < resSet.size(); i++) {
+                ui->tableWidget->setItem(i,0, new QTableWidgetItem(resSet.at(i).id));
+                ui->tableWidget->setItem(i,1,
+                                   new QTableWidgetItem(QString::number(resSet.at(i).ptNum)));
+                ui->tableWidget->setItem(i,2,new QTableWidgetItem(QString::number(resSet.at(i).res)));
+        }
+    }
+}
+
 vector<Sequence> Cloud::getSequences()
 {
     QDataStream in(this->client);
@@ -274,6 +302,45 @@ vector<Sequence> Cloud::getSequences()
 
     }
     return sequences;
+}
+
+vector<Result> Cloud::getResSet()
+{
+    /* ____________________________________________________________________________________
+     * |             |                  |           |                                      |
+     * |size(quint16)|requestType(qint8)|num(qint16)|QString,quint16,quint8,QString,QString|
+     * |_____________|__________________|___________|______________________________________|
+     */
+
+    QDataStream in(this->client);
+    quint16 num;
+    in >> num;
+    if(num <= 0)
+    {
+        //TODO Error report
+    }
+    vector<Result> resSet;
+    for(uint i = 0; i < num; i++)
+    {
+        Result temp;
+        quint16 ptNum;
+        quint8 time;
+        in >> temp.id
+                >> ptNum
+                >> time;
+        temp.time = time;
+        temp.ptNum = ptNum;
+        QString res;
+        in >> res;
+        temp.res = res.toDouble();
+        in >> temp.demo;
+        resSet.push_back(temp);
+    }
+    if(resSet.size() == num)
+    {
+
+    }
+    return resSet;
 }
 
 void Cloud::disconnectServer()

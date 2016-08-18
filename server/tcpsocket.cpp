@@ -175,7 +175,7 @@ void TcpSocket::insert()
         return;
     }
     vector<Sequence> sequences;
-    for(uint i = 0; i < num; i++)
+    for(int i = 0; i < num; i++)
     {
         Sequence temp;
         in >> temp;
@@ -235,14 +235,49 @@ void TcpSocket::searchInDB(Sequence sequence, vector<Sequence> *seq)
 {
     Core core;
     double resarr[seq->size()];
-    for(int i = 0; i < seq->size(); i++)
+    for(size_t i = 0; i < seq->size(); i++)
     {
         double res = core.computeDiscreteFrechet(&sequence, &(seq->at(i)));
         resarr[i] = res;
     }
     db->createResTable();
     db->insertIntoResTable(seq->size(), *seq, resarr);
+    vector<Result> res = db->getresult();
+    returnSearch(res);
 
+}
+
+void TcpSocket::returnSearch(vector<Result> resSet)
+{
+    /*
+    QString id;
+    int ptNum;
+    int time;
+    double res;
+    QString demo;
+    */
+    std::cout << "In return search:\n";
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+    /* ____________________________________________________________________________________
+     * |             |                  |           |                                      |
+     * |size(quint16)|requestType(qint8)|num(qint16)|QString,quint16,quint8,QString,QString|
+     * |_____________|__________________|___________|______________________________________|
+     */
+    qint16 num(resSet.size());
+    out << quint32(0) << qint8('S') << num ;
+    for(uint i = 0; i < resSet.size(); i++)
+    {
+        out << resSet.at(i).id
+            << quint16(resSet.at(i).ptNum)
+            << quint8(resSet.at(i).time)
+            << QString::number(resSet.at(i).res)
+            << resSet.at(i).demo;
+    }
+    out.device()->seek(0);
+    out << quint32(block.size() - sizeof(quint32));
+    this->write(block);
 }
 
 void TcpSocket::insertIntoDB(vector<Sequence> sequences)

@@ -608,6 +608,7 @@ void DataBase::createResTable()
 
 void DataBase::insertIntoResTable(int n, vector<Sequence> sequences, double *res)
 {
+    clearRes();
     if(static_cast<size_t>(n) != sequences.size())
         return;
     db.transaction();
@@ -617,8 +618,8 @@ void DataBase::insertIntoResTable(int n, vector<Sequence> sequences, double *res
         if(sequences[i].hasTime())
             time = 1;
 
-        QString str = "insert into table res value(";
-        str += sequences[i].getID() + ","
+        QString str = "insert into res values('";
+        str += sequences[i].getID() + "',"
                 + QString::number(sequences[i].getNum())
                 + ","
                 + QString::number(time)
@@ -630,4 +631,40 @@ void DataBase::insertIntoResTable(int n, vector<Sequence> sequences, double *res
     }
     db.commit();
 }
+
+vector<Result> DataBase::getresult()
+{
+    vector<Result> resSet;
+    QSqlQuery query(db);
+    QString str = "select * from res order by res limit 100";
+    query.exec(str);
+
+    while (query.next()) {
+        Result temp;
+        temp.id = query.value(0).toString();
+        temp.ptNum = query.value(1).toInt();
+        temp.time = query.value(2).toInt();
+        temp.res = query.value(4).toDouble();
+        temp.demo = query.value(5).toString();
+        resSet.push_back(temp);
+    }
+    return resSet;
+}
+
+void DataBase::clearRes()
+{
+    QSqlQuery query(db);
+    QString str = "delete from res";
+    query.exec(str);
+}
+
+int DataBase::getResNum()
+{
+    QSqlQuery query(db);
+    QString str = "select count(*) from res";
+    query.exec(str);
+    int count  =  query.value(0).toInt();
+    return count;
+}
+
 

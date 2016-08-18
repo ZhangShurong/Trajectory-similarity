@@ -5,6 +5,7 @@
 #include "header.h"
 #include "sequence.h"
 #include "client.h"
+#include "database.h"
 namespace Ui {
 class MainWindow;
 }
@@ -39,8 +40,10 @@ private:
 
     void initTable();
     void display(vector<Sequence> sequences);
+    void displayRes(vector<Result> resSet);
 
     vector<Sequence> getSequences();
+    vector<Result> getResSet();
 
 };
 

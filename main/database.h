@@ -16,8 +16,14 @@
 #include "csv.h"
 #include "sequence.h"
 #include "header.h"
-
-
+struct Result
+{
+    QString id;
+    int ptNum;
+    int time;
+    double res;
+    QString demo;
+};
 class DataBase
 {
 private:
@@ -52,6 +58,9 @@ public:
     QVector<Sequence> getAllSequences(string tableName);
     void createResTable();
     void insertIntoResTable(int n,vector<Sequence> sequences, double *res);
+    vector<Result> getresult();
+    void clearRes();
+    int getResNum();
 };
 
 #endif // DATABASE_H

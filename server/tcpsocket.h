@@ -46,6 +46,7 @@ private:
 
     void search();
     void searchInDB(Sequence sequence, vector<Sequence> *seq);
+    void returnSearch(vector<Result> resSet);
 
     void loadIntoMemory(vector<Sequence> &seq, int n);
 
