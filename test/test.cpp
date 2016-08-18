@@ -5,6 +5,10 @@
 #include <QApplication>
 #include <QDebug>
 #include <cmath>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/opencv.hpp>
+
 #include "testqdatastream.h"
 #include "ThirdParty/Eigen/Eigen"
 
@@ -88,7 +92,9 @@ void clusterSpectral()
         }
     }
     //temp.*W
-    Eigen::MatrixXd L(len,len);
+
+    cv::Mat L=cv::Mat(len,len,CV_64FC1);
+    //Eigen::MatrixXd L(len,len);
     //double L[len][len];
     for(int i = 0; i < len;i++)
     {
@@ -99,12 +105,78 @@ void clusterSpectral()
             {
                 sum += temp[i][k] * W[k][j];
             }
-            L(i,j) = sum;
+            L.at<double>(i,j) = sum;
+            //L[i][j] = sum;
         }
     }
-    std::cout <<"L:-----------------------------\n";
-    std::cout<< L << std::endl;
 
+    cv::Mat eigenvalue;
+    cv::Mat eigenvectors;
+    cv::eigen(L, eigenvalue, eigenvectors);
+    eigenvectors = eigenvectors.t();
+    std::cout << eigenvectors;
+
+    double gMin = 0;
+    double gMax = 0;
+    for(int i = 0; i < len; i++)
+    {
+        if(eigenvalue.at<double>(i) > 0.8)
+        {
+            gMax += 1;
+        }
+        if(eigenvalue.at<double>(i) > 0.99)
+        {
+            gMin += 1;
+        }
+    }
+
+    int clusters = -1;
+    int g = clusters;
+    if(g == -1) {
+        cv::Mat rhog = cv::Mat(gMax - gMin + 1,1, CV_64FC1);
+        std::cout << "\nrhog-----------\n" << rhog;
+        for(int i = gMin; i<gMax + 1; i++)
+        {
+            cv::Mat V = eigenvectors(cv::Range::all(), cv::Range(0,i));
+            std::cout << "\nV-----------\n" <<V << "\n";
+
+            //W = np.diag(1.0 / np.sqrt(np.sum(K, 1)))
+            cv::Mat vMul = V.mul(V);
+            std::cout << vMul << std::endl;
+            cv::Mat S( vMul.rows, vMul.rows,CV_64FC1);
+            for(int i = 0;i< vMul.rows;i++) {
+                double sum = 0;
+                for(int j = 0; j< vMul.cols;j++) {
+                    S.at<double>(i,j) = 0;
+                    sum += vMul.at<double>(i,j);
+                }
+                S.at<double>(i,i) = (double)1/std::sqrt(sum);
+            }
+
+            //std::cout << R;
+           // cvMul(&S,&V,&R);
+
+            double temp[S.rows][ V.cols];
+            for(int i = 0; i < S.rows;i++) {
+
+                for(int j = 0; j< V.cols;j++) {
+                    double sum = 0;
+                    for(int k = 0; k< len;k++) {
+                        sum += S.at<double>(i,k) * V.at<double>(k,j);
+                    }
+                    temp[i][j] = sum;
+                }
+            }
+            cv::Mat R = cv::Mat(S.rows,V.cols,CV_64FC1,temp);
+            std::cout << R << std::endl;
+            cv::Mat res;
+            //cv::kmeans(R,g,res,cv::TermCriteria( CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0),20,cv::KMEANS_PP_CENTERS);
+        }
+    }
+    std::cout.flush();
+
+
+/*
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigenSolver(L);
     Eigen::MatrixXd eigenvalue(len,1);
     Eigen::MatrixXd eigenvectors(len,len);
@@ -130,7 +202,36 @@ void clusterSpectral()
     }
     //int clusters = -1;
     //int g = clusters;
+    */
 }
+void testcv()
+{
+    IplImage*pImg;
+
+
+    pImg=cvLoadImage("D:/test.jpg",1);
+
+    //创建窗口
+
+    cvNamedWindow("Image",1);
+
+    //显示图像
+
+    cvShowImage("Image",pImg);
+
+    //等待按键
+
+    cvWaitKey(0);
+
+    //销毁窗口
+
+    cvDestroyWindow("Image");
+
+    //释放图像
+
+    cvReleaseImage(&pImg);
+}
+
 void openfile(Sequence *p, string file_name)
 {
     string fileName = file_name;
@@ -224,6 +325,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     clusterSpectral();
-    qDebug() << "Hello World";
+
+    //testcv();
     return a.exec();
 }
