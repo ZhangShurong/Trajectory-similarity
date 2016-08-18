@@ -608,18 +608,14 @@ void DataBase::createResTable()
 
 void DataBase::insertIntoResTable(int n, vector<Sequence> sequences, double *res)
 {
-    if(n != sequences.size())
-    {
+    if(static_cast<size_t>(n) != sequences.size())
         return;
-    }
     db.transaction();
     QSqlQuery query(db);
-    for(int i = 0; i < n; i++)
-    {
+    for(int i = 0; i < n; i++) {
         int time = 0;
-        if(sequences[i].hasTime()) {
+        if(sequences[i].hasTime())
             time = 1;
-        }
 
         QString str = "insert into table res value(";
         str += sequences[i].getID() + ","

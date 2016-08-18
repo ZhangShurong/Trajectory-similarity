@@ -555,44 +555,33 @@ double Core::modHausDist(Sequence *sa, Sequence *sb)
     {
         t2pointsRelPos[i] = sb->getPrefixSum(i)/sb->getPrefixSum(sb->pointsNum - 1);
     }
-    for(i = 0; i < sa->pointsNum; i++)
-    {
+    for(i = 0; i < sa->pointsNum; i++) {
         Point pt1 = sa->pts[i];
         int pt2idx = 0;
-        int j;
+        size_t j;
         double temp = 2;//大于1就行
-        for(j = 0; j < sb->pointsNum; j++)
-        {
+        for(j = 0; j < (size_t)sb->pointsNum; j++) {
             double t = (t1pointsRelPos[i] - t2pointsRelPos[j]);
             if(t < 0)
-            {
                 t = -t;
-            }
-            if(t < temp)
-            {
+            if(t < temp) {
                 temp = t;
                 pt2idx = j;
             }
         }
 
         //Get set of points sp2 of sb within neighborhood of point pt2
-        vector<int> neighborhoodIdxs;
-        for(j = 0; j < sb->pointsNum; j++)
-        {
+        vector<size_t> neighborhoodIdxs;
+        for(j = 0; j < (size_t)sb->pointsNum; ++j) {
             //FIXME 常数1需要修改
             if((fabs(sb->getPrefixSum(j) - sb->getPrefixSum(pt2idx)) - 1) <= 0)
-            {
                 neighborhoodIdxs.push_back(j);
-            }
         }
         double dist = 9999;//inf
-        for(j = 0; j < neighborhoodIdxs.size(); j ++)
-        {
+        for(j = 0; j < neighborhoodIdxs.size(); ++j) {
             double newdist = euDistance(pt1, (sb->pts[neighborhoodIdxs.at(j)]));
             if(newdist < dist)
-            {
                 dist = newdist;
-            }
         }
         distance[i] = dist;
     }
@@ -678,7 +667,7 @@ void Core::clusterAgglomerartive(Sequence *seqs, int len)
         vector<vector<int> >temp;
         for (uint i = 0; i < clusters.size(); i++)
         {
-            if(i != t2idx)
+            if((ssize_t)i != t2idx)
                 temp.push_back(clusters.at(i));
         }
         clusters = temp;
@@ -688,7 +677,7 @@ void Core::clusterAgglomerartive(Sequence *seqs, int len)
     for(uint i = 0; i < clusters.size();i++)
     {
         qDebug() << "Type "<< i <<":";
-        for(int j = 0; j< clusters.at(i).size(); j++)
+        for(size_t j = 0; j< clusters.at(i).size(); j++)
         {
             qDebug() << clusters.at(i).at(j);
         }
@@ -714,25 +703,15 @@ int hardCluster(Sequence * q,double minLongtitude,
 {
     double midLongtitude = 0.5*(maxLongtitude + minLongtitude);
     double midLatitude = 0.5*(maxLatitude + minLatitude);
-    depth --;
-    if(depth < 0)
-    {
+    if(--depth < 0)
         return 0;
-    }
-    if(q->getMaxX() > midLongtitude)
-    {
+    if(q->getMaxX() > midLongtitude) {
         if(q->getMinX() < midLatitude)
-        {
             return 0;
-        }
-        if(q->getMaxY() > midLatitude)
-        {
+        if(q->getMaxY() > midLatitude) {
             if(q->getMinY() < midLatitude)
-            {
                 return 0;
-            }
-            else
-            {
+            else {
 
                 //                double min2Longtitude = midLongtitude;
                 //                double max2Longtitude = maxLongtitude;
@@ -743,17 +722,14 @@ int hardCluster(Sequence * q,double minLongtitude,
                                       midLongtitude,
                                       maxLatitude,
                                       depth);
-                if(res != 0)
-                {
+                if(res != 0) {
                     int n = 1 + (int)log10(res);
                     return 2*pow(10,n) +res ;
                 }
                 else
                     return 2;
             }
-        }
-        else
-        {
+        } else {
             //    double min4Longtitude = midLongtitude;
             //    double max4Longtitude = maxLongtitude;
             //    double min4Latitude = minLatitude;
@@ -763,28 +739,18 @@ int hardCluster(Sequence * q,double minLongtitude,
                                   minLatitude,
                                   midLatitude,
                                   depth);
-            if(res != 0)
-            {
+            if(res != 0) {
                 int n = 1 + (int)log10(res);
                 return 4*pow(10,n) +res ;
-            }
-            else
-            {
+            } else {
                 return 4;
             }
-
         }
-    }
-    else
-    {
-        if(q->getMaxY() > midLatitude)
-        {
-            if(q->getMinY() < midLatitude)
-            {
+    } else {
+        if(q->getMaxY() > midLatitude) {
+            if(q->getMinY() < midLatitude) {
                 return 0;
-            }
-            else
-            {
+            } else {
                 //    double min1Longtitude = minLongtitude;
                 //    double max1Longtitude = midLongtitude;
                 //    double min1Latitude = midLatitude;
@@ -794,17 +760,13 @@ int hardCluster(Sequence * q,double minLongtitude,
                                      midLatitude,
                                      maxLatitude,
                                      depth);
-                if(res != 0)
-                {
+                if(res != 0) {
                     int n = 1 + (int)log10(res);
                     return 1*pow(10,n) +res ;
-                }
-                else
+                } else
                     return 1;
             }
-        }
-        else
-        {
+        } else {
             //    double min3Longtitude = minLongtitude;
             //    double max3Longtitude = midLongtitude;
             //    double min3Latitude = minLatitude;
@@ -814,12 +776,10 @@ int hardCluster(Sequence * q,double minLongtitude,
                                   minLatitude,
                                   midLatitude,
                                   depth);
-            if(res != 0)
-            {
+            if(res != 0) {
                 int n = 1 + (int)log10(res);
                 return 3*pow(10,n) +res ;
-            }
-            else
+            } else
                 return 3;
         }
     }
@@ -827,60 +787,30 @@ int hardCluster(Sequence * q,double minLongtitude,
 }
 bool Core::compareType(QString input_type, QString type)
 {
-    if(input_type == type)
-    {
-        return true;
-    }
-    if(input_type.startsWith(type))
-    {
-        return true;
-    }
-    if(input_type == "0")
-    {
-        return true;
-    }
-    if(type == "0")
-    {
-        return true;
-    }
-    return false;
+    return input_type == type || input_type.startsWith(type) ||
+            input_type == "0" || type == "0";
 }
 void Core::normalize(Sequence &se)
 {
-    if(se.getMaxX() == se.getMinX())
-    {
+    if(se.getMaxX() == se.getMinX()) {
         double midLong = 0.5 * (MAXLONG - MINLONG);
-        for(int i = 0; i < se.pointsNum; i++)
-        {
+        for(int i = 0; i < se.pointsNum; ++i)
             se.pts[i].longitude = midLong;
-        }
-    }
-    else
-    {
+    } else {
         double k = (MAXLONG - MINLONG)/(se.getMaxX() - se.getMinX());
         double b = MINLONG - k*se.getMinX();
         for(int i = 0; i < se.pointsNum; i++)
-        {
             se.pts[i].longitude = k*se.pts[i].longitude + b;
-        }
     }
-    if(se.getMaxY() == se.getMinY())
-    {
+    if(se.getMaxY() == se.getMinY()) {
         double midLa = 0.5 * (MAXLA - MINLA);
         for(int i = 0; i < se.pointsNum; i++)
-        {
             se.pts[i].latitude = midLa;
-        }
-    }
-    else
-    {
-
+    } else {
         double k = (MAXLA - MINLA)/(se.getMaxY() - se.getMinY());
         double b = MINLA - k*se.getMinY();
         for(int i = 0; i < se.pointsNum; i++)
-        {
             se.pts[i].latitude = k*se.pts[i].latitude + b;
-        }
     }
 }
 void Core::clusterSpectral()
@@ -890,10 +820,8 @@ void Core::clusterSpectral()
     double rowSortedDistMat[len][len];
     double distMat[len][len];
     double K[len][len];
-    for(int i = 0; i < len; i++)
-    {
-        for(int j = 0; j < len; j++)
-        {
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < len; j++) {
             distMat[i][j] = 1;
             double dist = i+j;
             distMat[i][j] = dist;
@@ -904,8 +832,7 @@ void Core::clusterSpectral()
 
     //createStdDevs()
     //rowSortedDistMat.sort(axis = 1)
-    for(int i = 0; i < len; i++)
-    {
+    for(int i = 0; i < len; i++) {
         std::sort(rowSortedDistMat[i],rowSortedDistMat[i]+len);
     }
 
@@ -914,8 +841,7 @@ void Core::clusterSpectral()
     int stdNN = 2;
     double stdDev[len];
     int t = stdNN < len?stdNN:len;
-    for(int i = 0;i < len; i++)
-    {
+    for(int i = 0;i < len; i++) {
         stdDev[i] = rowSortedDistMat[i][t];
         std::cout << stdDev[i] << ", ";
     }
@@ -925,10 +851,8 @@ void Core::clusterSpectral()
      */
     double stdMin = 0.4;
     double stdMax = 20.0;
-    for(int i = 0; i < len;i++)
-    {
+    for(int i = 0; i < len;i++) {
         stdDev[i] = std::max(stdMin, std::min(stdMax,stdDev[i]));
-
     }
     std::cout << std::endl;
 
@@ -943,11 +867,9 @@ void Core::clusterSpectral()
     }
     //W = np.diag(1.0 / np.sqrt(np.sum(K, 1)))
     double W[len][len];
-    for(int i = 0;i< len;i++)
-    {
+    for(int i = 0;i< len;i++) {
         double sum = 0;
-        for(int j = 0; j< len;j++)
-        {
+        for(int j = 0; j< len;j++) {
             W[i][j] = 0;
             sum += K[i][j];
         }
@@ -960,14 +882,11 @@ void Core::clusterSpectral()
 
     //W*K
     double temp[len][len];
-    for(int i = 0; i < len;i++)
-    {
+    for(int i = 0; i < len;i++) {
 
-        for(int j = 0; j< len;j++)
-        {
+        for(int j = 0; j< len;j++) {
             double sum = 0;
-            for(int k = 0; k< len;k++)
-            {
+            for(int k = 0; k< len;k++) {
                 sum += W[i][k] * K[k][j];
             }
             temp[i][j] = sum;
@@ -1014,8 +933,8 @@ void Core::clusterSpectral()
             gMin += 1;
         }
     }
-    int clusters = -1;
-    int g = clusters;
+    //int clusters = -1;
+    //int g = clusters;
 }
 vector<int> Core::clusterAgglomerartive(vector<Sequence> seqs)
 {
@@ -1072,8 +991,8 @@ vector<int> Core::clusterAgglomerartive(vector<Sequence> seqs)
             }
         }
         double init = -1;
-        int t1idx = -1;
-        int t2idx = -1;
+        ssize_t t1idx = -1;
+        ssize_t t2idx = -1;
         for(int i = 0; i < size; i ++)
         {
             for(int j = 0; j < size; j++)
@@ -1095,7 +1014,7 @@ vector<int> Core::clusterAgglomerartive(vector<Sequence> seqs)
         vector<vector<int> >temp;
         for (uint i = 0; i < clusters.size(); i++)
         {
-            if(i != t2idx)
+            if((ssize_t)i != t2idx)
                 temp.push_back(clusters.at(i));
         }
         clusters = temp;

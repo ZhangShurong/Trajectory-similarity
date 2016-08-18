@@ -586,7 +586,7 @@ color:white;
        <string notr="true">font-family:'微软雅黑';</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -2105,7 +2105,7 @@ p, li { white-space: pre-wrap; }
       <widget class="QWidget" name="page_8">
        <layout class="QHBoxLayout" name="horizontalLayout_23">
         <item>
-         <widget class="lcmWidget" name="widget" native="true"/>
+         <widget class="LcsWidget" name="widget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -2288,12 +2288,6 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>lcmWidget</class>
-   <extends>QWidget</extends>
-   <header>lcmwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>NetStatIndicator</class>
    <extends>QWidget</extends>
    <header>netstatindicator.h</header>
@@ -2303,6 +2297,12 @@ p, li { white-space: pre-wrap; }
    <class>ClusterDemo</class>
    <extends>QWidget</extends>
    <header>clusterdemo.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LcsWidget</class>
+   <extends>QWidget</extends>
+   <header>lcswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

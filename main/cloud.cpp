@@ -241,7 +241,7 @@ void Cloud::display(vector<Sequence> sequences)
         } else {
             ui->tableWidget->setRowCount(ROW_NUM + 10);
         }
-        for(int i = 0; i < sequences.size(); i++) {
+        for(size_t i = 0; i < sequences.size(); i++) {
             if(sequences.at(i).getID() == "Input")
                 ui->tableWidget->setItem(i,0, new QTableWidgetItem(QString::number(i)));
             else

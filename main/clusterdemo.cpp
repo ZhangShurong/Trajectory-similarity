@@ -15,7 +15,7 @@ ClusterDemo::ClusterDemo(QWidget *parent) : QWidget(parent)
     this->clustered = false;
 }
 
-void ClusterDemo::paintEvent(QPaintEvent *p)
+void ClusterDemo::paintEvent(QPaintEvent */*p*/)
 {
     QPainter painter(this);
 
@@ -92,7 +92,7 @@ void ClusterDemo::mouseMoveEvent(QMouseEvent *e)
     }
 }
 
-void ClusterDemo::mouseReleaseEvent(QMouseEvent *e)
+void ClusterDemo::mouseReleaseEvent(QMouseEvent */*e*/)
 {
     points.push_back(startPnt);
     setCursor(Qt::ArrowCursor);
@@ -100,7 +100,7 @@ void ClusterDemo::mouseReleaseEvent(QMouseEvent *e)
     update();
 
     Sequence t;
-    for(int i = index; i < points.size(); i++)
+    for(size_t i = index; i < points.size(); i++)
     {
         t.appendPt(new Point(points[i].x(), points[i].y()));
     }
