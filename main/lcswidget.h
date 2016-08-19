@@ -15,6 +15,7 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QSizePolicy>
+#include "core.h"
 #include "mapwindow.h"
 
 class AttrEdit : public QWidget
