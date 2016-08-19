@@ -606,9 +606,10 @@ void DataBase::createResTable()
     query.exec("create table res(tid varchar,ptNum integer,time integer,id integer primary key, res double, demo vachar)");
 }
 
-void DataBase::insertIntoResTable(int n, vector<Sequence> sequences, double *res)
+void DataBase::insertIntoResTable(int n, vector<Sequence> sequences, double *res, bool clear)
 {
-    clearRes();
+    if(clear)
+        clearRes();
     if(static_cast<size_t>(n) != sequences.size())
         return;
     db.transaction();

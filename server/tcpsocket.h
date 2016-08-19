@@ -48,6 +48,7 @@ private:
     void searchInDB(Sequence sequence, vector<Sequence> *seq);
     void returnSearch(vector<Result> resSet);
 
+
     void loadIntoMemory(vector<Sequence> &seq, int n);
 
     void refresh();
@@ -60,5 +61,6 @@ private:
 
     //void returnRefresh(vector<Sequence> sequences);
 };
+void searchMul(Sequence sequence, vector<Sequence> *seq, int start, int end, double *resarr);
 
 #endif // TCPSOCKET_H

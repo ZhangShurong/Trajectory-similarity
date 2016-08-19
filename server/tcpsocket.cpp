@@ -3,6 +3,7 @@
 #include <QHostAddress>
 #include <QDebug>
 #include <chrono>
+#include <thread>
 #include "core.h"
 #define SERVER_DEBUG
 
@@ -232,6 +233,40 @@ void TcpSocket::search()
 
 void TcpSocket::searchInDB(Sequence sequence, vector<Sequence> *seq)
 {
+/*
+ *
+#ifdef SERVER_DEBUG
+    auto start = std::chrono::system_clock::now();
+#endif
+    double rest1[seq->size()/4 - 0];
+    std::thread t(searchMul,sequence,seq,0,seq->size()/4,(double *)rest1);
+    double rest2[seq->size()/2 - seq->size()/4];
+    std::thread t2(searchMul,sequence,seq,seq->size()/4,seq->size()/2,(double *)rest2);
+    double rest3[seq->size()*3/4 - seq->size()/2];
+    std::thread t3(searchMul,sequence,seq,seq->size()/2,seq->size()*3/4,(double *)rest3);
+    double rest4[seq->size() - seq->size()*3/4];
+    std::thread t4(searchMul,sequence,seq,seq->size()*3/4,seq->size(),(double *)rest4);
+    t.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    double resarr[seq->size()];
+    memcpy(resarr, rest1,sizeof(rest1));
+    memcpy(resarr + seq->size()/4, rest2,sizeof(rest2));
+    memcpy(resarr + seq->size()/2, rest3,sizeof(rest3));
+    memcpy(resarr + seq->size()*3/4, rest4,sizeof(rest4));
+    db->insertIntoResTable(seq->size(),(*seq),resarr);
+#ifdef SERVER_DEBUG
+    auto end   = std::chrono::system_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    double time = double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den;
+    std::cout <<  "Cost "
+               << time
+               << "S" << std::endl;
+    echo("Search over ,and it cost " + QString::number(time) + "s");
+#endif
+
+*/
     Core core;
 #ifdef SERVER_DEBUG
     auto start = std::chrono::system_clock::now();
@@ -249,12 +284,14 @@ void TcpSocket::searchInDB(Sequence sequence, vector<Sequence> *seq)
     std::cout <<  "Cost "
                << time
                << "S" << std::endl;
-    echo("Search over ,and it cost " + QString::number(time) + "s");
+    echo("Search over and it has "+ QString::number(seq->size()) +"sequences ,and it cost " + QString::number(time) + "s");
 #endif
     db->createResTable();
     db->insertIntoResTable(seq->size(), *seq, resarr);
+
     vector<Result> res = db->getresult();
     returnSearch(res);
+    db->clearRes();
 
 }
 
@@ -289,6 +326,27 @@ void TcpSocket::returnSearch(vector<Result> resSet)
     out.device()->seek(0);
     out << quint32(block.size() - sizeof(quint32));
     this->write(block);
+}
+
+void searchMul(Sequence sequence, vector<Sequence> *seq, int start,int end,double *resarr)
+{
+    Core core;
+#ifdef SERVER_DEBUG
+    auto Start = std::chrono::system_clock::now();
+#endif
+    for(size_t i = start; i < end; i++)
+    {
+        double res = core.computeDiscreteFrechet(&sequence, &(seq->at(i)));
+        resarr[i - start] = res;
+    }
+#ifdef SERVER_DEBUG
+    auto End   = std::chrono::system_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(End - Start);
+    double time = double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den;
+    std::cout <<  "Cost "
+               << time
+               << "S" << std::endl;
+#endif
 }
 
 void TcpSocket::insertIntoDB(vector<Sequence> sequences)

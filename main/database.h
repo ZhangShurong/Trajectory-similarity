@@ -57,7 +57,7 @@ public:
     void getNSequences(QMap<QString, Sequence> &id_seq,int n, string tableName);
     QVector<Sequence> getAllSequences(string tableName);
     void createResTable();
-    void insertIntoResTable(int n,vector<Sequence> sequences, double *res);
+    void insertIntoResTable(int n,vector<Sequence> sequences, double *res,bool clear = true);
     vector<Result> getresult();
     void clearRes();
     int getResNum();

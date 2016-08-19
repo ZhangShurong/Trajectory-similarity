@@ -40,7 +40,8 @@ void Core::initMemSpace(Sequence *p, Sequence *q)
     {
         for (int i =0; i < mX; i++)
         {
-            delete [] mem[i];
+            if(mem[i] != NULL)
+                delete [] mem[i];
             mem[i] = NULL;
         }
         delete []mem;
