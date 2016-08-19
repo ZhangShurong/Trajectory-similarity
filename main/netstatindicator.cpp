@@ -1,16 +1,18 @@
 #include "netstatindicator.h"
 
+const QString NetStatIndicator::okStyleStr = "QLabel { color : white; }";
+const QString NetStatIndicator::badStyleStr = "QLabel { color : red; }";
+
 NetStatIndicator::NetStatIndicator(QWidget *parent) :
     QWidget(parent), alerted(false), timer(this)
 {
-    QString styleStr = tr("QLabel { color : white; }");
     /** Ui part **/
     this->netspeedLabel = new QLabel;
-    this->netspeedLabel->setStyleSheet(styleStr);
+    this->netspeedLabel->setStyleSheet(okStyleStr);
     this->netspeedLabel->setText(tr("N/A"));
 
     this->netStatLabel = new QLabel;
-    this->netStatLabel->setStyleSheet(styleStr);
+    this->netStatLabel->setStyleSheet(okStyleStr);
     this->netspeedLabel->setAlignment(Qt::AlignRight);
     this->netspeedLabel->setText(tr("Unknown network status"));
 
@@ -43,15 +45,15 @@ QString NetStatIndicator::toHumanSpeed(double speed)
 
 QString NetStatIndicator::toDescription(double speed)
 {
-    const double ok_threshold = 15 * 1024;
-    const double good_threshold = 100 * 1024;
+    const double ok_threshold = 8 * 1024;
+    const double good_threshold = 32 * 1024;
 
     if (speed < ok_threshold) {
-        return tr("网络状况差");
+        return tr("网络连接尚可");
     } else if (speed < good_threshold) {
-        return tr("网络状况良");
+        return tr("网络连接良好");
     } else {
-        return tr("网络状况优");
+        return tr("网络连接通畅");
     }
 }
 
@@ -70,6 +72,7 @@ void NetStatIndicator::updateNetStat()
             //if (bytes.contains("200 OK")) {
             this->netspeed = bytes.size() * 1000.0 / timer.elapsed();
             this->alerted = false;
+            this->netStatLabel->setStyleSheet(okStyleStr);
             this->updateUi();
             return;
             //}
@@ -91,6 +94,7 @@ void NetStatIndicator::alertProperly()
         this->netStatLabel->setText(tr("网络断开"));
 //        QMessageBox::information(this, tr("网络连接中断"),
 //                             tr("网络状态差，地图可能无法正确绘制！"), QMessageBox::Yes);
+        this->netStatLabel->setStyleSheet(badStyleStr);
         alerted = true;
     }
 }

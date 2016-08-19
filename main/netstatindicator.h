@@ -35,6 +35,9 @@ private:
 
     static QString toHumanSpeed(double speed);
     static QString toDescription(double speed);
+
+    static const QString okStyleStr;
+    static const QString badStyleStr;
 signals:
 
 public slots:
@@ -42,5 +45,6 @@ public slots:
     void updateUi();
     void alertProperly();
 };
+
 
 #endif // NETSTATINDICATOR_H
