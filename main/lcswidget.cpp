@@ -74,12 +74,13 @@ void LcsWidget::setupUi()
     attrOriginSimilarity = new AttrEdit(this, tr("原始 Fréchet 距离："));
     groupLayout->addWidget(attrOriginSimilarity);
     for (int i = 0; i < 2; ++i) {
-        attrOriginPointCount[i] = new AttrEdit(this, tr("轨迹") + (i + 'A') + tr("点数量："));
+        attrOriginPointCount[i] = new AttrEdit(this, tr("轨迹") + (i + 'A') +
+                                               tr("样本点数量："));
         groupLayout->addWidget((attrOriginPointCount[i]));
     }
     attrCommonSimilarity = new AttrEdit(this, tr("筛选后 Fréchet 距离："));
     groupLayout->addWidget(attrCommonSimilarity);
-    attrCommonPointCount = new AttrEdit(this, tr("匹配区域点数量："));
+    attrCommonPointCount = new AttrEdit(this, tr("匹配区域样本点数量："));
     groupLayout->addWidget(attrCommonPointCount);
 
     updateThreshold();
@@ -88,18 +89,34 @@ void LcsWidget::setupUi()
 void LcsWidget::setupActions()
 {
     /** 关联 打开按钮 和 打开动作 **/
-    QSignalMapper *signalMapper = new QSignalMapper(this);
+    QSignalMapper *openSigMap   = new QSignalMapper(this);
+    QSignalMapper *exportSigMap = new QSignalMapper(this);
     for (int i = 0; i < 2; ++i) {
-        connect(fileOpenButtion[i], SIGNAL(pressed()), signalMapper, SLOT(map()));
-        signalMapper->setMapping(fileOpenButtion[i], i);
+        /** open file */
+        connect(fileOpenButtion[i], SIGNAL(pressed()), openSigMap, SLOT(map()));
+        openSigMap->setMapping(fileOpenButtion[i], i);
+
+        /** export file **/
+        exportAction[i] = new QAction(
+                    style()->standardIcon(QStyle::SP_DriveHDIcon),
+                    tr("导出(&E)"),
+                    this);
+        exportAction[i]->setDisabled(true);
+        connect(exportAction[i], SIGNAL(toggled(bool)),
+                exportSigMap, SLOT(map()));
     }
-    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(openFile(int)));
+    connect(openSigMap, SIGNAL(mapped(int)), this, SLOT(openFile(int)));
 
     /** lowerLim upperLim 关系 **/
-    connect(lowerLimBox, SIGNAL(valueChanged(int)), this, SLOT(onLowerLimChanged(int)));
-    connect(upperLimBox, SIGNAL(valueChanged(int)), this, SLOT(onUpperLimChanged(int)));
-    connect(thresholdSlider, SIGNAL(valueChanged(int)), this, SLOT(updateThreshold()));
-    connect(refreshButton, SIGNAL(pressed()), this, SLOT(onRefreshButtonClicked()));
+    connect(lowerLimBox, SIGNAL(valueChanged(int)), this,
+            SLOT(onLowerLimChanged(int)));
+    connect(upperLimBox, SIGNAL(valueChanged(int)), this,
+            SLOT(onUpperLimChanged(int)));
+    connect(thresholdSlider, SIGNAL(valueChanged(int)), this,
+            SLOT(updateThreshold()));
+    connect(refreshButton, SIGNAL(pressed()), this,
+            SLOT(onRefreshButtonClicked()));
+
 }
 
 void LcsWidget::openFile(int i)
@@ -121,6 +138,16 @@ void LcsWidget::openFile(int i)
     getSquFromFile(&csv, raw_seq[i] = new Sequence);
     in.close();
     raw_seq[i]->setID(QString::number(i + 1));
+}
+
+void LcsWidget::exportFile(int i)
+{
+    if (common_seq[i] == NULL) {
+        QMessageBox::warning(this, tr("无法导出文件"),
+                             tr("进行筛选后才能导出目标 CSV 文件"),
+                             QMessageBox::Yes);
+        return;
+    }
 }
 
 void LcsWidget::calcLcmSequence()
@@ -182,7 +209,8 @@ void LcsWidget::calcLcmSequence()
 void LcsWidget::drawSequences()
 {
     QPair<double, double> centralPoint(0.0, 0.0);
-    Sequence *seqs[] = {raw_seq[0], raw_seq[1]/*, common_seq[0], common_seq[1]*/};
+    /* Draw original seuquences only */
+    Sequence *seqs[] = {raw_seq[0], raw_seq[1]};
     QVector<Sequence> seq_vec;
 
     for (size_t i = 0; i < sizeof(seqs) / sizeof(seqs[0]); ++i) {
@@ -191,9 +219,8 @@ void LcsWidget::drawSequences()
         }
     }
 
-    if (seq_vec.isEmpty()) {
+    if (seq_vec.isEmpty())
         return;
-    }
 
     for (int i = 0; i < seq_vec.size(); ++i) {
         centralPoint.first  += seq_vec[i].getCentralPoint().longitude;
@@ -231,18 +258,22 @@ void LcsWidget::onRefreshButtonClicked()
 {
     if (raw_seq[0] == NULL || raw_seq[1] == NULL) {
         QMessageBox::warning(this, tr("缺少计算对象"),
-                             tr("计算公共轨迹需要选择两条轨迹"), QMessageBox::Yes);
+                             tr("计算公共轨迹需要选择两条轨迹"),
+                             QMessageBox::Yes);
     } else {
         Core core;
         calcLcmSequence();
         drawSequences();
         map->drawSequencePair(common_seq[0], common_seq[1], 1);
-        attrOriginSimilarity->valLineEdit->setText(
-                    QString::number(core.computeDiscreteFrechet(raw_seq[0], raw_seq[1])));
-        for (int i = 0; i < 2; ++i)
-            attrOriginPointCount[i]->valLineEdit->setText(QString::number(raw_seq[i]->getNum()));
+        attrOriginSimilarity->valLineEdit->setText(QString::number(
+                        core.computeDiscreteFrechet(raw_seq[0], raw_seq[1])));
+        for (int i = 0; i < 2; ++i) {
+            attrOriginPointCount[i]->valLineEdit->setText(
+                        QString::number(raw_seq[i]->getNum()));
+        }
         attrCommonSimilarity->valLineEdit->setText(
-                    QString::number(core.computeDiscreteFrechet(common_seq[0], common_seq[1])));
+                    QString::number(core.computeDiscreteFrechet(
+                                        common_seq[0], common_seq[1])));
         attrCommonPointCount->valLineEdit->setText(
                     QString::number(common_seq[0]->getNum()));
         return;

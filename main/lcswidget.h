@@ -14,7 +14,7 @@
 #include <QLayout>
 #include <QGroupBox>
 #include <QLineEdit>
-#include <QSizePolicy>
+#include <QAction>
 #include "core.h"
 #include "mapwindow.h"
 
@@ -70,6 +70,8 @@ private:
     QPushButton *fileOpenButtion[2];
     QLabel      *fileNameLabel[2];
 
+    QAction		*exportAction[2];
+
     /****** Non-UI part ********/
     Sequence *raw_seq[2], *common_seq[2];
     double threshold;
@@ -78,6 +80,7 @@ signals:
 
 public slots:
     void openFile(int i);
+    void exportFile(int i);
     void calcLcmSequence();
     void drawSequences();
     void onLowerLimChanged(int value);
