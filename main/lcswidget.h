@@ -16,6 +16,8 @@
 #include <QLineEdit>
 #include <QAction>
 #include <QToolBar>
+#include <QFile>
+#include <QTextStream>
 #include "core.h"
 #include "mapwindow.h"
 
@@ -26,8 +28,8 @@ public:
     QLabel 		*attrLabel;
     QLineEdit 	*valLineEdit;
 
-    explicit AttrEdit(QWidget *parent, const QString &attrName = "", bool ro = true)
-        : QWidget(parent) {
+    explicit AttrEdit(QWidget *parent, const QString &attrName = "",
+                      bool ro = true) : QWidget(parent) {
         QHBoxLayout *mainLayout = new QHBoxLayout;
         attrLabel = new QLabel(attrName);
         valLineEdit = new QLineEdit;
@@ -90,6 +92,5 @@ public slots:
     void onRefreshButtonClicked();
     void updateThreshold();
 };
-
 
 #endif // LCSWIDGET_H
