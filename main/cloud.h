@@ -45,6 +45,8 @@ private:
 
     vector<Sequence> getSequences();
     vector<Result> getResSet();
+
+    void download(vector<Sequence> seqs);
 };
 
 #endif // CLOUD_H

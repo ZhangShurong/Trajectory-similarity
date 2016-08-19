@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <chrono>
 #include "core.h"
-
+#define SERVER_DEBUG
 
 
 TcpSocket::TcpSocket(qintptr socketDescriptor, QObject *parent) : //构造函数在主线程执行，lambda在子线程
@@ -62,7 +62,6 @@ void TcpSocket::readData()
     //qDebug() << data;
     //this->write(data);
 
-    std::cout << "Ready to read the client:\n";
     QDataStream in(this);
     in.setVersion(QDataStream::Qt_5_4);
     if(nextBlockSize == 0)
@@ -234,12 +233,24 @@ void TcpSocket::search()
 void TcpSocket::searchInDB(Sequence sequence, vector<Sequence> *seq)
 {
     Core core;
+#ifdef SERVER_DEBUG
+    auto start = std::chrono::system_clock::now();
+#endif
     double resarr[seq->size()];
     for(size_t i = 0; i < seq->size(); i++)
     {
         double res = core.computeDiscreteFrechet(&sequence, &(seq->at(i)));
         resarr[i] = res;
     }
+#ifdef SERVER_DEBUG
+    auto end   = std::chrono::system_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    double time = double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den;
+    std::cout <<  "Cost "
+               << time
+               << "S" << std::endl;
+    echo("Search over ,and it cost " + QString::number(time) + "s");
+#endif
     db->createResTable();
     db->insertIntoResTable(seq->size(), *seq, resarr);
     vector<Result> res = db->getresult();
@@ -301,15 +312,19 @@ void TcpSocket::insertIntoDB(vector<Sequence> sequences)
 
 void TcpSocket::loadIntoMemory(vector<Sequence> &seq,int n)
 {
+#ifdef SERVER_DEBUG
     auto start = std::chrono::system_clock::now();
+#endif
     seq = db->getNSequences(n,"Server");
+#ifdef SERVER_DEBUG
     auto end   = std::chrono::system_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout <<  "Cost"
+    std::cout <<  "\nloadinto memory Cost"
                << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den
-               << "S" << endl;
-    std::cout<< seq.size();
+               << "S" << std::endl;
     std::cout.flush();
+#endif
+
     /*
     QStringList *tracIds = db->getAllTracID("Server");
     for(int i = 0; i < tracIds->size(); i++)
