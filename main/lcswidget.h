@@ -15,6 +15,7 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QAction>
+#include <QToolBar>
 #include "core.h"
 #include "mapwindow.h"
 
@@ -71,6 +72,7 @@ private:
     QLabel      *fileNameLabel[2];
 
     QAction		*exportAction[2];
+    QToolBar    *toolBar[2];
 
     /****** Non-UI part ********/
     Sequence *raw_seq[2], *common_seq[2];

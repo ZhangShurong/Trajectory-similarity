@@ -38,14 +38,22 @@ void LcsWidget::setupUi()
 
     QVBoxLayout *rightLayout = new QVBoxLayout;
     for (int i = 0; i < 2; ++i) {
-        fileNameLabel[i] = new QLabel;
-        fileNameLabel[i]->setText(tr("未选择文件"));
+        /* Label */
+        fileNameLabel[i] = new QLabel(tr("未选择文件"));
         fileNameLabel[i]->setAlignment(Qt::AlignCenter);
         fileOpenButtion[i] = new QPushButton;
         fileOpenButtion[i]->setText(tr("打开文件 ") + (i + 'A'));
 
         rightLayout->addWidget(fileNameLabel[i]);
-        rightLayout->addWidget(fileOpenButtion[i]);
+
+        /* Toolbar and buttion */
+        QHBoxLayout *fileLayout = new QHBoxLayout;
+        fileLayout->addWidget(toolBar[i] = new QToolBar, 1);
+        //fileLayout->addSpacing(15);
+        fileLayout->addWidget(fileOpenButtion[i], 5);
+        fileLayout->addSpacing(20);
+
+        rightLayout->addLayout(fileLayout);
 
         if (i == 1) { rightLayout->addSpacing(20); }
     }
@@ -92,18 +100,19 @@ void LcsWidget::setupActions()
     QSignalMapper *openSigMap   = new QSignalMapper(this);
     QSignalMapper *exportSigMap = new QSignalMapper(this);
     for (int i = 0; i < 2; ++i) {
-        /** open file */
+        /** open file **/
         connect(fileOpenButtion[i], SIGNAL(pressed()), openSigMap, SLOT(map()));
         openSigMap->setMapping(fileOpenButtion[i], i);
 
         /** export file **/
         exportAction[i] = new QAction(
-                    style()->standardIcon(QStyle::SP_DriveHDIcon),
+                    style()->standardIcon(QStyle::SP_DialogSaveButton),
                     tr("导出(&E)"),
                     this);
         exportAction[i]->setDisabled(true);
         connect(exportAction[i], SIGNAL(toggled(bool)),
                 exportSigMap, SLOT(map()));
+        toolBar[i]->addAction(exportAction[i]);
     }
     connect(openSigMap, SIGNAL(mapped(int)), this, SLOT(openFile(int)));
 
