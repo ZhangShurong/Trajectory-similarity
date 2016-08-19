@@ -7,7 +7,7 @@ Cloud::Cloud(Ui::MainWindow *ui, QWidget *parent)
 :QMainWindow(parent)
 {
     this->ui = ui;
-    ipAdd = "127.0.0.1";
+    ipAdd = "121.42.202.133";
     portd = 10086;
     client = new Client();
     connected = false;
