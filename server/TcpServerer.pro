@@ -19,10 +19,10 @@ SOURCES += main.cpp\
     tcpserver.cpp \
     tcpsocket.cpp \
     threadhandle.cpp \
-       ../main/csv.cpp \
-        ../main/database.cpp \
-        ../main/sequence.cpp \
-        ../main/core.cpp
+       ./main/csv.cpp \
+        ./main/database.cpp \
+        ./main/sequence.cpp \
+        ./main/core.cpp
 
 
 
@@ -34,4 +34,4 @@ HEADERS  += \
 
 unix:include($$PWD/eventdispatcher_libev/eventdispatcher_libev.pri)
 
-INCLUDEPATH += ../main
+INCLUDEPATH += ./main
