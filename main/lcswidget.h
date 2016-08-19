@@ -14,6 +14,7 @@
 #include <QLayout>
 #include <QGroupBox>
 #include <QLineEdit>
+#include <QSizePolicy>
 #include "mapwindow.h"
 
 class AttrEdit : public QWidget
@@ -23,12 +24,14 @@ public:
     QLabel 		*attrLabel;
     QLineEdit 	*valLineEdit;
 
-    explicit AttrEdit(QWidget *parent, const QString &attrName = "")
+    explicit AttrEdit(QWidget *parent, const QString &attrName = "", bool ro = true)
         : QWidget(parent) {
         QHBoxLayout *mainLayout = new QHBoxLayout;
         attrLabel = new QLabel(attrName);
         valLineEdit = new QLineEdit;
+        valLineEdit->setReadOnly(ro);
         mainLayout->addWidget(attrLabel);
+        mainLayout->addSpacing(5);
         mainLayout->addWidget(valLineEdit);
         this->setLayout(mainLayout);
     }
@@ -51,13 +54,14 @@ private:
     MapWindow   *map;
 
     QSlider     *thresholdSlider;
-    QLabel      *thresholdLabel;
     QPushButton *refreshButton;
 
     QGroupBox   *groupBox;
-    AttrEdit	*attrSimilarity;
-    AttrEdit	*attrOriginPointCount[2];
     AttrEdit    *attrThreshold;
+    AttrEdit	*attrOriginSimilarity;
+    AttrEdit	*attrCommonSimilarity;
+    AttrEdit	*attrOriginPointCount[2];
+    AttrEdit 	*attrCommonPointCount;
 
     QSpinBox    *upperLimBox;
     QSpinBox    *lowerLimBox;
