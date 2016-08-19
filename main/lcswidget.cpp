@@ -49,7 +49,7 @@ void LcsWidget::setupUi()
         /* Toolbar and buttion */
         QHBoxLayout *fileLayout = new QHBoxLayout;
         fileLayout->addWidget(toolBar[i] = new QToolBar, 1);
-        //fileLayout->addSpacing(15);
+        // fileLayout->addSpacing(15);
         fileLayout->addWidget(fileOpenButtion[i], 5);
         fileLayout->addSpacing(20);
 
@@ -100,21 +100,23 @@ void LcsWidget::setupActions()
     QSignalMapper *openSigMap   = new QSignalMapper(this);
     QSignalMapper *exportSigMap = new QSignalMapper(this);
     for (int i = 0; i < 2; ++i) {
-        /** open file **/
+        /** Open file **/
         connect(fileOpenButtion[i], SIGNAL(pressed()), openSigMap, SLOT(map()));
         openSigMap->setMapping(fileOpenButtion[i], i);
 
-        /** export file **/
+        /** Export file **/
         exportAction[i] = new QAction(
                     style()->standardIcon(QStyle::SP_DialogSaveButton),
                     tr("导出(&E)"),
                     this);
         exportAction[i]->setDisabled(true);
-        connect(exportAction[i], SIGNAL(toggled(bool)),
+        connect(exportAction[i], SIGNAL(triggered()),
                 exportSigMap, SLOT(map()));
+        exportSigMap->setMapping(exportAction[i], i);
         toolBar[i]->addAction(exportAction[i]);
     }
     connect(openSigMap, SIGNAL(mapped(int)), this, SLOT(openFile(int)));
+    connect(exportSigMap, SIGNAL(mapped(int)), this, SLOT(exportFile(int)));
 
     /** lowerLim upperLim 关系 **/
     connect(lowerLimBox, SIGNAL(valueChanged(int)), this,
@@ -130,11 +132,12 @@ void LcsWidget::setupActions()
 
 void LcsWidget::openFile(int i)
 {
-    QString fileName = QFileDialog::getOpenFileName(NULL,tr("打开文件"),
-                       "", "CSV Files(*.csv)", 0);
+    QString fileName = QFileDialog::getOpenFileName(NULL, tr("打开文件"), "",
+                                                    "CSV Files(*.csv)", 0);
     if (fileName.isNull() || fileName.isEmpty()) {
         return;
     }
+
     QFileInfo fi(fileName);
     QString name = fi.fileName();
     fileNameLabel[i]->setText(name);
@@ -152,11 +155,19 @@ void LcsWidget::openFile(int i)
 void LcsWidget::exportFile(int i)
 {
     if (common_seq[i] == NULL) {
-        QMessageBox::warning(this, tr("无法导出文件"),
-                             tr("进行筛选后才能导出目标 CSV 文件"),
+        QMessageBox::warning(this, tr("无法导出"),
+                             tr("请进行分析后再导出筛选过的 文件") + ('A' + i) +
+                             tr(" 的目标 CSV！"),
                              QMessageBox::Yes);
         return;
     }
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("导出筛选结果") +
+                                                    ('A' + i), "",
+                                                    tr("CSV Files (*.csv)"));
+    if (fileName.isNull() || fileName.isEmpty())
+        return;
+
 }
 
 void LcsWidget::calcLcmSequence()
@@ -249,17 +260,15 @@ void LcsWidget::drawSequences()
 
 void LcsWidget::onLowerLimChanged(int value)
 {
-    if (++value >= 90) {
+    if (++value >= 90)
         upperLimBox->setMinimum(value);
-    }
     updateThreshold();
 }
 
 void LcsWidget::onUpperLimChanged(int value)
 {
-    if (--value >= 0) {
+    if (--value >= 0)
         lowerLimBox->setMaximum(value);
-    }
     updateThreshold();
 }
 
@@ -285,6 +294,9 @@ void LcsWidget::onRefreshButtonClicked()
                                         common_seq[0], common_seq[1])));
         attrCommonPointCount->valLineEdit->setText(
                     QString::number(common_seq[0]->getNum()));
+
+        exportAction[0]->setEnabled(true);
+        exportAction[1]->setEnabled(true);
         return;
     }
     drawSequences();
@@ -295,6 +307,5 @@ void LcsWidget::updateThreshold()
     double rangeLength = upperLimBox->value() - lowerLimBox->value();
     threshold = lowerLimBox->value() + rangeLength *
                 thresholdSlider->value() / (double)thresholdSlider->maximum();
-    //thresholdLabel->setText(tr("当前阈值: ") + QString::number(threshold));
     attrThreshold->valLineEdit->setText(QString::number(threshold));
 }
