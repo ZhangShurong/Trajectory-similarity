@@ -1,5 +1,6 @@
 #include "client.h"
 #include <iostream>
+#include <QProgressDialog>
 
 
 Client::Client()
@@ -51,7 +52,14 @@ void Client::search(Sequence sequence)
 
 void Client::upload(vector<Sequence> sequences)
 {
-    std::cout << "In insert:\n";
+    int c = 0;
+    QProgressDialog importProgressDialog(tr("正在上传，请稍候..."),
+                         tr("取消"),
+                         0, sequences.size());
+    importProgressDialog.setWindowModality(Qt::WindowModal);
+    importProgressDialog.setWindowTitle(tr("Please Wait"));   //设置标题的显示时间
+    importProgressDialog.show();
+
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
@@ -65,11 +73,18 @@ void Client::upload(vector<Sequence> sequences)
     for(uint i = 0; i < sequences.size(); i++)
     {
         out << sequences[i];
+        if (importProgressDialog.wasCanceled()) {
+            break;
+            out.device()->seek(2);
+            out << qint16(i);
+        }
+        c++;
+        importProgressDialog.setValue(i);
     }
     out.device()->seek(0);
     out << quint32(block.size() - sizeof(quint32));
     this->write(block);
-    qDebug() << "Insert over";
+    importProgressDialog.setValue(sequences.size());
 }
 
 void Client::echo(QString msg)

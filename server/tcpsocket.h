@@ -56,7 +56,8 @@ private:
     void download();
     void returnDownload(vector<Sequence> sequences);
 
-    void process();
+    void process(int p);
+
     //void returnRefresh(vector<Sequence> sequences);
 };
 
