@@ -145,6 +145,7 @@ void Cloud::downloadPushBtnClicked()
         return;
     }
     client->download();
+
 }
 
 void Cloud::connectedMsg()
@@ -226,6 +227,7 @@ void Cloud::readData()
         {
             vector<Sequence> res = getSequences();
             display(res);
+            download(res);
         }
         if(returnType == 'S')
         {
@@ -391,6 +393,49 @@ vector<Result> Cloud::getResSet()
 
     }
     return resSet;
+}
+
+void Cloud::download(vector<Sequence> seqs)
+{
+    QString dirname = QFileDialog::getExistingDirectory(this, "选择文件夹","");
+    if(dirname.isEmpty()) {
+        return;
+    } else {
+        if (seqs.size() == 0) {
+            return;
+        } else {
+            QProgressDialog downloadProgressDialog(tr("正在导入轨迹段数据，请稍候..."),
+                                 tr("取消"),
+                                 0, seqs.size());
+            downloadProgressDialog.setWindowModality(Qt::WindowModal);
+            downloadProgressDialog.setWindowTitle(tr("Please Wait"));   //设置标题的显示时间
+            downloadProgressDialog.show();
+
+            for (uint i = 0; i< seqs.size(); i++) {
+                QString filename = dirname + "/"+ QString::number(i) + ".csv";
+                QFile file(filename);
+                if (!file.open(QIODevice::WriteOnly)) {
+                    qDebug() << "Failed!";
+                    return;
+                }
+                QTextStream out(&file);
+                for (int j = 0; j < seqs[i].getNum(); j++) {
+                    out << seqs[i].pts[j].longitude
+                        << ","
+                        << seqs[i].pts[j].latitude
+                        << "\n";
+                    out.flush();
+                }
+                file.close();
+                if (downloadProgressDialog.wasCanceled()) {
+                    break;
+                }
+                downloadProgressDialog.setValue(i);
+            }
+            downloadProgressDialog.setValue(seqs.size());
+            QMessageBox::information(NULL, "提示", "轨迹传输完成", QMessageBox::Yes, QMessageBox::Yes);
+        }
+    }
 }
 
 void Cloud::disconnectServer()
