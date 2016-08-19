@@ -45,7 +45,7 @@ void Cloud::openfiles()
     }
     string fileName;
     vector<Sequence> sequences;
-    QProgressDialog importProgressDialog(tr("正在导入轨迹段数据，请稍候..."),
+    QProgressDialog importProgressDialog(tr("正在读取轨迹数据，请稍候..."),
                          tr("取消"),
                          0, fileNames.length());
     importProgressDialog.setWindowModality(Qt::WindowModal);
@@ -75,6 +75,7 @@ void Cloud::openfiles()
         }
     importProgressDialog.setValue(fileNames.length());
     client->upload(sequences);
+    QMessageBox::information(NULL, "提示", "轨迹上传完成，上传轨迹将显示在表格中", QMessageBox::Yes, QMessageBox::Yes);
 }
 
 void Cloud::openfile()
@@ -404,7 +405,7 @@ void Cloud::download(vector<Sequence> seqs)
         if (seqs.size() == 0) {
             return;
         } else {
-            QProgressDialog downloadProgressDialog(tr("正在导入轨迹段数据，请稍候..."),
+            QProgressDialog downloadProgressDialog(tr("正在下载数据，请稍候..."),
                                  tr("取消"),
                                  0, seqs.size());
             downloadProgressDialog.setWindowModality(Qt::WindowModal);
