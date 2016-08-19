@@ -472,7 +472,7 @@ color:white;
         <item>
          <widget class="QToolButton" name="gjToolButton">
           <property name="text">
-           <string>匹配</string>
+           <string>筛选</string>
           </property>
           <property name="icon">
            <iconset resource="res.qrc">

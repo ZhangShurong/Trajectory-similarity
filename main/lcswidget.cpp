@@ -150,6 +150,7 @@ void LcsWidget::openFile(int i)
     getSquFromFile(&csv, raw_seq[i] = new Sequence);
     in.close();
     raw_seq[i]->setID(QString::number(i + 1));
+    exportAction[i]->setEnabled(true);
 }
 
 void LcsWidget::exportFile(int i)
@@ -168,6 +169,19 @@ void LcsWidget::exportFile(int i)
     if (fileName.isNull() || fileName.isEmpty())
         return;
 
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+    QTextStream os(&file);
+    os << tr("经度,纬度\n");
+    for (int j = 0; j < common_seq[i]->pointsNum; ++j) {
+        os << (*common_seq[i])[j].longitude << ","
+           << (*common_seq[i])[j].latitude << "\n";
+    }
+    file.close();
+    QMessageBox::information(this, tr("保存成功"),
+                             tr("已成功导出为 CSV 文件至 ") + fileName,
+                             QMessageBox::Yes);
 }
 
 void LcsWidget::calcLcmSequence()
