@@ -546,6 +546,74 @@ void DataBase::getNSequences(QMap<QString, Sequence> &id_seq,int n, string table
         // qDebug() << pt + time + id;
     }
 }
+
+vector<Sequence> DataBase::getNSequences(int n, string tableName, QString type)
+{
+    QSqlQuery query(db);
+    QString qstr;
+    if(n <= 0)
+    {
+        qstr= "select count(tid) from " +QString::fromStdString(tableName) + " where tid <> ''";
+        query.exec(qstr);
+        while(query.next())
+        {
+            n = query.value(0).toInt();
+        }
+        query.clear();
+        qstr= "select max(id) from " +QString::fromStdString(tableName) + " where tid <> ''";
+    }
+    else
+    {
+        qstr= "select id from " +QString::fromStdString(tableName) + " where tid <> '' limit " + QString::number(n);
+    }
+    //loadinto memory
+
+    //select id from Server where tid <> "" limit 10;
+
+    query.exec(qstr);
+    QString maxid;
+    while(query.next())
+    {
+        maxid = query.value(0).toString();
+    }
+
+    query.clear();
+    qstr = "select * from Server  where id <= " + maxid;
+    //tid,pt,time,id,type
+    query.exec(qstr);
+    QString tid;
+    QString pt;
+    QString time;
+    QString id ;
+    QString type_s;
+
+    vector<Sequence>  res;
+    Sequence t[n];
+    int i = 0;
+    while (query.next()) {
+        Point temp;
+        tid = query.value(0).toString();
+        type_s = query.value(4).toString();
+        if(tid.isEmpty())
+        {
+            pt = query.value(1).toString();
+            time = query.value(2).toString();
+            id = query.value(3).toString();
+            temp.buildPoint(pt,time,id);
+            t[i].appendPt(&temp);
+        }
+        else
+        {
+            t[i].setID(tid);
+            t[i].setType(type);
+            if(type_s.startsWith(type))
+                res.push_back(t[i]);
+            i++;
+        }
+        // qDebug() << pt + time + id;
+    }
+    return res;
+}
 QVector<Sequence> DataBase::getAllSequences(string tableName){
     QSqlQuery query(db);
     QString qstr;

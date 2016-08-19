@@ -55,6 +55,7 @@ public:
     void delSeq(string ID,string tableName);
     void closeConnection(QString connName="");
     void getNSequences(QMap<QString, Sequence> &id_seq,int n, string tableName);
+    vector<Sequence> getNSequences(int n, string tableName, QString type);
     QVector<Sequence> getAllSequences(string tableName);
     void createResTable();
     void insertIntoResTable(int n,vector<Sequence> sequences, double *res,bool clear = true);
