@@ -25,7 +25,6 @@ void LcsWidget::setupUi()
     adjustLayout->addWidget(thresholdSlider);
     adjustLayout->addWidget(upperLimLabel);
     adjustLayout->addWidget(upperLimBox);
-    //adjustLayout->addWidget(thresholdLabel);
 
     map = new MapWindow;
     map->setHtml("./html/lcm.html");
@@ -133,7 +132,7 @@ void LcsWidget::calcLcmSequence()
         common_seq[i] = new Sequence;
     }
 
-    Sequence &p   = *raw_seq[0], &q   = *raw_seq[1];
+    Sequence &p   = *raw_seq[0],    &q   = *raw_seq[1];
     Sequence &c_p = *common_seq[0], &c_q = *common_seq[1];
 
     QVector< QVector <QPair<size_t, char> > > m(p.pointsNum + 1);
@@ -234,12 +233,21 @@ void LcsWidget::onRefreshButtonClicked()
         QMessageBox::warning(this, tr("缺少计算对象"),
                              tr("计算公共轨迹需要选择两条轨迹"), QMessageBox::Yes);
     } else {
+        Core core;
         calcLcmSequence();
         drawSequences();
         map->drawSequencePair(common_seq[0], common_seq[1], 1);
+        attrOriginSimilarity->valLineEdit->setText(
+                    QString::number(core.computeDiscreteFrechet(raw_seq[0], raw_seq[1])));
+        for (int i = 0; i < 2; ++i)
+            attrOriginPointCount[i]->valLineEdit->setText(QString::number(raw_seq[i]->getNum()));
+        attrCommonSimilarity->valLineEdit->setText(
+                    QString::number(core.computeDiscreteFrechet(common_seq[0], common_seq[1])));
+        attrCommonPointCount->valLineEdit->setText(
+                    QString::number(common_seq[0]->getNum()));
         return;
     }
-    drawSequences();// */
+    drawSequences();
 }
 
 void LcsWidget::updateThreshold()
@@ -248,4 +256,5 @@ void LcsWidget::updateThreshold()
     threshold = lowerLimBox->value() + rangeLength *
                 thresholdSlider->value() / (double)thresholdSlider->maximum();
     //thresholdLabel->setText(tr("当前阈值: ") + QString::number(threshold));
+    attrThreshold->valLineEdit->setText(QString::number(threshold));
 }
