@@ -10,6 +10,7 @@ Cloud::Cloud(Ui::MainWindow *ui, QWidget *parent)
     ipAdd = "127.0.0.1";
     portd = 10086;
     client = new Client();
+    connected = false;
 
     ui->progressBar->hide();    
     initTable();
@@ -32,6 +33,11 @@ Cloud::~Cloud()
 
 void Cloud::openfiles()
 {
+    if(!connected)
+    {
+        QMessageBox::information(NULL, "提示", "未连接服务器", QMessageBox::Yes, QMessageBox::Yes);
+        return;
+    }
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                             "", "CSV Files(*.csv)", 0);
     if (fileNames.isEmpty()) {
@@ -39,6 +45,13 @@ void Cloud::openfiles()
     }
     string fileName;
     vector<Sequence> sequences;
+    QProgressDialog importProgressDialog(tr("正在导入轨迹段数据，请稍候..."),
+                         tr("取消"),
+                         0, fileNames.length());
+    importProgressDialog.setWindowModality(Qt::WindowModal);
+    importProgressDialog.setWindowTitle(tr("Please Wait"));   //设置标题的显示时间
+    importProgressDialog.show();
+    int c = 0;
     for (int i = 0; i < fileNames.length(); i++)
         {
             fileName = fileNames[i].toLocal8Bit().data();
@@ -54,12 +67,24 @@ void Cloud::openfiles()
                 return;
             }
             sequences.push_back(temp);
+            if (importProgressDialog.wasCanceled()) {
+                break;
+            }
+            c++;
+            importProgressDialog.setValue(i);
         }
+    importProgressDialog.setValue(fileNames.length());
     client->upload(sequences);
 }
 
 void Cloud::openfile()
+
 {
+    if(!connected)
+    {
+        QMessageBox::information(NULL, "提示", "未连接服务器", QMessageBox::Yes, QMessageBox::Yes);
+        return;
+    }
     QString file_name = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "", "CSV Files(*.csv)", 0);
     if(file_name.isEmpty())
@@ -84,16 +109,24 @@ void Cloud::openfile()
 
 void Cloud::refreshBtnClicked()
 {
+    if(!connected)
+    {
+        QMessageBox::information(NULL, "提示", "未连接服务器", QMessageBox::Yes, QMessageBox::Yes);
+        return;
+    }
     client->refresh();
 }
 
 void Cloud::connectPushBtnClicked()
 {
+
     if ("连接" == this->ui->connectPushBtn->text())
     {
         connectServer();
     }
     else {
+        connected = false;
+        QMessageBox::information(NULL, "提示", "连接已断开", QMessageBox::Yes, QMessageBox::Yes);
         client->disconnectFromHost();
         if (client->state() == QAbstractSocket::UnconnectedState || client->waitForDisconnected(1000) )
         {
@@ -106,6 +139,11 @@ void Cloud::connectPushBtnClicked()
 
 void Cloud::downloadPushBtnClicked()
 {
+    if(!connected)
+    {
+        QMessageBox::information(NULL, "提示", "未连接服务器", QMessageBox::Yes, QMessageBox::Yes);
+        return;
+    }
     client->download();
 }
 
@@ -117,25 +155,36 @@ void Cloud::connectedMsg()
 void Cloud::stop()
 {
     client->close();
+    connected = false;
+    ui->serverInfo->setText("连接已断开");
+    ui->connectPushBtn->setText("连接");
 }
 
 void Cloud::connectionClosedByServer()
 {
     if(client->nextBlockSize != 0xffff)
-        std::cerr<<"Connection close by server\n";
+    {
+        if(connected)
+            QMessageBox::warning(this,"Warning",tr("网络连接异常关闭"),QMessageBox::Yes,QMessageBox::Yes);
+    }
+    connected = false;
+    ui->serverInfo->setText("连接已断开");
+    ui->connectPushBtn->setText("连接");
     client->disconnectFromHost();
     client->close();
 }
 
 void Cloud::error()
 {
-    std::cerr << "Error \n";
+    QMessageBox::warning(this,"Warning",tr("网络连接出现问题"),QMessageBox::Yes,QMessageBox::Yes);
     client->close();
+    connected = false;
+    ui->serverInfo->setText("连接已断开");
+    ui->connectPushBtn->setText("连接");
 }
 
 void Cloud::readData()
-{
-    std::cout << "In getData";
+{    
     QDataStream in(client);
     in.setVersion(QDataStream::Qt_5_4);
     forever
@@ -161,8 +210,7 @@ void Cloud::readData()
         {
             QString msg;
             in >> msg;
-            //QMessageBox::information(NULL, "提示", msg, QMessageBox::Yes, QMessageBox::Yes);
-            std::cerr << msg.toStdString();
+            QMessageBox::information(NULL, "提示", msg, QMessageBox::Yes, QMessageBox::Yes);
         }
         if(returnType == 'I')
         {
@@ -196,12 +244,14 @@ void Cloud::connectServer()
     {
         ui->serverInfo->setText("连接成功");
         ui->connectPushBtn->setText("断开");
-         //QMessageBox::information(NULL, "提示", "连接成功", QMessageBox::Yes, QMessageBox::Yes);
+        connected = true;
+        QMessageBox::information(NULL, "提示", "连接成功", QMessageBox::Yes, QMessageBox::Yes);
     }
     else
     {
         ui->serverInfo->setText("连接已断开");
-         QMessageBox::information(NULL, "提示", "连接失败", QMessageBox::Yes, QMessageBox::Yes);
+        connected = false;
+        QMessageBox::information(NULL, "提示", "连接失败", QMessageBox::Yes, QMessageBox::Yes);
     }
 }
 
@@ -346,6 +396,7 @@ vector<Result> Cloud::getResSet()
 void Cloud::disconnectServer()
 {
     client->disconnectFromHost();
+    connected = false;
     if (client->state() == QAbstractSocket::UnconnectedState || client->waitForDisconnected(1000) )
     {
         QMessageBox::information(NULL, "提示", "连接断开", QMessageBox::Yes, QMessageBox::Yes);

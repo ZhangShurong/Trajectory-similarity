@@ -401,9 +401,24 @@ void TcpSocket::returnDownload(vector<Sequence> sequences)
     this->write(block);
 }
 
-void TcpSocket::process()
+void TcpSocket::process(int p)
 {
-
+    std::cout << "In refresh insert:\n";
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+    /* _______________________________________________________
+     * |             |                  |           |         |
+     * |size(quint16)|requestType(qint8)|num(qint16)|quint8(P)|
+     * |_____________|__________________|___________|_________|
+     */
+    qint16 num(-1);
+    out << quint32(0) << qint8('P') << num ;
+    quint8 P(p);
+    out << P;
+    out.device()->seek(0);
+    out << quint32(block.size() - sizeof(quint32));
+    this->write(block);
 }
 /*
 void TcpSocket::returnRefresh(vector<Sequence> sequences)

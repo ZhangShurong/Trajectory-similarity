@@ -34,6 +34,7 @@ private:
     Client *client;
     QString ipAdd;
     uint portd;
+    bool connected;
 
     void connectServer();
     void disconnectServer();
@@ -44,7 +45,6 @@ private:
 
     vector<Sequence> getSequences();
     vector<Result> getResSet();
-
 };
 
 #endif // CLOUD_H
