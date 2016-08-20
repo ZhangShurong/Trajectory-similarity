@@ -188,6 +188,7 @@ void TcpSocket::insert()
         QString msg = "Got sequences in insert and the num is " + QString::number(sequences.size());
         qDebug() << msg;
         returnInsert(sequences);
+        echo("处理完毕，成功插入的轨迹将显示在表格中");
     }
 }
 

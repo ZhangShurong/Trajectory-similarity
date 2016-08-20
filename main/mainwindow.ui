@@ -2112,7 +2112,11 @@ p, li { white-space: pre-wrap; }
       <widget class="QWidget" name="page_19">
        <layout class="QHBoxLayout" name="horizontalLayout_56">
         <item>
-         <widget class="ClusterDemo" name="clusterdemo" native="true"/>
+         <widget class="ClusterDemo" name="clusterdemo" native="true">
+          <property name="styleSheet">
+           <string notr="true">clusterdemo{border-image:url(:/images/roundabout.gif)}</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

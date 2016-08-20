@@ -41,11 +41,11 @@
         <file>images/cloud1.png</file>
         <file>images/cloud2.png</file>
         <file>images/about.png</file>
-        <file>images/roundabout.gif</file>
         <file>images/download.png</file>
         <file>images/refresh.png</file>
         <file>images/search1.png</file>
         <file>images/upload.png</file>
+        <file>images/roundabout.png</file>
     </qresource>
     <qresource prefix="/css">
         <file>mainWin.qss</file>
