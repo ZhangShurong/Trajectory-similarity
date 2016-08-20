@@ -255,10 +255,10 @@ void Sequence::buildPrefixSum()
         return;
     }
     prefixSum.push_back(0);
-    for(int i = 0; i < pointsNum; i++)
+    for(int i = 1; i < pointsNum; i++)
     {
-        prefixSum.push_back(prefixSum[prefixSum.size() - 1] +
-                euDistance(pts[prefixSum.size() - 1], pts[prefixSum.size()]));
+        prefixSum.push_back(prefixSum[i - 1] +
+                euDistance(pts[i- 1], pts[i-1]));
     }
 }
 
