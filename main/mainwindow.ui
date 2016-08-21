@@ -189,7 +189,7 @@ color:white;
           <string notr="true">color:white;</string>
          </property>
          <property name="text">
-          <string>武汉大学—Kryptonite团队-基于“弗雷歇距离”的轨迹相似度分析软件-赛题7：针对以经纬度或经纬度带时间定义的不同轨迹</string>
+          <string>武汉大学—Kryptonite团队-基于“F-H距离”的轨迹相似度分析-赛题7：针对以经纬度或经纬度带时间定义的不同轨迹</string>
          </property>
         </widget>
        </item>
@@ -2125,113 +2125,117 @@ p, li { white-space: pre-wrap; }
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_57">
           <item>
-           <widget class="QToolButton" name="uploadBtn">
-            <property name="text">
-             <string>上传</string>
-            </property>
-            <property name="icon">
-             <iconset resource="res.qrc">
-              <normaloff>:/images/upload.png</normaloff>:/images/upload.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>48</width>
-              <height>48</height>
-             </size>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-            <property name="arrowType">
-             <enum>Qt::NoArrow</enum>
-            </property>
-           </widget>
+           <layout class="QVBoxLayout" name="verticalLayout_26">
+            <item>
+             <widget class="QToolButton" name="searchInServerBtn">
+              <property name="text">
+               <string>搜索</string>
+              </property>
+              <property name="icon">
+               <iconset resource="res.qrc">
+                <normaloff>:/images/search1.png</normaloff>:/images/search1.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>48</width>
+                <height>48</height>
+               </size>
+              </property>
+              <property name="toolButtonStyle">
+               <enum>Qt::ToolButtonTextUnderIcon</enum>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+              <property name="arrowType">
+               <enum>Qt::NoArrow</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="uploadBtn">
+              <property name="text">
+               <string>上传</string>
+              </property>
+              <property name="icon">
+               <iconset resource="res.qrc">
+                <normaloff>:/images/upload.png</normaloff>:/images/upload.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>48</width>
+                <height>48</height>
+               </size>
+              </property>
+              <property name="toolButtonStyle">
+               <enum>Qt::ToolButtonTextUnderIcon</enum>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+              <property name="arrowType">
+               <enum>Qt::NoArrow</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="dowmloadBtn">
+              <property name="text">
+               <string>下载</string>
+              </property>
+              <property name="icon">
+               <iconset resource="res.qrc">
+                <normaloff>:/images/download.png</normaloff>:/images/download.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>48</width>
+                <height>48</height>
+               </size>
+              </property>
+              <property name="toolButtonStyle">
+               <enum>Qt::ToolButtonTextUnderIcon</enum>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+              <property name="arrowType">
+               <enum>Qt::NoArrow</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="refreshBtn">
+              <property name="text">
+               <string>刷新</string>
+              </property>
+              <property name="icon">
+               <iconset resource="res.qrc">
+                <normaloff>:/images/refresh.png</normaloff>:/images/refresh.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>48</width>
+                <height>48</height>
+               </size>
+              </property>
+              <property name="toolButtonStyle">
+               <enum>Qt::ToolButtonTextUnderIcon</enum>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+              <property name="arrowType">
+               <enum>Qt::NoArrow</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QToolButton" name="refreshBtn">
-            <property name="text">
-             <string>刷新</string>
-            </property>
-            <property name="icon">
-             <iconset resource="res.qrc">
-              <normaloff>:/images/refresh.png</normaloff>:/images/refresh.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>48</width>
-              <height>48</height>
-             </size>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-            <property name="arrowType">
-             <enum>Qt::NoArrow</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="dowmloadBtn">
-            <property name="text">
-             <string>下载</string>
-            </property>
-            <property name="icon">
-             <iconset resource="res.qrc">
-              <normaloff>:/images/download.png</normaloff>:/images/download.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>48</width>
-              <height>48</height>
-             </size>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-            <property name="arrowType">
-             <enum>Qt::NoArrow</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="searchInServerBtn">
-            <property name="text">
-             <string>搜索</string>
-            </property>
-            <property name="icon">
-             <iconset resource="res.qrc">
-              <normaloff>:/images/search1.png</normaloff>:/images/search1.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>48</width>
-              <height>48</height>
-             </size>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-            <property name="arrowType">
-             <enum>Qt::NoArrow</enum>
-            </property>
-           </widget>
+           <widget class="QTableWidget" name="tableWidget"/>
           </item>
          </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="tableWidget"/>
         </item>
         <item>
          <widget class="QProgressBar" name="progressBar">
@@ -2269,7 +2273,10 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item>
-     <widget class="NetStatIndicator" name="widget_2" native="true"/>
+     <widget class="NetStatIndicator" name="widget_2" native="true">
+      <zorder>stackedWidget</zorder>
+      <zorder>stackedWidget</zorder>
+     </widget>
     </item>
    </layout>
    <zorder>stackedWidget</zorder>
