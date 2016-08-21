@@ -207,40 +207,6 @@ color:white;
         </spacer>
        </item>
        <item>
-        <widget class="QToolButton" name="skinToolButton">
-         <property name="text">
-          <string>...</string>
-         </property>
-         <property name="icon">
-          <iconset resource="res.qrc">
-           <normaloff>:/images/skin_normal.png</normaloff>:/images/skin_normal.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>27</width>
-           <height>25</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="feedToolButton">
-         <property name="text">
-          <string>...</string>
-         </property>
-         <property name="icon">
-          <iconset resource="res.qrc">
-           <normaloff>:/images/feedback_normal.png</normaloff>:/images/feedback_normal.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>27</width>
-           <height>22</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QToolButton" name="menuToolButton">
          <property name="text">
           <string>...</string>
@@ -1903,16 +1869,16 @@ color:white;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;开发团队名&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;：Kryponite&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;参赛赛题：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;第五届“中国软件杯”大学生软件设计大赛—针对以经纬度或经纬度带时间定义的不同轨迹&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;软件名称：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;基于“弗雷歇距离”的轨迹相似度分析软件&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;代表学校：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;武汉大学 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;院系：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;国际软件学院 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;  &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;开发时间：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;2016年4至6月&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;指导老师：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;陈刚 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;  &lt;/span&gt; &lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;队长：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;张树荣 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;      &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt; 队员:&lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;柯磊、王旭东&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;联系地址：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;湖北省武汉市武汉大学国际软件学院行政楼&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;联系电话：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;133-4993-6422&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;邮箱：&lt;/span&gt;&lt;a href=&quot;mailto:Zhang_Shurong@foxmail.com&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; text-decoration: underline; color:#0000ff;&quot;&gt;Zhang_Shurong@foxmail.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt; , &lt;/span&gt;&lt;a href=&quot;mailto:kelei@whu.edu.cn&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; text-decoration: underline; color:#000000;&quot;&gt;kelei@whu.edu.cn&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;开发语言：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;C++ &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;  &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;开发环境：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;Qt&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;程序运行环境：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;Windows 7/8 &lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;Windows 10&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;团队名&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;：Kryponite&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;参赛赛题：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;第五届“中国软件杯”大学生软件设计大赛—针对以经纬度或经纬度带时间定义的不同轨迹 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;软件名称：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;基于“弗雷歇距离”的轨迹相似度分析软件 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;代表学校：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;武汉大学     &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt; 院系：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;国际软件学院   &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;开发时间：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;2016年4至6月 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;指导老师：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;陈刚            &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;队长：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;张树荣       &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;      队员: &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;柯磊、王旭东 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;联系地址：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;湖北省武汉市武汉大学国际软件学院行政楼 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;联系电话：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;133-4993-6422 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;邮箱：&lt;/span&gt;&lt;a href=&quot;mailto:Zhang_Shurong@foxmail.com&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;zhang_shurong@foxmail.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; , &lt;/span&gt;&lt;a href=&quot;mailto:kelei@whu.edu.cn&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;kelei@whu.edu.cn&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;开发语言：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;C++     &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;开发环境：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Qt Framework&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;程序运行环境：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Windows 7/8/10&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -1950,7 +1916,8 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;   本项目采取的轨迹相似度计算算法是Fréchet distance(弗雷歇距离)算法，该算法由法国数学家Maurice René Fréchet在1906年提出，对路径空间相似形描述，同时还考虑进路径空间距离的因素，对于空间路径的相似性比较适用，能更为有效快速的计算含时间、经纬度信息的轨迹间的相似性。在该算法的原理基础上，自主设计了一套相似度比较算法，该算法不仅适用于轨迹点、轨迹段、整条轨迹的相似性度量，且算法性能在多次实验测试中均表现良好。在这个核心算法实现的基础上，我们完成了对轨迹相似性度量软件的开发，作为我们的参赛作品。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;   本项目采取的轨迹相似度计算算法是Fréchet distance(弗雷歇距离)算法和豪斯多夫算法。前者由法国数学家Maurice René Fréchet在1906年提出，对路径空间相似形描述，同时还考虑进路径空间距离的因素，对于空间路径的相似性比较适用，能更为有效快速的计算含时间、经纬度信息的轨迹间的相似性。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;   在该算法的原理基础上，自主设计了一套相似度比较算法，该算法不仅适用于轨迹点、轨迹段、整条轨迹的相似性度量，且算法性能在多次实验测试中均表现良好。在这个核心算法实现的基础上，我们完成了对轨迹相似性度量软件的开发，作为我们的参赛作品。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -1985,7 +1952,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;   此基于“弗雷歇距离”的轨迹相似度分析软件由武汉大学国际软件学院Kryptonite团队开发，用作于第五届中国软件杯中的“针对以经纬度或经纬度带时间定义的不同轨迹”赛题参赛作品，未经开发团队Kryponite允许不得擅自用作商业用途。&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;   “&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;基于‘F-H距离’的轨迹相似度分析程序&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;”为第五届中国软件杯中的“针对以经纬度或经纬度带时间定义的不同轨迹”赛题参赛作品。由武汉大学国际软件学院 Kryptonite 团队开发。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -2024,10 +1991,10 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;1.软件带有数据库的存储功能&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;，支持对轨迹数据的保存和删除&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;2.支持轨迹在地图上进行展示&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;，并能直观的区分各条轨迹。本软件支持的地图分在线地图和离线地图，在线地图采用的是百度地图的开放接口，离线地图为自主设计。&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;3.轨迹相似度计算&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;。给定任意两条同类型（带时间或不带时间）的轨迹，可计算出两者之间的相似度，并列出相似度最高的轨迹段和轨迹点。&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;4.相似轨迹查询&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;。对于给定的一个对象轨迹，查找与其相似的所有轨迹，按照相似度从高到低进行排序，并在地图上显示出相似度最高的轨迹段和轨迹点。&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;1. 软件带有数据库的存储功能。&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;支持对轨迹数据的保存和删除；&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;2. 支持轨迹在地图上进行展示。&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;能直观的区分各条轨迹。本软件支持的地图分在线地图和离线地图，在线地图采用的是百度地图的开放接口，离线地图为自主设计；&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;3. 轨迹相似度计算&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;。给定任意两条同类型（带时间或不带时间）的轨迹，可计算出两者之间的相似度，并列出相似度最高的轨迹段和轨迹点；&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;4. 相似轨迹查询&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;。对于给定的一个对象轨迹，查找与其相似的所有轨迹，按照相似度从高到低进行排序，并在地图上显示出相似度最高的轨迹段和轨迹点。 &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -2062,10 +2029,10 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;1.使用此软件时时应当保证网络连接通畅，&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;因为相应的结果需要调用百度地图的开发接口进行呈现！本软件带有网速监测模块，若网络断开会进行及时提示。&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;2.注意带时间轨迹的数据的时间格式，&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;官网提供的测试数据时间格式与官网比赛要求说明中的格式不匹配，本软件以官网的要求YYYYMMDD HH:MM:SS为标准&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;3.经纬度的精度要求：&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;保留小数点后六位有效数字；经纬度只考虑中国大陆范围，需要进行分析的所有轨迹使用相同坐标系&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;4.除官网提供的少量数据外，本团队按官网格式生成了部分轨迹数据用于测试，轨迹数据存放在在安装目录的&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;测试数据&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;文件夹中。&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;1.使用此软件时时应当保证网络连接通畅，&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;因为相应的结果需要调用百度地图的开发接口进行呈现！本软件带有网速监测模块，若网络断开会进行及时提示。 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;2.注意带时间轨迹的数据的时间格式，&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;官网提供的测试数据时间格式与官网比赛要求说明中的格式不匹配，本软件以官网的要求YYYYMMDD HH:MM:SS为标准。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;3.经纬度的精度要求：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;保留小数点后六位有效数字；经纬度只考虑中国大陆范围，需要进行分析的所有轨迹使用相同坐标系。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;4. 测试数据说明：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;除官网提供的少量数据外，本团队按官网格式生成了部分轨迹数据用于测试，轨迹数据存放在在安装目录的&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;测试数据&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;文件夹中。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -2091,9 +2058,8 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;功能模块及界面介绍&lt;/span&gt;&lt;a name=&quot;_Toc6080&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;  &lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt; 本软件主要分主页界面、计算界面、查询界面、地图界面、关于界面、帮助界面、简易轨迹匹配界面七个部分。&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt; font-weight:600;&quot;&gt;详细文档在此下载&lt;/span&gt;&lt;span style=&quot; font-family:'仿宋'; font-size:14pt;&quot;&gt;：http://pan.baidu.com/s/1dFLlM9b&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;功能模块及界面介绍：&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;本软件主要分主页界面、计算界面、查询界面、地图界面、关于界面、帮助界面、简易轨迹匹配界面七个部分。 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;详细文档在此下载&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;：&lt;/span&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://pan.baidu.com/s/1dFLlM9b&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -2124,8 +2090,20 @@ p, li { white-space: pre-wrap; }
        <layout class="QVBoxLayout" name="verticalLayout_25">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_57">
+          <property name="topMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
+          </property>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_26">
+            <property name="leftMargin">
+             <number>15</number>
+            </property>
+            <property name="rightMargin">
+             <number>15</number>
+            </property>
             <item>
              <widget class="QToolButton" name="searchInServerBtn">
               <property name="text">
@@ -2273,10 +2251,7 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item>
-     <widget class="NetStatIndicator" name="widget_2" native="true">
-      <zorder>stackedWidget</zorder>
-      <zorder>stackedWidget</zorder>
-     </widget>
+     <widget class="NetStatIndicator" name="widget_2" native="true"/>
     </item>
    </layout>
    <zorder>stackedWidget</zorder>
