@@ -251,8 +251,15 @@ void SearchWin::sortSeqTable()
     QAbstractItemModel *model;
     QModelIndex index1;
     QString id1;
-    if(tracs->length()>500&&storeId.length()==0){     
-        for(int i=0;i<200;i++){
+    if(tracs->length()>5000&&storeId.length()==0){
+        for(int i=0;i<100;i++){
+            model = ui->searchTable_common->model();
+            index1 = model->index(i,0);
+            id1 = model->data(index1).toString();
+            storeId.append(id1);
+        }
+    }else if(tracs->length()>500&&storeId.length()==0){
+        for(int i=0;i<50;i++){
             model = ui->searchTable_common->model();
             index1 = model->index(i,0);
             id1 = model->data(index1).toString();
@@ -594,7 +601,7 @@ void SearchWin::calSecPart()
                 if (progress.wasCanceled()) {
                     break;
                 }
-                std::cout<<i<<endl;
+//                std::cout<<i<<endl;
                // omp_unset_lock(&lock);
             }
             progress.setValue(storeId.length());
