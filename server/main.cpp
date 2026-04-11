@@ -6,7 +6,7 @@
 #include <QTextStream>
 #include <iostream>
 #ifndef Q_OS_WIN
-#include "eventdispatcher_libev/eventdispatcher_libev.h"
+// #include "eventdispatcher_libev/eventdispatcher_libev.h"  // Requires libev-dev
 #endif
 
 void customMessageHandler(QtMsgType type, const QMessageLogContext &context,const QString & msg)
@@ -46,9 +46,9 @@ void customMessageHandler(QtMsgType type, const QMessageLogContext &context,cons
 int main(int argc, char *argv[])
 {
     //    qInstallMessageHandler(customMessageHandler);
-#ifndef Q_OS_WIN
-    QCoreApplication::setEventDispatcher(new EventDispatcherLibEv());
-#endif
+// #ifndef Q_OS_WIN
+//     QCoreApplication::setEventDispatcher(new EventDispatcherLibEv());  // Requires libev-dev, using default dispatcher
+// #endif
     QCoreApplication a(argc, argv);
     std::cout << "******" << std::endl;
     TcpServer ser;

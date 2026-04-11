@@ -32,6 +32,6 @@ HEADERS  += \
     $$PWD/tcpsocket.h \
     $$PWD/threadhandle.h
 
-unix:include($$PWD/eventdispatcher_libev/eventdispatcher_libev.pri)
+# unix:include($$PWD/eventdispatcher_libev/eventdispatcher_libev.pri)  # Requires libev-dev, disabled for systems without it
 
 INCLUDEPATH += ./main

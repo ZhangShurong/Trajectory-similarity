@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string.h>
 #include <QDataStream>
-#include <QtNetWork>
+#include <QtNetwork>
 
 struct Time
 {

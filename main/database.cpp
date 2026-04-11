@@ -603,7 +603,7 @@ void DataBase::createResTable()
      *
      *
      */
-    query.exec("create table res(tid varchar,ptNum integer,time integer,id integer primary key, res double, demo vachar)");
+    query.exec("create table res(tid varchar,ptNum integer,time integer,id integer primary key, res double, demo varchar)");
 }
 
 void DataBase::insertIntoResTable(int n, vector<Sequence> sequences, double *res, bool clear)

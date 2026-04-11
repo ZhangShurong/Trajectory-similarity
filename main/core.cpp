@@ -257,7 +257,7 @@ QVector<SecCompare> Core::findBest(Sequence*p,Sequence*q) {
 }
 
 bool compare(SecCompare s1,SecCompare s2) {
-    return s1.simliarity<s2.simliarity;
+    return s1.similarity<s2.similarity;
 }
 
 
@@ -275,7 +275,7 @@ void Core::calculateSec(int gap, int h, QVector<SecCompare> &q1)
             s.beginIndex2=j;
             s.endIndex2=j+gap;
             result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
-            s.simliarity=result;
+            s.similarity=result;
             q1.append(s);
         }
 
@@ -290,17 +290,17 @@ void Core::mergeChange(int gap, QVector<SecCompare> &q1, QVector<SecCompare> &q2
     //     clock_t t1 = clock();
     // #pragma omp parallel for
     for(int i=0; i<q1.size(); i++) {
-        if(q1[i].simliarity<=limit) {
+        if(q1[i].similarity<=limit) {
             //            #pragma omp parallel for
             for(int j=0; j<q1.size(); j++) {
-                if(q1[j].simliarity<=limit&&q1[j].beginIndex1==q1[i].beginIndex1+gap&&q1[j].beginIndex2==q1[i].beginIndex2+gap) {
+                if(q1[j].similarity<=limit&&q1[j].beginIndex1==q1[i].beginIndex1+gap&&q1[j].beginIndex2==q1[i].beginIndex2+gap) {
 
                     s.beginIndex1=q1[i].beginIndex1;
                     s.endIndex1=q1[j].endIndex1;
                     s.beginIndex2=q1[i].beginIndex2;
                     s.endIndex2=q1[j].endIndex2;
                     result=getSecSim(s.beginIndex1,s.endIndex1,s.beginIndex2,s.endIndex2);
-                    s.simliarity=result;
+                    s.similarity=result;
                     q2.append(s);
                 }
             }
@@ -319,7 +319,7 @@ Sequence* Core::longestCommonSeq(Sequence &p, Sequence &q, double thres)
     }
 
     for (int i = 1; i <= p.pointsNum; ++i) {
-        for (int j = 1; j <= p.pointsNum; ++j) {
+        for (int j = 1; j <= q.pointsNum; ++j) {
             if (euclideanDistance(&p[i - 1], &q[j - 1]) <= thres) {
                 m[i][j].first = m[i - 1][j - 1].first + 1;
                 m[i][j].second = '\\';
@@ -366,11 +366,11 @@ QVector<SecCompare> Core::getBestSce(QVector<SecCompare> secCompareV_a)
     }
     int i;
     QVector<QString>qst;
-    double similarity  = secCompareV_a[0].simliarity;
+    double similarity  = secCompareV_a[0].similarity;
 
     for (i = 0; i < secCompareV_a.length() ; i++)
     {
-        if (secCompareV_a[i].simliarity > (similarity+0.0001))
+        if (secCompareV_a[i].similarity > (similarity+0.0001))
             break;
         QString s = QString::number(secCompareV_a[i].beginIndex1, 10)+" "+ QString::number(secCompareV_a[i].endIndex1, 10)+" "+QString::number(secCompareV_a[i].beginIndex2, 10)+" "+QString::number(secCompareV_a[i].endIndex2, 10);
         if(!qst.contains(s)) {
@@ -707,7 +707,7 @@ int hardCluster(Sequence * q,double minLongtitude,
     if(--depth < 0)
         return 0;
     if(q->getMaxX() > midLongtitude) {
-        if(q->getMinX() < midLatitude)
+        if(q->getMinX() < midLongtitude)
             return 0;
         if(q->getMaxY() > midLatitude) {
             if(q->getMinY() < midLatitude)
@@ -1128,7 +1128,7 @@ double Core::calTimeDistance(Point *a,Point *b) {
     if((a->t.year!=b->t.year)||(a->t.month!=b->t.month)) {
         hourGap=720;
     } else {
-        hourGap=qAbs((a->t.day*24+a->t.hour+a->t.minute*0.016+a->t.second*0.0002)-(b->t.day*24+b->t.hour+b->t.minute*0.016+b->t.second*0.0002));
+        hourGap=qAbs((a->t.day*24+a->t.hour+a->t.minute/60.0+a->t.second/3600.0)-(b->t.day*24+b->t.hour+b->t.minute/60.0+b->t.second/3600.0));
     }
     return hourGap;
 }

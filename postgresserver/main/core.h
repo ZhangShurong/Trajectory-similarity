@@ -21,7 +21,7 @@
 #include "csv.h"
 
 #define EARTH_RADIUS 6378.137
-#define PI 3.14
+#define PI 3.14159265358979323846
 #define MINLONG 73
 #define MAXLONG 136
 #define MINLA 3
@@ -44,7 +44,7 @@ struct SecCompare{
     int endIndex1;//终点1
     int beginIndex2;
     int endIndex2;
-    double simliarity;//轨迹段相似度
+    double similarity;//轨迹段相似度
 };
 
 class Core{
